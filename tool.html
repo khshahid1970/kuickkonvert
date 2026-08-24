@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ tool.name }} -- KuickKonvert{% endblock %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow">
+    <p class="breadcrumb"><a href="{{ url_for('index') }}">&larr; All tools</a></p>
+    <h1>{{ tool.name }}</h1>
+    <p class="tool-page-desc">{{ tool.description }}</p>
+
+    <form id="convert-form"
+          data-slug="{{ tool.slug }}"
+          data-multi="{{ 'true' if tool.multi else 'false' }}">
+
+      <div class="dropzone" id="dropzone">
+        <p class="dropzone-hint">Drag &amp; drop {{ 'files' if tool.multi else 'a file' }} here, or</p>
+        <label class="btn btn-secondary" for="file-input">Choose {{ 'files' if tool.multi else 'file' }}</label>
+        <input type="file" id="file-input" name="file" accept="{{ tool.accept }}" {% if tool.multi %}multiple{% endif %} hidden>
+      </div>
+
+      <ul id="file-list" class="file-list"></ul>
+
+      {% if tool.get('fields') %}
+      <div class="tool-fields">
+        {% for f in tool.fields %}
+        <div class="field-row">
+          <label for="field-{{ f.name }}">{{ f.label }}</label>
+          {% if f.type == 'select' %}
+          <select id="field-{{ f.name }}" name="{{ f.name }}">
+            {% for value, label in f.options %}
+            <option value="{{ value }}" {% if value == f.default %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% elif f.type == 'password' %}
+          <input type="password" id="field-{{ f.name }}" name="{{ f.name }}" placeholder="Enter a password" autocomplete="new-password">
+          {% else %}
+          <input type="text" id="field-{{ f.name }}" name="{{ f.name }}" value="{{ f.default }}">
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary" id="convert-btn" disabled>Convert</button>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

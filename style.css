@@ -1,0 +1,252 @@
+/* KuickKonvert -- "Deep Indigo & Gold" brand palette (finalized 2026-08-24). */
+:root {
+  --color-bg: #f5f6fb;
+  --color-surface: #ffffff;
+  --color-text: #181a33;
+  --color-text-muted: #5a5e7a;
+  --color-border: #e1e3f0;
+  --color-primary: #2a2e7f;
+  --color-primary-dark: #1d2060;
+  --color-primary-tint: #e7e8f6;
+  --color-accent: #d4a72c;
+  --color-accent-dark: #9a7a1c;
+  --color-accent-tint: #f4ecd2;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 30, 50, 0.06), 0 1px 2px rgba(20, 30, 50, 0.08);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.wrap-narrow {
+  max-width: 640px;
+}
+
+/* Header */
+.site-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-text);
+}
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 400;
+}
+.brand-name strong { font-weight: 700; }
+.site-nav { display: flex; gap: 24px; }
+.site-nav a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+.site-nav a:hover { color: var(--color-primary); }
+
+/* Hero */
+.hero {
+  padding: 56px 0 40px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 0 0 12px;
+}
+.hero-sub {
+  color: var(--color-text-muted);
+  font-size: 16px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* Tool sections */
+.tool-section { padding: 24px 0 40px; }
+.tool-section h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+.tool-section:first-of-type h2 { border-top: none; }
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.tool-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+.tool-card-name { font-weight: 600; font-size: 15px; }
+.tool-card-desc { font-size: 13px; color: var(--color-text-muted); }
+
+/* Tool page */
+.tool-page { padding: 40px 0 80px; }
+.breadcrumb a { color: var(--color-text-muted); font-size: 14px; text-decoration: none; }
+.tool-page h1 { margin-bottom: 6px; }
+.tool-page-desc { color: var(--color-text-muted); margin-bottom: 28px; }
+
+.dropzone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  padding: 40px 20px;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.dropzone.dragover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+.dropzone-hint {
+  color: var(--color-text-muted);
+  margin: 0 0 14px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  margin-top: 20px;
+}
+.btn-primary:hover:not(:disabled) { background: var(--color-primary-dark); }
+.btn-primary:disabled { background: #a6a8d6; cursor: not-allowed; }
+.btn-secondary {
+  background: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+}
+.btn-secondary:hover { background: #d8daf0; }
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.file-list .file-remove {
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 13px;
+}
+.file-list .file-remove:hover { color: #c0392b; }
+
+.tool-fields {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.field-row { display: flex; flex-direction: column; gap: 4px; }
+.field-row label { font-size: 13px; font-weight: 600; color: var(--color-text-muted); }
+.field-row input, .field-row select {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.status { margin-top: 16px; font-size: 14px; }
+.status.error { color: #c0392b; }
+.status.success { color: var(--color-accent-dark); }
+.status .spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--color-primary-tint);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: -2px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.legal h2 { font-size: 17px; margin-top: 28px; }
+.legal p { color: var(--color-text-muted); }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 24px 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+.footer-inner a { color: var(--color-text-muted); }
+
+@media (max-width: 560px) {
+  .site-nav { display: none; }
+}

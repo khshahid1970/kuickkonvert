@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <h1>Convert files. Fast, free, private.</h1>
+    <p class="hero-sub">Word, Excel, PowerPoint, images and PDF tools -- all in your browser. No sign-up. Every file is deleted automatically after conversion.</p>
+  </div>
+</section>
+
+{% for cat in categories %}
+<section class="tool-section" id="{{ cat|lower|replace(' ', '-') }}">
+  <div class="wrap">
+    <h2>{{ cat }}</h2>
+    <div class="tool-grid">
+      {% for t in by_category[cat] %}
+      <a class="tool-card" href="{{ url_for('tool_page', slug=t.slug) }}">
+        <span class="tool-card-name">{{ t.name }}</span>
+        <span class="tool-card-desc">{{ t.description }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endfor %}
+{% endblock %}

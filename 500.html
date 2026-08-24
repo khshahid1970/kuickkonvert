@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong -- KuickKonvert{% endblock %}
+{% block content %}
+<section class="tool-page"><div class="wrap wrap-narrow">
+  <h1>Something went wrong</h1>
+  <p>Please try again. If the problem continues, try a smaller or different file.</p>
+  <p><a href="{{ url_for('index') }}">Back to all tools</a></p>
+</div></section>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
+<meta name="description" content="Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark">KK</span>
+      <span class="brand-name">Kuick<strong>Konvert</strong></span>
+    </a>
+    <nav class="site-nav">
+      <a href="{{ url_for('index') }}#documents">Documents</a>
+      <a href="{{ url_for('index') }}#images">Images</a>
+      <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored. <a href="{{ url_for('privacy') }}">Privacy notice</a></p>
+  </div>
+</footer>
+</body>
+</html>
