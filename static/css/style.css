@@ -1,13 +1,19 @@
-/* KuickKonvert -- "Deep Indigo & Gold" brand palette (finalized 2026-08-24). */
+/* KuickKonvert -- "Royal Purple & Gold" brand palette (revised 2026-08-25).
+   Primary color sampled directly (pixel color-pick) from the Meezan Bank
+   logo image the client supplied -- #5F2585 / #064D32 are the two colors
+   actually present in that artwork. This corrects the 2026-08-24 palette,
+   which was built from Meezan's indirect web/marketing brand-asset listing
+   (orange #F6821F + blue #599AD7) rather than the logo itself, and reads
+   as a duller navy-indigo than the logo's true saturated purple. */
 :root {
-  --color-bg: #f5f6fb;
+  --color-bg: #f6f5fa;
   --color-surface: #ffffff;
-  --color-text: #181a33;
-  --color-text-muted: #5a5e7a;
-  --color-border: #e1e3f0;
-  --color-primary: #2a2e7f;
-  --color-primary-dark: #1d2060;
-  --color-primary-tint: #e7e8f6;
+  --color-text: #1c1230;
+  --color-text-muted: #5f5670;
+  --color-border: #e4ddec;
+  --color-primary: #5f2585;
+  --color-primary-dark: #401a5c;
+  --color-primary-tint: #efe4f6;
   --color-accent: #d4a72c;
   --color-accent-dark: #9a7a1c;
   --color-accent-tint: #f4ecd2;
@@ -99,6 +105,61 @@ body {
   max-width: 620px;
   margin: 0 auto;
 }
+
+/* Trust strip */
+.trust-strip {
+  background: var(--color-primary-tint);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 18px 0;
+}
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  text-align: center;
+}
+.trust-icon { font-size: 18px; }
+
+/* How it works */
+.how-it-works { padding: 24px 0 56px; }
+.how-it-works h2 {
+  font-size: 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.step { text-align: center; }
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.step h3 { font-size: 15px; margin: 0 0 6px; }
+.step p { font-size: 13px; color: var(--color-text-muted); margin: 0; }
 
 /* Tool sections */
 .tool-section { padding: 24px 0 40px; }
@@ -280,11 +341,31 @@ body {
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--color-border);
-  padding: 24px 0;
+  padding: 32px 0 20px;
   color: var(--color-text-muted);
   font-size: 13px;
 }
-.footer-inner a { color: var(--color-text-muted); }
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 16px;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; }
+.footer-brand .brand-mark { width: 32px; height: 32px; font-size: 12px; }
+.footer-brand-name { margin: 0; font-size: 15px; color: var(--color-text); }
+.footer-owner { margin: 2px 0 0; font-size: 12px; }
+.footer-contact { margin: 2px 0 0; font-size: 12px; }
+.footer-contact a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+.footer-contact a:hover { text-decoration: underline; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+.footer-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; }
+.footer-links a:hover { color: var(--color-primary); }
+.footer-bottom { margin: 0; }
 
 @media (max-width: 560px) {
   .site-nav { display: none; }

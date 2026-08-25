@@ -29,7 +29,24 @@
 
 <footer class="site-footer">
   <div class="wrap footer-inner">
-    <p>&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored. <a href="{{ url_for('privacy') }}">Privacy notice</a></p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-mark">KK</span>
+        <div>
+          <p class="footer-brand-name">Kuick<strong>Konvert</strong></p>
+          <p class="footer-owner">A production of SABP</p>
+          <p class="footer-contact"><a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="{{ url_for('index') }}#documents">Documents</a>
+        <a href="{{ url_for('index') }}#images">Images</a>
+        <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+        <a href="{{ url_for('privacy') }}">Privacy notice</a>
+        <a href="mailto:info@kuickkonvert.com">Contact</a>
+      </div>
+    </div>
+    <p class="footer-bottom">&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</p>
   </div>
 </footer>
 </body>
