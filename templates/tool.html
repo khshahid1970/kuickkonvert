@@ -4,6 +4,12 @@
 <section class="tool-page">
   <div class="wrap wrap-narrow">
     <p class="breadcrumb"><a href="{{ url_for('index') }}">&larr; All tools</a></p>
+    <span class="tool-card-badges tool-page-badges">
+      {% for b in tool.badges %}
+      <span class="format-badge format-{{ b|lower }}">{{ b }}</span>
+      {% if not loop.last %}<span class="badge-arrow" aria-hidden="true">&rarr;</span>{% endif %}
+      {% endfor %}
+    </span>
     <h1>{{ tool.name }}</h1>
     <p class="tool-page-desc">{{ tool.description }}</p>
 

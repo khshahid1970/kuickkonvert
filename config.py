@@ -4,6 +4,14 @@ import os
 # Single source of truth for the homepage grid, each tool's page, and the
 # /convert dispatcher in app.py. Add a new converter by adding an entry here
 # plus a handler function in app.py's HANDLERS dict with the same slug.
+#
+# "badges" lists the format(s) shown as small colored icons on the tool
+# card -- e.g. ["DOC", "PDF"] renders a DOC badge, an arrow, then a PDF
+# badge. These are generic, in-house file-type badges (colored square +
+# abbreviation), not the official Microsoft/Adobe logos -- using the real
+# trademarked logos on a competing conversion site would risk implying an
+# affiliation/endorsement that doesn't exist. Colors are defined in
+# static/css/style.css under .format-badge.format-<ext>.
 
 TOOLS = [
     # -- Document conversions --
@@ -14,6 +22,7 @@ TOOLS = [
         "description": "Convert DOC and DOCX files to PDF.",
         "accept": ".doc,.docx",
         "multi": False,
+        "badges": ["DOC", "PDF"],
     },
     {
         "slug": "pdf-to-word",
@@ -22,6 +31,7 @@ TOOLS = [
         "description": "Convert PDF pages into an editable DOCX file. Best results with text-based PDFs.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF", "DOC"],
     },
     {
         "slug": "excel-to-pdf",
@@ -30,6 +40,7 @@ TOOLS = [
         "description": "Convert XLS and XLSX spreadsheets to PDF.",
         "accept": ".xls,.xlsx",
         "multi": False,
+        "badges": ["XLS", "PDF"],
     },
     {
         "slug": "pdf-to-excel",
@@ -38,6 +49,7 @@ TOOLS = [
         "description": "Pull tables from a PDF into an editable XLSX file.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF", "XLS"],
     },
     {
         "slug": "ppt-to-pdf",
@@ -46,6 +58,7 @@ TOOLS = [
         "description": "Convert PPT and PPTX presentations to PDF.",
         "accept": ".ppt,.pptx",
         "multi": False,
+        "badges": ["PPT", "PDF"],
     },
     {
         "slug": "pdf-to-ppt",
@@ -54,6 +67,7 @@ TOOLS = [
         "description": "Convert PDF pages into an editable PPTX presentation.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF", "PPT"],
     },
     # -- Image conversions --
     {
@@ -63,6 +77,7 @@ TOOLS = [
         "description": "Combine one or more JPG images into a single PDF.",
         "accept": ".jpg,.jpeg",
         "multi": True,
+        "badges": ["JPG", "PDF"],
     },
     {
         "slug": "png-to-pdf",
@@ -71,6 +86,7 @@ TOOLS = [
         "description": "Combine one or more PNG images into a single PDF.",
         "accept": ".png",
         "multi": True,
+        "badges": ["PNG", "PDF"],
     },
     {
         "slug": "pdf-to-jpg",
@@ -79,6 +95,7 @@ TOOLS = [
         "description": "Turn each PDF page into a JPG image (downloaded as a ZIP for multi-page files).",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF", "JPG"],
     },
     {
         "slug": "pdf-to-png",
@@ -87,6 +104,7 @@ TOOLS = [
         "description": "Turn each PDF page into a PNG image (downloaded as a ZIP for multi-page files).",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF", "PNG"],
     },
     # -- PDF tools --
     {
@@ -96,6 +114,7 @@ TOOLS = [
         "description": "Combine multiple PDFs into one, in the order you add them.",
         "accept": ".pdf",
         "multi": True,
+        "badges": ["PDF"],
     },
     {
         "slug": "split-pdf",
@@ -104,6 +123,7 @@ TOOLS = [
         "description": "Split every page of a PDF into separate single-page PDFs (downloaded as a ZIP).",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF"],
     },
     {
         "slug": "compress-pdf",
@@ -112,6 +132,7 @@ TOOLS = [
         "description": "Reduce a PDF's file size while keeping it readable.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF"],
         "fields": [
             {
                 "name": "level",
@@ -133,6 +154,7 @@ TOOLS = [
         "description": "Rotate every page of a PDF by 90, 180, or 270 degrees.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF"],
         "fields": [
             {
                 "name": "degrees",
@@ -150,6 +172,7 @@ TOOLS = [
         "description": "Stamp a text watermark diagonally across every page.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF"],
         "fields": [
             {"name": "text", "label": "Watermark text", "type": "text", "default": "CONFIDENTIAL"}
         ],
@@ -161,6 +184,7 @@ TOOLS = [
         "description": "Add a password so only people who have it can open the PDF.",
         "accept": ".pdf",
         "multi": False,
+        "badges": ["PDF"],
         "fields": [
             {"name": "password", "label": "Password", "type": "password", "default": ""}
         ],

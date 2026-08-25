@@ -71,14 +71,18 @@ body {
   font-weight: 400;
 }
 .brand-name strong { font-weight: 700; }
-.site-nav { display: flex; gap: 24px; }
+.site-nav { display: flex; gap: 8px; }
 .site-nav a {
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.site-nav a:hover { color: var(--color-primary); }
+.site-nav a:hover { background: var(--color-primary-tint); }
+.site-nav a:active { background: var(--color-primary); color: #fff; }
 
 /* Hero */
 .hero {
@@ -131,9 +135,44 @@ body {
 .tool-card-name { font-weight: 600; font-size: 15px; }
 .tool-card-desc { font-size: 13px; color: var(--color-text-muted); }
 
+/* Format badges -- generic in-house file-type icons (colored square +
+   abbreviation), not the official Microsoft/Adobe logos. Using the real
+   trademarked logos on a competing conversion site would risk implying an
+   affiliation/endorsement that doesn't exist, so every major conversion
+   site (CloudConvert, Smallpdf, iLovePDF) uses generic badges like these
+   instead. */
+.tool-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.format-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+.badge-arrow { color: var(--color-text-muted); font-size: 13px; }
+
+.format-badge.format-doc  { background: #2b579a; }
+.format-badge.format-xls  { background: #1d7a46; }
+.format-badge.format-ppt  { background: #d24726; }
+.format-badge.format-pdf  { background: #e2231a; }
+.format-badge.format-jpg  { background: #8e44ad; }
+.format-badge.format-png  { background: #159c8f; }
+
 /* Tool page */
 .tool-page { padding: 40px 0 80px; }
 .breadcrumb a { color: var(--color-text-muted); font-size: 14px; text-decoration: none; }
+.tool-page-badges { margin: 14px 0 6px; }
 .tool-page h1 { margin-bottom: 6px; }
 .tool-page-desc { color: var(--color-text-muted); margin-bottom: 28px; }
 
