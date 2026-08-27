@@ -99,6 +99,18 @@ def _widen_columns_to_fit(xlsx_path: str) -> None:
     import openpyxl
     from openpyxl.utils import get_column_letter
 
+    # Sum of a sheet's (capped) column widths, in the same "characters"
+    # unit openpyxl column widths use, above which we switch that sheet
+    # to landscape before LibreOffice's fitToWidth scaling runs. This
+    # doesn't change *whether* every column survives -- fitToWidth
+    # already guarantees that on its own -- it only reduces how far the
+    # font has to shrink to get there, since landscape gives roughly
+    # 30% more usable width than portrait at the same margins. Verified
+    # 2026-08-27 against a real ~19-column bank statement (which totals
+    # well past this threshold) and a narrow synthetic sheet (which
+    # doesn't) -- only the wide one flips to landscape.
+    LANDSCAPE_WIDTH_THRESHOLD = 80
+
     wb = openpyxl.load_workbook(xlsx_path)
     for ws in wb.worksheets:
         widths = {}
@@ -110,11 +122,16 @@ def _widen_columns_to_fit(xlsx_path: str) -> None:
                 col = cell.column
                 if length > widths.get(col, 0):
                     widths[col] = length
+        capped_widths = {}
         for col, length in widths.items():
-            ws.column_dimensions[get_column_letter(col)].width = min(max(length + 2, 8), 60)
+            capped = min(max(length + 2, 8), 60)
+            capped_widths[col] = capped
+            ws.column_dimensions[get_column_letter(col)].width = capped
         ws.page_setup.fitToWidth = 1
         ws.page_setup.fitToHeight = 0
         ws.sheet_properties.pageSetUpPr.fitToPage = True
+        if sum(capped_widths.values()) > LANDSCAPE_WIDTH_THRESHOLD:
+            ws.page_setup.orientation = "landscape"
     wb.save(xlsx_path)
 
 
