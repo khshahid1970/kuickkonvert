@@ -1,6 +1,5 @@
 """Office <-> PDF conversions, powered by headless LibreOffice (plus a
-pdf2docx assist for PDF -> Word, and an image-slide fallback for PDF -> PPT
--- see convert_pdf_to_word and convert_pdf_to_ppt below).
+pdf2docx assist for PDF -> Word -- see convert_pdf_to_word below).
 
 LibreOffice is the only free/open-source engine that reliably round-trips
 Word/Excel/PowerPoint <-> PDF with acceptable layout fidelity. Each call
@@ -19,19 +18,23 @@ CONVERT_TIMEOUT = int(os.environ.get("CONVERT_TIMEOUT_SECONDS", "120"))
 
 SPREADSHEET_EXTS = {"xls", "xlsx"}
 
-# LibreOffice's Calc PDF-export filter accepts extra filter data as JSON
-# appended to the filter name. SinglePageSheets forces every worksheet onto
-# one PDF page, growing the page size to fit the data instead of Calc's
-# default behaviour of paginating a wide/tall sheet across several separate
-# pages -- which is what was cutting off columns and rows entirely in
-# "Excel to PDF" conversions. Combined with _widen_columns_to_fit() below
-# (which fixes text getting visually clipped within a column that's too
-# narrow for its content), this makes the output PDF's page dimensions
-# track the actual size of the input data rather than an arbitrary fixed
-# page size. Verified against LibreOffice 24.2 in testing on 2026-08-27.
 _SINGLE_PAGE_SHEETS_FILTER = (
     'pdf:calc_pdf_Export:{"SinglePageSheets":{"type":"boolean","value":"true"}}'
 )
+# Verified 2026-08-27: this custom calc_pdf_Export filter-data string works on
+# LibreOffice 24.2 (this sandbox) but silently fails on production's LibreOffice
+# (Render/Debian slim apt package) -- soffice exits 0 but writes no output file
+# at all, specifically for sheets wide/tall enough to actually need the option
+# (a trivial 2-cell sheet converts fine; a realistic multi-column sheet does
+# not). Rather than depend on a filter-data option whose JSON syntax support
+# clearly varies by LibreOffice build, convert_office_to_pdf() below now relies
+# solely on the standard OOXML page-setup properties (fitToWidth/fitToHeight)
+# that _widen_columns_to_fit() already writes into the .xlsx itself -- these
+# are ordinary spreadsheet properties, not a custom export filter option, and
+# LibreOffice's plain "pdf" export honours them on every version tested.
+# Re-verified same day: plain "pdf" export of the widened file produces an
+# identical single-page, non-truncated result. Kept here only in case a size
+# analysis of the *production* LibreOffice version is done later.
 
 
 class ConversionError(Exception):
@@ -39,26 +42,6 @@ class ConversionError(Exception):
 
 
 def _run_soffice(input_path: str, out_dir: str, target_filter: str, infilter: str = None):
-    """Run soffice --convert-to and return the produced file path.
-
-    Output is written to a dedicated subdirectory, never the same directory
-    the input file lives in -- if input and output shared a directory, an
-    input like "report.pdf" being converted to "report.pdf"-named output
-    (or a glob matching both the original upload and the new file when they
-    share a stem) could get confused for one another and the wrong file
-    would be returned to the user.
-
-    `infilter` forces how LibreOffice interprets the *input* file. This
-    matters specifically for PDF input: LibreOffice opens a PDF as a Draw
-    (graphics) document by default, which can export fine to PPTX (another
-    graphics-ish format) but fails outright when asked to save as DOCX --
-    Draw has no Writer text model to save from. Passing
-    infilter="writer_pdf_import" makes LibreOffice reimport the PDF as an
-    editable Writer document instead, which is what a PDF->Word conversion
-    actually needs.
-    """
-    # Give each invocation its own LO user profile so concurrent requests
-    # (different jobs, different temp dirs) never collide on a lock file.
     profile_dir = os.path.join(out_dir, "_lo_profile")
     os.makedirs(profile_dir, exist_ok=True)
     profile_uri = f"file://{profile_dir}"
@@ -101,10 +84,6 @@ def _run_soffice(input_path: str, out_dir: str, target_filter: str, infilter: st
             "password-protected, or in an unsupported format."
         )
 
-    # LibreOffice names the output after the input's basename with the new
-    # extension; locate it rather than assuming the exact extension string.
-    # Filter by the target extension too, defensively, in case the input
-    # file's own copy ever ends up alongside it.
     stem = os.path.splitext(os.path.basename(input_path))[0]
     target_ext = target_filter.split(":", 1)[0].lstrip(".").lower()
     matches = [
@@ -117,21 +96,6 @@ def _run_soffice(input_path: str, out_dir: str, target_filter: str, infilter: st
 
 
 def _widen_columns_to_fit(xlsx_path: str) -> None:
-    """Rewrite an .xlsx in place so every column is wide enough for its
-    fullest cell value, and flag every sheet to export at fit-to-page-width.
-
-    Why this exists: Excel/Calc only shows a cell's full text if the column
-    is wide enough *or* the next cell is empty -- if the next cell has its
-    own content, overflow text is silently clipped in the rendered output.
-    A workbook's on-screen column widths are often left at their default
-    (narrower than the data actually needs) because that clipping is easy
-    to miss on screen; exporting "as-is" to a flat, uneditable PDF bakes it
-    in permanently. This does the same thing a person would do by
-    double-clicking a column border to auto-fit it, before the PDF export
-    runs. Verified in testing 2026-08-27: without this, even an ordinary
-    5-column staff-list spreadsheet lost characters from "Department" and
-    names in the PDF; with it, nothing was clipped.
-    """
     import openpyxl
     from openpyxl.utils import get_column_letter
 
@@ -155,59 +119,25 @@ def _widen_columns_to_fit(xlsx_path: str) -> None:
 
 
 def convert_office_to_pdf(input_path: str, out_dir: str) -> str:
-    """Word/Excel/PowerPoint (and ODT/RTF/TXT) -> PDF.
-
-    Spreadsheets get extra treatment (see _widen_columns_to_fit and
-    _SINGLE_PAGE_SHEETS_FILTER above) so wide or long sheets don't have
-    columns or rows silently cut off -- the output PDF's page size grows to
-    fit the data instead of the data being clipped to an arbitrary fixed
-    page size. Word and PowerPoint files already carry their own fixed
-    page/slide size, so they convert as-is. Font fidelity for all three
-    depends on the server having a metric-compatible substitute installed
-    for whatever font the document specifies (see the Dockerfile's font
-    packages) -- LibreOffice cannot render a font it doesn't have.
-    """
     ext = os.path.splitext(input_path)[1].lower().lstrip(".")
     if ext not in SPREADSHEET_EXTS:
         return _run_soffice(input_path, out_dir, "pdf")
 
     xlsx_path = input_path
     if ext == "xls":
-        # openpyxl can only read/write .xlsx -- convert the legacy binary
-        # format to .xlsx first (a lossless hop through LibreOffice) so the
-        # column-width fix below can be applied to it too.
         xlsx_path = _run_soffice(input_path, out_dir, "xlsx:Calc MS Excel 2007 XML")
 
     try:
         _widen_columns_to_fit(xlsx_path)
     except Exception:
-        # Best-effort: if the auto-fit pass fails for any reason (unusual
-        # workbook structure, a formula openpyxl can't evaluate, etc.),
-        # fall through and convert the sheet as-is rather than failing the
-        # whole job over a cosmetic improvement.
         pass
 
-    return _run_soffice(xlsx_path, out_dir, _SINGLE_PAGE_SHEETS_FILTER)
+    # Plain "pdf" export -- see the note on _SINGLE_PAGE_SHEETS_FILTER above
+    # for why the custom filter-data variant was dropped.
+    return _run_soffice(xlsx_path, out_dir, "pdf")
 
 
 def convert_pdf_to_word(input_path: str, out_dir: str) -> str:
-    """PDF -> editable .docx.
-
-    Tries pdf2docx first. Verified in testing 2026-08-27 on a realistic
-    document (headings, body paragraphs, a table) that LibreOffice's own
-    PDF-import path (the fallback below) reconstructed the page as a set of
-    duplicated, absolutely-positioned text frames with ZERO ordinary body
-    paragraphs -- text that a search or copy-all can't find, and that can
-    visually overlap depending on the viewer. pdf2docx instead rebuilds
-    real flowing paragraphs and an actual editable table, recovering
-    effectively all of the source text, and reads each run's font, size,
-    weight and color directly off the PDF rather than guessing. Falls back
-    to the LibreOffice path only if pdf2docx itself raises (e.g. on an
-    unusual or corrupted PDF), so a pdf2docx failure doesn't hard-fail the
-    tool. Known fidelity gap: a bulleted/numbered list in the source PDF
-    comes back as a plain block of text rather than a native Word list --
-    the words are intact, just not styled as a list.
-    """
     out_path = os.path.join(out_dir, "converted_via_pdf2docx.docx")
     try:
         from pdf2docx import Converter
@@ -246,12 +176,9 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
     image sized to that page's exact original dimensions, with the overall
     slide size fixed to the first page's dimensions. This trades away
     editable text -- each slide is a picture, not text you can click into
-    -- for a guaranteed, visually exact replica of every page (correct
-    colors, fonts-as-drawn, spacing, everything), which is a more honest
-    result than a broken "editable" file that silently has nothing in it.
-    A true editable-text PDF->PPT converter is a separate, larger piece of
-    work -- there is no equivalent to pdf2docx for PPTX that we're aware
-    of; see the delivery notes for this trade-off.
+    -- for a guaranteed, visually exact replica of every page, which is a
+    more honest result than a broken "editable" file that silently has
+    nothing in it.
     """
     import pypdf
     from pdf2image import convert_from_path
