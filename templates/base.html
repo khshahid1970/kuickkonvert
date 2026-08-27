@@ -15,11 +15,19 @@
       <span class="brand-mark">KK</span>
       <span class="brand-name">Kuick<strong>Konvert</strong></span>
     </a>
-    <nav class="site-nav">
-      <a class="nav-tab" href="{{ url_for('index') }}#documents">Documents</a>
-      <a class="nav-tab" href="{{ url_for('index') }}#images">Images</a>
-      <a class="nav-tab" href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+    <nav class="site-nav" id="site-nav">
+      <a href="{{ url_for('index') }}#documents">Documents</a>
+      <a href="{{ url_for('index') }}#images">Images</a>
+      <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+      <a href="{{ url_for('index') }}#how-it-works">How it works</a>
+      <a href="mailto:info@kuickkonvert.com">Contact</a>
+      <a class="nav-cta" href="{{ url_for('index') }}#documents">Start converting</a>
     </nav>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 4.5H16M2 9H16M2 13.5H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -28,26 +36,39 @@
 </main>
 
 <footer class="site-footer">
-  <div class="wrap footer-inner">
+  <div class="wrap">
     <div class="footer-grid">
-      <div class="footer-brand">
-        <span class="brand-mark">KK</span>
-        <div>
-          <p class="footer-brand-name">Kuick<strong>Konvert</strong></p>
-          <p class="footer-owner">A production of SABP</p>
-          <p class="footer-contact"><a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
-        </div>
+      <div class="footer-col">
+        <a class="footer-brand" href="{{ url_for('index') }}">
+          <span class="brand-mark">KK</span>
+          <span class="brand-name">Kuick<strong>Konvert</strong></span>
+        </a>
+        <p class="footer-tagline">Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, nothing stored.</p>
+        <p class="footer-credit">A production of SABP &middot; <a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
       </div>
-      <div class="footer-links">
-        <a href="{{ url_for('index') }}#documents">Documents</a>
-        <a href="{{ url_for('index') }}#images">Images</a>
-        <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
-        <a href="{{ url_for('privacy') }}">Privacy notice</a>
-        <a href="mailto:info@kuickkonvert.com">Contact</a>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="{{ url_for('index') }}#documents">Document conversion</a></li>
+          <li><a href="{{ url_for('index') }}#images">Image conversion</a></li>
+          <li><a href="{{ url_for('index') }}#pdf-tools">PDF tools</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="{{ url_for('index') }}#how-it-works">How it works</a></li>
+          <li><a href="{{ url_for('privacy') }}">Privacy notice</a></li>
+          <li><a href="mailto:info@kuickkonvert.com">Contact us</a></li>
+        </ul>
       </div>
     </div>
-    <p class="footer-bottom">&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</p>
+    <div class="footer-bottom">
+      <span>&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</span>
+      <a href="{{ url_for('privacy') }}">Privacy notice</a>
+    </div>
   </div>
 </footer>
+<script src="{{ url_for('static', filename='js/nav.js') }}"></script>
 </body>
 </html>

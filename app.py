@@ -12,7 +12,7 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
-from config import TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS
+from config import TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS, FORMAT_BADGE_CLASS
 from converters.utils import job_workspace, safe_name, change_ext
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
@@ -231,7 +231,7 @@ HANDLERS = {
 @app.route("/")
 def index():
     by_category = {c: [t for t in TOOLS if t["category"] == c] for c in CATEGORIES}
-    return render_template("index.html", categories=CATEGORIES, by_category=by_category)
+    return render_template("index.html", categories=CATEGORIES, by_category=by_category, badge_class=FORMAT_BADGE_CLASS)
 
 
 @app.route("/tools/<slug>")
