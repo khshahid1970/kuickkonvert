@@ -70,11 +70,7 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  background: var(--color-primary);
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 .brand-name {
   font-size: 18px;

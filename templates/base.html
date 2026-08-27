@@ -6,13 +6,15 @@
 <title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
 <meta name="description" content="Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
+<link rel="alternate icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
 </head>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="{{ url_for('index') }}">
-      <span class="brand-mark">KK</span>
+      <img class="brand-mark" src="{{ url_for('static', filename='img/logo-mark.svg') }}" width="36" height="36" alt="KuickKonvert logo">
       <span class="brand-name">Kuick<strong>Konvert</strong></span>
     </a>
     <nav class="site-nav" id="site-nav">
@@ -40,7 +42,7 @@
     <div class="footer-grid">
       <div class="footer-col">
         <a class="footer-brand" href="{{ url_for('index') }}">
-          <span class="brand-mark">KK</span>
+          <img class="brand-mark" src="{{ url_for('static', filename='img/logo-mark.svg') }}" width="36" height="36" alt="KuickKonvert logo">
           <span class="brand-name">Kuick<strong>Konvert</strong></span>
         </a>
         <p class="footer-tagline">Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, nothing stored.</p>
@@ -64,7 +66,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; {{ 2026 }} KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</span>
+      <span>&copy; {{ 2026 }} Shahid Iqbal / KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</span>
       <a href="{{ url_for('privacy') }}">Privacy notice</a>
     </div>
   </div>
