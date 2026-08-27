@@ -39,8 +39,14 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
         raise ConversionError(f"Could not build a PDF from these images: {exc}") from exc
 
 
-def pdf_to_images(input_path: str, out_dir: str, fmt: str = "png", dpi: int = 200):
-    """Render each PDF page to an image file. Returns list of file paths in page order."""
+def pdf_to_images(input_path: str, out_dir: str, fmt: str = "png", dpi: int = 300):
+    """Render each PDF page to an image file. Returns list of file paths in page order.
+
+    300 DPI (bumped from 200 on 2026-08-27) matches the standard print-
+    quality threshold, so text and fine detail in the rendered image stay
+    sharp -- the trade-off is roughly 2.25x the pixel count (and file size)
+    of the previous default.
+    """
     fmt = fmt.lower()
     if fmt not in ("png", "jpg", "jpeg"):
         fmt = "png"
