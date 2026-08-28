@@ -335,6 +335,71 @@ body {
   margin: 0;
 }
 
+/* Ad slots -- deliberately styled with visible spacing, a border, and a
+   plain "Advertisement" label so they can never be mistaken for site
+   navigation, a menu, or a download link (an explicit AdSense policy
+   requirement). Reserves height up front so a real ad loading in later
+   doesn't shift the page layout. Empty until a real ad unit is inserted --
+   see the HTML comment inside each .ad-slot for how to activate it. */
+.ad-slot {
+  margin: 32px 0;
+  padding: 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  text-align: center;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ad-slot-label {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.ad-slot--tool { margin: 20px 0 28px; min-height: 90px; }
+
+/* FAQ section */
+.faq-section { padding: 8px 0 56px; }
+.faq-section h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.faq-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14.5px;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::before {
+  content: "+";
+  display: inline-block;
+  width: 16px;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.faq-item[open] summary::before { content: "\2212"; }
+.faq-item p {
+  margin: 10px 0 2px 16px;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+
 /* Tool page */
 .tool-page { padding: 40px 0 80px; }
 .breadcrumb a { color: var(--color-text-muted); font-size: 14px; text-decoration: none; }

@@ -34,6 +34,21 @@
   </div>
 </section>
 
+<div class="wrap">
+  <div class="ad-slot ad-slot--banner" aria-label="Advertisement">
+    <span class="ad-slot-label">Advertisement</span>
+    <!-- Reserved ad space. Deliberately placed here -- well below the hero
+         and well above any Upload/Convert/Download control -- so an ad can
+         never be mistaken for site navigation or a download link (a real
+         AdSense policy risk on a tool site like this one). Once approved
+         for Google AdSense, replace this comment with the real ad unit
+         snippet from your AdSense account, e.g.:
+         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+</div>
+
 <section class="how-it-works" id="how-it-works">
   <div class="wrap">
     <h2>How it works</h2>
@@ -91,6 +106,16 @@
 </section>
 {% endfor %}
 
+<div class="wrap">
+  <div class="ad-slot ad-slot--banner" aria-label="Advertisement">
+    <span class="ad-slot-label">Advertisement</span>
+    <!-- Second reserved ad slot, between the tool categories and the "Why
+         KuickKonvert" section -- again, nowhere near a dropzone, Convert
+         button, or Download link. See the note on the first ad slot above
+         for how to activate this once an AdSense publisher ID exists. -->
+  </div>
+</div>
+
 <section class="why-section">
   <div class="wrap">
     <h2>Why KuickKonvert</h2>
@@ -124,6 +149,38 @@
         <h3>Completely free</h3>
         <p>Every tool on KuickKonvert is free to use, with no hidden limits or subscriptions.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section" id="faq">
+  <div class="wrap wrap-narrow">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Is KuickKonvert really free?</summary>
+        <p>Yes. Every tool on this site is free to use, with no sign-up and no hidden limits. There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do you store my files?</summary>
+        <p>No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails). See our <a href="{{ url_for('privacy') }}">Privacy notice</a> for details.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?</summary>
+        <p>DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based "Office Open XML" formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why does my file's layout sometimes shift slightly after conversion?</summary>
+        <p>Two common reasons: first, if your original file uses a font we don't have installed, we substitute a metrically-compatible alternative -- close, but not always pixel-identical, so lines can reflow slightly. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is there a file size limit?</summary>
+        <p>Yes -- up to 50MB per file by default, which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. If a very large PDF fails to upload, try our Compress PDF tool first to shrink it.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do I need to install anything or create an account?</summary>
+        <p>No. KuickKonvert runs entirely in your browser -- no software, plugins, browser extensions, or sign-up required. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
+      </details>
     </div>
   </div>
 </section>

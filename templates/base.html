@@ -9,6 +9,11 @@
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
 <link rel="alternate icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+<!-- TODO once approved for Google AdSense: uncomment below and replace
+     ca-pub-XXXXXXXXXXXXXXXX with your real publisher ID, then add a
+     matching /ads.txt file at the domain root (Claude can add this once
+     you have the real ID -- it can't be created from a placeholder). -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 </head>
 <body>
 <header class="site-header">
@@ -22,6 +27,7 @@
       <a href="{{ url_for('index') }}#images">Images</a>
       <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
       <a href="{{ url_for('index') }}#how-it-works">How it works</a>
+      <a href="{{ url_for('index') }}#faq">FAQ</a>
       <a href="mailto:info@kuickkonvert.com">Contact</a>
       <a class="nav-cta" href="{{ url_for('index') }}#documents">Start converting</a>
     </nav>
@@ -60,6 +66,7 @@
         <h4>Company</h4>
         <ul>
           <li><a href="{{ url_for('index') }}#how-it-works">How it works</a></li>
+          <li><a href="{{ url_for('index') }}#faq">FAQ</a></li>
           <li><a href="{{ url_for('privacy') }}">Privacy notice</a></li>
           <li><a href="mailto:info@kuickkonvert.com">Contact us</a></li>
         </ul>

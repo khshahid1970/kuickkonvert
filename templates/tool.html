@@ -7,6 +7,14 @@
     <h1>{{ tool.name }}</h1>
     <p class="tool-page-desc">{{ tool.description }}</p>
 
+    <div class="ad-slot ad-slot--tool" aria-label="Advertisement">
+      <span class="ad-slot-label">Advertisement</span>
+      <!-- Deliberately placed above the form, clearly separated from the
+           dropzone, Convert button, and any download result -- never
+           adjacent to a functional control on this page. See index.html
+           for how to activate this once an AdSense publisher ID exists. -->
+    </div>
+
     <form id="convert-form"
           data-slug="{{ tool.slug }}"
           data-multi="{{ 'true' if tool.multi else 'false' }}">
