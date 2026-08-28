@@ -377,13 +377,22 @@ body {
   position: absolute;
   top: 0;
   bottom: 24px;
-  width: 160px;
+  width: 150px;
   margin: 0;
 }
-.ad-slot--rail-left { left: 24px; }
-.ad-slot--rail-right { right: 24px; }
+.ad-slot--rail-left { left: 16px; }
+.ad-slot--rail-right { right: 16px; }
 
-@media (min-width: 1600px) {
+/* Breakpoint note: the content column (.wrap) tops out at 1120px + 24px
+   padding/side = 1168px, so each rail needs ~166px of clear margin per
+   side (150px rail + 16px offset from the viewport edge). 1500px is the
+   lowest viewport width that reliably clears that -- chosen deliberately
+   low enough to cover the very common case of a 1920px display running at
+   Windows' default 125% scaling (which reports an effective/logical
+   viewport of 1536px, confirmed via live inspection 2026-08-28), while
+   still hiding cleanly on unscaled 1366/1440px laptop screens, where
+   there genuinely isn't room. */
+@media (min-width: 1500px) {
   .ad-slot--rail { display: flex; }
 }
 
