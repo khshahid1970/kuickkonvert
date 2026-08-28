@@ -1,11 +1,31 @@
 {% extends "base.html" %}
-{% block title %}{{ tool.name }} -- KuickKonvert{% endblock %}
+{% block title %}{{ tool.seo_title }}{% endblock %}
+{% block description %}{{ tool.meta_description }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "{{ tool.category }}", "item": "{{ site_url }}/#{{ tool.category|lower|replace(' ', '-') }}"},
+    {"@type": "ListItem", "position": 3, "name": "{{ tool.name }}", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <section class="tool-page">
   <div class="wrap wrap-narrow">
-    <p class="breadcrumb"><a href="{{ url_for('index') }}">&larr; All tools</a></p>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ url_for('index') }}#{{ tool.category|lower|replace(' ', '-') }}">{{ tool.category }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ tool.name }}</span>
+    </nav>
     <h1>{{ tool.name }}</h1>
-    <p class="tool-page-desc">{{ tool.description }}</p>
+    <p class="tool-page-desc">{{ tool.intro }}</p>
 
     <div class="ad-slot ad-slot--tool" aria-label="Advertisement">
       <span class="ad-slot-label">Advertisement</span>
@@ -54,7 +74,69 @@
       <button type="submit" class="btn btn-primary" id="convert-btn" disabled>Convert</button>
       <div id="status" class="status" role="status" aria-live="polite"></div>
     </form>
+
+    <section class="tool-info">
+      <h2>How to convert {{ tool.name }}</h2>
+      <ol class="how-to-steps">
+        <li>Select your {{ tool.from_fmt }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
+        <li>KuickKonvert converts {{ 'them' if tool.multi else 'it' }} automatically -- there's nothing else to configure{{ ' beyond the options above' if tool.get('fields') else '' }}.</li>
+        <li>Your {{ tool.to_fmt }} file downloads straight away. The original is deleted from our servers as soon as the conversion finishes.</li>
+      </ol>
+
+      <h2>Supported formats</h2>
+      <table class="format-table">
+        <thead><tr><th>Format</th><th>Supported</th></tr></thead>
+        <tbody>
+          {% for fmt in accepted_formats %}
+          <tr><td>{{ fmt }}</td><td>Yes</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2>Why use KuickKonvert?</h2>
+      <ul class="why-list">
+        <li>Free to use, with no subscription</li>
+        <li>No registration or account required</li>
+        <li>No software to install</li>
+        <li>Fast -- most files convert in seconds</li>
+        <li>Files are deleted automatically after conversion</li>
+        <li>Works on desktop, tablet, or mobile</li>
+      </ul>
+
+      <h2>Good to know</h2>
+      <p>{{ tool.good_to_know }}</p>
+
+      <h2>When you'd use this</h2>
+      <ul class="use-case-list">
+        {% for use_case in tool.use_cases %}
+        <li>{{ use_case }}</li>
+        {% endfor %}
+      </ul>
+
+      <h2>Privacy &amp; security</h2>
+      <p>Your file is used only to perform this conversion, in an isolated temporary workspace, and is deleted automatically as soon as the converted file is returned to you (or immediately if the conversion fails). See our <a href="{{ url_for('privacy') }}">Privacy notice</a> for details.</p>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list faq-list-compact">
+        {% for question, answer in tool.faq %}
+        <details class="faq-item">
+          <summary>{{ question }}</summary>
+          <p>{{ answer }}</p>
+        </details>
+        {% endfor %}
+      </div>
+
+      {% if related_tools %}
+      <h2>Related tools</h2>
+      <ul class="related-tools-list">
+        {% for rt in related_tools %}
+        <li><a href="{{ url_for('tool_page', slug=rt.slug) }}">{{ rt.name }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
   </div>
 </section>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/faq.js') }}"></script>
 {% endblock %}

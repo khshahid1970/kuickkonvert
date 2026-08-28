@@ -465,9 +465,60 @@ body {
 
 /* Tool page */
 .tool-page { padding: 40px 0 80px; }
-.breadcrumb a { color: var(--color-text-muted); font-size: 14px; text-decoration: none; }
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.breadcrumb a { color: var(--color-text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--color-primary); text-decoration: underline; }
+.breadcrumb span[aria-hidden] { color: var(--color-border); }
+.breadcrumb span[aria-current] { color: var(--color-text); font-weight: 600; }
 .tool-page h1 { margin-bottom: 6px; }
 .tool-page-desc { color: var(--color-text-muted); margin-bottom: 28px; }
+
+/* Tool page -- expanded SEO/content sections below the converter */
+.tool-info { margin-top: 48px; padding-top: 8px; border-top: 1px solid var(--color-border); }
+.tool-info h2 { font-size: 18px; margin: 32px 0 12px; }
+.tool-info h2:first-child { margin-top: 24px; }
+.tool-info p { color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6; }
+.how-to-steps {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-text-muted);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.how-to-steps li { margin-bottom: 4px; }
+.format-table {
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 4px 0;
+}
+.format-table th, .format-table td {
+  text-align: left;
+  padding: 8px 20px 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.format-table th { color: var(--color-text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+.why-list, .use-case-list, .related-tools-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-text-muted);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.related-tools-list { list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 10px 20px; }
+.related-tools-list a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.related-tools-list a:hover { text-decoration: underline; }
+.tool-info .faq-list { margin-top: 4px; }
 
 .dropzone {
   border: 2px dashed var(--color-border);

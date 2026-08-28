@@ -1,10 +1,28 @@
 {% extends "base.html" %}
 {% block title %}Privacy Notice -- KuickKonvert{% endblock %}
+{% block description %}How KuickKonvert handles your files: nothing is stored, every upload is deleted automatically after conversion.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Privacy Notice", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <section class="tool-page">
   <div class="wrap wrap-narrow legal">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Privacy Notice</span>
+    </nav>
     <h1>Privacy Notice</h1>
-    <p><em>This notice is provided as a good-faith starting point, not formal legal advice -- see the governing law note below.</em></p>
+    <p><em>This notice explains how KuickKonvert handles your files and data. It is not formal legal advice -- see the governing law note below.</em></p>
 
     <h2>What we do with your files</h2>
     <p>Files you upload to KuickKonvert are used only to perform the conversion you requested. Each file is processed in a temporary, isolated workspace and is automatically and permanently deleted as soon as your converted file is returned to you, or if the conversion fails. We do not review, copy, back up, or retain your files.</p>
@@ -25,7 +43,10 @@
     <p>Shahid Iqbal &middot; <a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
 
     <h2>Governing law note</h2>
-    <p>Pakistan's Personal Data Protection Bill was still progressing through the legislative process as of our last check and is not yet fully in force as enacted law. Confirm current status with legal counsel before relying on this notice for a public launch. This page is provided as a starting draft, not legal advice.</p>
+    <p>Pakistan's Personal Data Protection Bill was still progressing through the legislative process as of our last check and is not yet fully in force as enacted law. This notice does not constitute legal advice; confirm current status with legal counsel for your own compliance needs.</p>
+
+    <h2>Terms of use</h2>
+    <p>Use of this site is also governed by our <a href="{{ url_for('terms') }}">Terms of Service</a>.</p>
   </div>
 </section>
 {% endblock %}

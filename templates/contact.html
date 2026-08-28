@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Contact -- KuickKonvert{% endblock %}
+{% block description %}Get in touch with KuickKonvert for general questions, technical support, or privacy enquiries.{% endblock %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow legal">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Contact</span>
+    </nav>
+    <h1>Contact</h1>
+    <p>The quickest way to reach KuickKonvert is by email:</p>
+    <p><a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
+
+    <h2>What to include</h2>
+    <p>This single address covers all enquiries -- general questions, a tool that isn't working as expected, and privacy or data-handling questions about the <a href="{{ url_for('privacy') }}">Privacy notice</a>. To help us respond quickly, mention which tool you were using and, if relevant, roughly what size and format the file was (please don't attach the file itself if it contains sensitive information).</p>
+
+    <h2>Response times</h2>
+    <p>KuickKonvert is currently run by a single operator, so please allow a reasonable amount of time for a reply.</p>
+  </div>
+</section>
+{% endblock %}

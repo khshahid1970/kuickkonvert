@@ -4,11 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
-<meta name="description" content="Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.">
+<meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.{% endblock %}">
+<link rel="canonical" href="{{ canonical_url|default(site_url ~ request.path) }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
 <link rel="alternate icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+
+<!-- Open Graph / Twitter Card -- used when a link to this page is shared on
+     WhatsApp, Slack, LinkedIn, Facebook, X, etc. Reuses the page's own
+     title/description blocks so the preview always matches the page. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KuickKonvert">
+<meta property="og:url" content="{{ canonical_url|default(site_url ~ request.path) }}">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.description() }}">
+<meta property="og:image" content="{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ self.title() }}">
+<meta name="twitter:description" content="{{ self.description() }}">
+<meta name="twitter:image" content="{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}">
+
+<!-- Sitewide structured data. Page-specific structured data (e.g. a tool
+     page's breadcrumbs) is added via the structured_data block below. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "KuickKonvert",
+  "url": "{{ site_url }}/",
+  "description": "Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored."
+}
+</script>
+{% block structured_data %}{% endblock %}
+
 <!-- TODO once approved for Google AdSense: uncomment below and replace
      ca-pub-XXXXXXXXXXXXXXXX with your real publisher ID, then add a
      matching /ads.txt file at the domain root (Claude can add this once
@@ -28,7 +57,8 @@
       <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
       <a href="{{ url_for('index') }}#how-it-works">How it works</a>
       <a href="{{ url_for('index') }}#faq">FAQ</a>
-      <a href="mailto:info@kuickkonvert.com">Contact</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
       <a class="nav-cta" href="{{ url_for('index') }}#documents">Start converting</a>
     </nav>
     <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
@@ -65,16 +95,19 @@
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
+          <li><a href="{{ url_for('about') }}">About</a></li>
           <li><a href="{{ url_for('index') }}#how-it-works">How it works</a></li>
           <li><a href="{{ url_for('index') }}#faq">FAQ</a></li>
           <li><a href="{{ url_for('privacy') }}">Privacy notice</a></li>
-          <li><a href="mailto:info@kuickkonvert.com">Contact us</a></li>
+          <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact us</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>&copy; {{ 2026 }} Shahid Iqbal / KuickKonvert. Files are processed and deleted automatically -- nothing is stored.</span>
       <a href="{{ url_for('privacy') }}">Privacy notice</a>
+      <a href="{{ url_for('terms') }}">Terms</a>
     </div>
   </div>
 </footer>

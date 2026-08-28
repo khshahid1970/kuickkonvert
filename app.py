@@ -8,11 +8,16 @@ import os
 import zipfile
 
 from flask import (
-    Flask, render_template, request, send_file, abort, jsonify, url_for
+    Flask, render_template, request, send_file, abort, jsonify, url_for, Response
 )
 from werkzeug.utils import secure_filename
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
-from config import TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS, FORMAT_BADGE_CLASS
+from config import (
+    TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
+    FORMAT_BADGE_CLASS, SITE_URL,
+)
 from converters.utils import job_workspace, safe_name, change_ext
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
@@ -25,6 +30,45 @@ from converters.pdf_tools import (
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
+# --- Rate limiting / abuse protection -------------------------------------
+# Anonymous, no-login uploads are an obvious target for scripted abuse (mass
+# automated conversions driving up compute cost, or someone hammering the
+# endpoint to degrade the service for real visitors). Flask-Limiter throttles
+# by client IP.
+#
+# PRODUCTION-GRADE CAVEAT (read before relying on this for capacity planning):
+# storage defaults to in-memory, which is per-process, not shared. gunicorn
+# runs 2 worker processes (see Procfile/Dockerfile), and each worker keeps
+# its own counters -- so the *effective* ceiling per IP can run up to ~2x the
+# configured number in the worst case (a client that gets routed roughly
+# evenly across both workers). In-memory storage also resets on every
+# deploy/restart and cannot coordinate across more than one dyno/instance if
+# this app is ever scaled horizontally. This is a real limitation, not a
+# hidden one -- it is an accepted Phase 1 trade-off (it still stops
+# unthrottled scripted abuse today, and needs no new paid service), not a
+# claim that this is exact, production-grade global rate limiting.
+#
+# To upgrade to a shared, worker-safe, restart-safe limit once Redis (or
+# another supported backend -- see the Flask-Limiter docs for the current
+# list) is available, set the RATE_LIMIT_STORAGE_URI environment variable,
+# e.g. RATE_LIMIT_STORAGE_URI=redis://<host>:6379 -- no code change needed.
+# Render offers a managed Redis add-on (a new, separate resource/cost on
+# your Render account, not something this code can provision on its own).
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["120 per minute", "2000 per day"],
+    storage_uri=os.environ.get("RATE_LIMIT_STORAGE_URI", "memory://"),
+)
+
+
+@app.context_processor
+def inject_site_url():
+    """Makes {{ site_url }} available in every template without passing it
+    from each view -- base.html uses it to build a canonical/OG URL fallback
+    for any page (e.g. the 404 handler) that doesn't explicitly pass one."""
+    return {"site_url": SITE_URL}
 
 
 def _ext_ok(filename, allowed):
@@ -231,7 +275,13 @@ HANDLERS = {
 @app.route("/")
 def index():
     by_category = {c: [t for t in TOOLS if t["category"] == c] for c in CATEGORIES}
-    return render_template("index.html", categories=CATEGORIES, by_category=by_category, badge_class=FORMAT_BADGE_CLASS)
+    return render_template(
+        "index.html",
+        categories=CATEGORIES,
+        by_category=by_category,
+        badge_class=FORMAT_BADGE_CLASS,
+        canonical_url=f"{SITE_URL}/",
+    )
 
 
 @app.route("/tools/<slug>")
@@ -239,10 +289,19 @@ def tool_page(slug):
     tool = TOOLS_BY_SLUG.get(slug)
     if not tool:
         abort(404)
-    return render_template("tool.html", tool=tool)
+    accepted_formats = [ext.strip(".").upper() for ext in tool["accept"].split(",")]
+    related_tools = [TOOLS_BY_SLUG[s] for s in tool.get("related", []) if s in TOOLS_BY_SLUG]
+    return render_template(
+        "tool.html",
+        tool=tool,
+        canonical_url=f"{SITE_URL}/tools/{slug}",
+        accepted_formats=accepted_formats,
+        related_tools=related_tools,
+    )
 
 
 @app.route("/convert/<slug>", methods=["POST"])
+@limiter.limit("10 per minute; 100 per hour")
 def convert(slug):
     tool = TOOLS_BY_SLUG.get(slug)
     handler = HANDLERS.get(slug)
@@ -277,7 +336,54 @@ def convert(slug):
 
 @app.route("/privacy")
 def privacy():
-    return render_template("privacy.html")
+    return render_template("privacy.html", canonical_url=f"{SITE_URL}/privacy")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html", canonical_url=f"{SITE_URL}/about")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html", canonical_url=f"{SITE_URL}/contact")
+
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html", canonical_url=f"{SITE_URL}/terms")
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /convert/\n"
+        f"\nSitemap: {SITE_URL}/sitemap.xml\n"
+    )
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    # Static pages plus every tool page, generated from the same TOOLS list
+    # that drives the homepage grid, so a new tool is picked up automatically.
+    # No <lastmod> is included -- it's optional per the sitemap protocol, and
+    # this app has no reliable per-page "last changed" date to report rather
+    # than guess one.
+    urls = [
+        f"{SITE_URL}/", f"{SITE_URL}/privacy", f"{SITE_URL}/about",
+        f"{SITE_URL}/contact", f"{SITE_URL}/terms",
+    ]
+    urls += [f"{SITE_URL}/tools/{t['slug']}" for t in TOOLS]
+
+    body = ['<?xml version="1.0" encoding="UTF-8"?>']
+    body.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for u in urls:
+        body.append(f"  <url><loc>{u}</loc></url>")
+    body.append("</urlset>")
+    return Response("\n".join(body), mimetype="application/xml")
 
 
 @app.errorhandler(404)
@@ -288,6 +394,11 @@ def not_found(e):
 @app.errorhandler(413)
 def too_large(e):
     return jsonify({"error": "File is too large. Please upload a smaller file."}), 413
+
+
+@app.errorhandler(429)
+def rate_limited(e):
+    return jsonify({"error": "Too many requests -- please wait a moment and try again."}), 429
 
 
 @app.errorhandler(500)
