@@ -360,6 +360,32 @@ body {
   color: var(--color-text-muted);
 }
 .ad-slot--tool { margin: 20px 0 28px; min-height: 90px; }
+.ad-slot--top { margin: 20px 0 8px; }
+
+/* Vertical rail ("skyscraper") ad slots -- flank the hero + first banner-ad
+   zone on wide desktop screens only. The content column tops out at 1120px
+   (see .wrap), so a 160px rail with real breathing room only actually fits
+   once the viewport is comfortably wider than that -- below the breakpoint
+   there simply isn't room, so these are hidden outright rather than shrunk
+   or overlapped onto the tool UI. .hero-rail-zone is the positioning
+   context; each rail stretches to that zone's full height and scrolls away
+   naturally once the visitor scrolls past the hero, rather than staying
+   pinned down the whole page. */
+.hero-rail-zone { position: relative; }
+.ad-slot--rail {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 24px;
+  width: 160px;
+  margin: 0;
+}
+.ad-slot--rail-left { left: 24px; }
+.ad-slot--rail-right { right: 24px; }
+
+@media (min-width: 1600px) {
+  .ad-slot--rail { display: flex; }
+}
 
 /* FAQ section */
 .faq-section { padding: 8px 0 56px; }

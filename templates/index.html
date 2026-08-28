@@ -1,5 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="hero-rail-zone">
+  <div class="ad-slot ad-slot--rail ad-slot--rail-left" aria-label="Advertisement">
+    <span class="ad-slot-label">Advertisement</span>
+    <!-- Vertical rail ad slot. Shown only on wide desktop viewports (see the
+         min-width media query in style.css) -- there is no room for a side
+         rail once the browser window narrows, so it is hidden entirely
+         below that breakpoint rather than shrunk or stacked. Stretches to
+         match the height of this hero+ad zone and scrolls away naturally
+         once the visitor scrolls past it. Activate the same way as the
+         other ad slots once a real AdSense publisher ID exists. -->
+  </div>
+  <div class="ad-slot ad-slot--rail ad-slot--rail-right" aria-label="Advertisement">
+    <span class="ad-slot-label">Advertisement</span>
+  </div>
+
+  <div class="wrap">
+    <div class="ad-slot ad-slot--banner ad-slot--top" aria-label="Advertisement">
+      <span class="ad-slot-label">Advertisement</span>
+      <!-- Top-of-page ad slot, above the headline and below the header/nav
+           bar. Kept as its own bordered, clearly-labeled card so it is
+           never mistaken for part of the nav above it. -->
+    </div>
+  </div>
+
 <section class="hero">
   <div class="wrap">
     <h1>Convert files. Fast, free, private.</h1>
@@ -48,6 +72,7 @@
     -->
   </div>
 </div>
+</div><!-- /.hero-rail-zone -->
 
 <section class="how-it-works" id="how-it-works">
   <div class="wrap">
