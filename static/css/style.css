@@ -365,20 +365,29 @@ body {
 
 /* "Flash" attention effect on the whole board, per request. The board's
    own fill stays solid brand purple at all times (never changes color) --
-   what pulses is a soft gold (the logo's own accent color) glow ring
-   around it, so the box always satisfies "background = KK's color" while
-   still visibly flashing. Kept slow (1.8s) and low-contrast enough to stay
-   well under the ~3-flashes/second photosensitive-seizure threshold, and
-   switched off for anyone with prefers-reduced-motion set, matching the
-   same accessibility rule as the earlier logo-pulse version it replaces. */
+   what pulses is a soft gold (the logo's own accent color) glow, so the
+   box always satisfies "background = KK's color" while still visibly
+   flashing. Strengthened per feedback that the original single, tight
+   6px ring was too subtle to read as a "flash": now a bright inner ring
+   plus a wider, softer outer bloom, with a very slight scale pop (a
+   transform, so it never shifts surrounding layout). Kept at a 1.6s cycle
+   (~0.6 flashes/second) -- clearly readable as pulsing while staying well
+   under the ~3-flashes/second photosensitive-seizure threshold -- and
+   switched off for anyone with prefers-reduced-motion set. */
 @media (prefers-reduced-motion: no-preference) {
   .ad-slot {
-    animation: ad-slot-flash 1.8s ease-in-out infinite;
+    animation: ad-slot-flash 1.6s ease-in-out infinite;
   }
 }
 @keyframes ad-slot-flash {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 167, 44, 0); }
-  50% { box-shadow: 0 0 0 6px rgba(212, 167, 44, 0.4); }
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 167, 44, 0), 0 0 0 0 rgba(212, 167, 44, 0);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(212, 167, 44, 0.8), 0 0 26px 10px rgba(212, 167, 44, 0.5);
+    transform: scale(1.015);
+  }
 }
 
 /* Vertical rail ("skyscraper") ad slots -- flank the hero + first banner-ad
