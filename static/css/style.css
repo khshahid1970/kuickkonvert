@@ -92,6 +92,28 @@ body {
   white-space: nowrap;
 }
 .site-nav a:hover { color: var(--color-primary); }
+
+/* Nav tab background chips -- added 2026-08-29. The header nav tabs
+   (Documents/Images/PDF Tools/How it works/FAQ/About/Contact) were plain
+   text with no background, so the shimmer-sweep animation chosen for "Nav
+   Tabs & buttons" had nothing to sweep across and was effectively
+   invisible on them (it was only wired onto the .nav-cta button). Giving
+   each tab a light tint "chip" (the existing --color-primary-tint color,
+   already used elsewhere for badges, so this stays inside the established
+   palette) gives the shimmer a surface to travel over. .nav-cta is
+   excluded via :not() -- it keeps its own solid-purple background/shimmer
+   defined below, untouched. */
+.site-nav a:not(.nav-cta) {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-primary-tint);
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.site-nav a:not(.nav-cta):hover {
+  background: var(--color-accent-tint);
+}
 .nav-cta {
   position: relative;
   overflow: hidden;
@@ -104,13 +126,19 @@ body {
 .nav-cta:hover { background: var(--color-primary-dark); color: #fff !important; }
 
 /* Shimmer sweep -- chosen 2026-08-29 from the animation-options demo (option
-   B2) for the header CTA and the tool-page "Convert" button (see
-   .btn-primary below): a light diagonal highlight glides across the button
-   face every ~2.6s, like a subtle polish pass. Switched off for anyone with
-   prefers-reduced-motion set, same policy as the ad-slot flash effect. */
+   B2) for "Nav Tabs & buttons": a light diagonal highlight glides across
+   the element face every ~2.6s, like a subtle polish pass. Applies to the
+   header CTA, the tool-page "Convert" button, and (added 2026-08-29 after
+   the initial deploy only wired it onto the CTA button) every header nav
+   tab now that each has a tint-chip background for the highlight to sweep
+   across -- see .site-nav a:not(.nav-cta) above. Switched off for anyone
+   with prefers-reduced-motion set, same policy as the ad-slot flash
+   effect. Nav tabs get a small nth-child stagger so all seven don't shimmer
+   in perfect unison. */
 @media (prefers-reduced-motion: no-preference) {
   .nav-cta::after,
-  .btn-primary::after {
+  .btn-primary::after,
+  .site-nav a:not(.nav-cta)::after {
     content: "";
     position: absolute;
     top: 0; left: -60%;
@@ -118,6 +146,13 @@ body {
     background: linear-gradient(115deg, transparent, rgba(255,255,255,0.55), transparent);
     animation: btn-shimmer 2.6s ease-in-out infinite;
   }
+  .site-nav a:not(.nav-cta):nth-of-type(1)::after { animation-delay: 0s; }
+  .site-nav a:not(.nav-cta):nth-of-type(2)::after { animation-delay: 0.3s; }
+  .site-nav a:not(.nav-cta):nth-of-type(3)::after { animation-delay: 0.6s; }
+  .site-nav a:not(.nav-cta):nth-of-type(4)::after { animation-delay: 0.9s; }
+  .site-nav a:not(.nav-cta):nth-of-type(5)::after { animation-delay: 1.2s; }
+  .site-nav a:not(.nav-cta):nth-of-type(6)::after { animation-delay: 1.5s; }
+  .site-nav a:not(.nav-cta):nth-of-type(7)::after { animation-delay: 1.8s; }
 }
 @keyframes btn-shimmer {
   0% { left: -60%; }
@@ -781,6 +816,7 @@ body {
   }
   .site-nav.nav-open { display: flex; }
   .site-nav a { padding: 8px 0; width: 100%; }
+  .site-nav a:not(.nav-cta) { padding: 10px 14px; margin-bottom: 2px; }
   .nav-cta { margin-top: 4px; }
   .why-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
