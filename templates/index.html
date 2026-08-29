@@ -1,28 +1,108 @@
 {% extends "base.html" %}
-{% block title %}Free Online File Converter -- PDF, Word, Excel & Images | KuickKonvert{% endblock %}
-{% block description %}Convert Word, Excel, PowerPoint, PDF and image files online for free. No sign-up or installation. Fast conversion with automatic file deletion.{% endblock %}
+{% block title %}Convert PDF, Word, Excel & Images Free | KuickKonvert{% endblock %}
+{% block description %}Convert Word, Excel, PowerPoint, PDF & images online for free. No sign-up required. Fast, secure conversions with automatic file deletion.{% endblock %}
+{% block structured_data %}
+<!-- FAQPage structured data -- mirrors the real FAQ content in the #faq
+     section below verbatim, so it can never drift out of sync with what a
+     visitor actually sees on the page. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is KuickKonvert really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per conversion. There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you store my files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my file's layout sometimes shift slightly after conversion?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Two common reasons: first, if your original file uses a font we don't have installed, we substitute a metrically-compatible alternative -- close, but not always pixel-identical, so lines can reflow slightly. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a file size limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes -- up to 50MB per file by default, which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. If a very large PDF fails to upload, try our Compress PDF tool first to shrink it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to install anything or create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. You use KuickKonvert directly from your browser -- no software installation, plugins, browser extensions, or sign-up required. It works the same way on desktop, tablet, or mobile, in any modern browser."
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <div class="hero-rail-zone">
-  <div class="ad-slot ad-slot--rail ad-slot--rail-left" aria-label="Advertisement">
-    <span class="ad-slot-label">Advertisement</span>
+  <div class="ad-slot ad-slot--rail ad-slot--rail-left">
     <!-- Vertical rail ad slot. Shown only on wide desktop viewports (see the
          min-width media query in style.css) -- there is no room for a side
          rail once the browser window narrows, so it is hidden entirely
          below that breakpoint rather than shrunk or stacked. Stretches to
          match the height of this hero+ad zone and scrolls away naturally
-         once the visitor scrolls past it. Activate the same way as the
-         other ad slots once a real AdSense publisher ID exists. -->
+         once the visitor scrolls past it.
+         Showing a house message (KuickKonvert's own positioning) rather
+         than "Advertisement" while no real AdSense ad is live yet -- see
+         the .ad-slot-house comment in style.css for exactly how to swap
+         this back to a real ad + aria-label="Advertisement" once approved. -->
+    <div class="ad-slot-house">
+      <span class="ad-slot-house-line">Fast.</span>
+      <span class="ad-slot-house-line">Simple.</span>
+      <span class="ad-slot-house-line">Secure.</span>
+      <span class="ad-slot-house-line">No Credit Card.</span>
+    </div>
   </div>
-  <div class="ad-slot ad-slot--rail ad-slot--rail-right" aria-label="Advertisement">
-    <span class="ad-slot-label">Advertisement</span>
+  <div class="ad-slot ad-slot--rail ad-slot--rail-right">
+    <div class="ad-slot-house">
+      <span class="ad-slot-house-line">Your Files.</span>
+      <span class="ad-slot-house-line">Your Privacy.</span>
+      <span class="ad-slot-house-line">Your Freedom.</span>
+      <span class="ad-slot-house-line">No Sign-Up.</span>
+    </div>
   </div>
 
   <div class="wrap">
-    <div class="ad-slot ad-slot--banner ad-slot--top" aria-label="Advertisement">
-      <span class="ad-slot-label">Advertisement</span>
+    <div class="ad-slot ad-slot--banner ad-slot--top">
       <!-- Top-of-page ad slot, above the headline and below the header/nav
-           bar. Kept as its own bordered, clearly-labeled card so it is
-           never mistaken for part of the nav above it. -->
+           bar. Kept as its own bordered card so it is never mistaken for
+           part of the nav above it.
+           House message shown while no real AdSense ad is live -- see the
+           .ad-slot-house comment in style.css before swapping this for a
+           real <ins class="adsbygoogle"> unit once approved. -->
+      <div class="ad-slot-house">
+        <span class="ad-slot-house-line ad-slot-house-line--main">100% Free. No Sign-Up. No Credit Card. Just Convert.</span>
+        <span class="ad-slot-house-line ad-slot-house-line--sub">Fast, secure, and simple &mdash; with no trials, subscriptions, or hidden costs.</span>
+      </div>
     </div>
   </div>
 
@@ -61,18 +141,25 @@
 </section>
 
 <div class="wrap">
-  <div class="ad-slot ad-slot--banner" aria-label="Advertisement">
-    <span class="ad-slot-label">Advertisement</span>
+  <div class="ad-slot ad-slot--banner">
     <!-- Reserved ad space. Deliberately placed here -- well below the hero
          and well above any Upload/Convert/Download control -- so an ad can
          never be mistaken for site navigation or a download link (a real
-         AdSense policy risk on a tool site like this one). Once approved
-         for Google AdSense, replace this comment with the real ad unit
-         snippet from your AdSense account (the same applies to the top
-         and tool-page ad slots), e.g.:
+         AdSense policy risk on a tool site like this one).
+         House message shown while no real AdSense ad is live. Once
+         approved for Google AdSense: delete the .ad-slot-house div below,
+         restore <span class="ad-slot-label">Advertisement</span> and
+         aria-label="Advertisement" on this div (matching the pattern in
+         style.css's .ad-slot-house comment), then insert the real ad unit
+         snippet from your AdSense account (the same applies to the top,
+         rail, and tool-page ad slots), e.g.:
          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     -->
+    <div class="ad-slot-house">
+      <span class="ad-slot-house-line ad-slot-house-line--main">Free to Convert. Free to Trust. No Catch.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--sub">No sign-up, no subscription, no credit card &mdash; every time you use it.</span>
+    </div>
   </div>
 </div>
 </div><!-- /.hero-rail-zone -->

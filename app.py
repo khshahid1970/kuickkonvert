@@ -10,6 +10,7 @@ import zipfile
 from flask import (
     Flask, render_template, request, send_file, abort, jsonify, url_for, Response
 )
+from markupsafe import Markup
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -30,6 +31,30 @@ from converters.pdf_tools import (
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
+
+# --- HTTP Strict Transport Security ---------------------------------------
+# Tells browsers that have already loaded this site over HTTPS to refuse any
+# future HTTP connection to it for the given period, instead upgrading
+# in-browser -- closing the window an attacker gets on a stray HTTP link or a
+# misconfigured redirect. The site already forces HTTPS at the host level, so
+# this only hardens what real visitors' browsers do with that guarantee; it
+# does not change how the app itself serves requests.
+#
+# max-age is 6 months (15768000s). includeSubDomains is intentionally left
+# off -- it would also force HTTPS on any subdomain (e.g. a future
+# mail.kuickkonvert.com or a status page) whether or not that subdomain is
+# ready for it, which is why it is treated separately from the base header
+# rather than turned on automatically. preload is deliberately not set: HSTS
+# preload lists are effectively permanent (removal takes months across
+# browser vendors) and are a separate, later decision, not a default.
+@app.after_request
+def _set_hsts_header(response):
+    if request.is_secure or request.headers.get("X-Forwarded-Proto", "") == "https":
+        response.headers.setdefault(
+            "Strict-Transport-Security", "max-age=15768000"
+        )
+    return response
 
 # --- Rate limiting / abuse protection -------------------------------------
 # Anonymous, no-login uploads are an obvious target for scripted abuse (mass
@@ -61,6 +86,27 @@ limiter = Limiter(
     default_limits=["120 per minute", "2000 per day"],
     storage_uri=os.environ.get("RATE_LIMIT_STORAGE_URI", "memory://"),
 )
+
+
+@app.template_global()
+def obfuscated_mailto(email, label=None):
+    """Renders a ready-to-use `<a href="mailto:...">label</a>` tag with both
+    the href and the visible text written out as numeric HTML character
+    entities (e.g. "a" -> "&#97;"). Browsers and screen readers decode these
+    transparently, so the link looks and behaves exactly like a normal
+    mailto link to a real visitor -- but the address never appears in the
+    page's HTML source as consecutive plain-text characters, which is what
+    the simple regex-based address harvesters that scrape plaintext mailto
+    links look for. This is a standard, low-effort mitigation, not a claim
+    of protection against a scraper that executes real JavaScript against
+    the rendered DOM.
+    """
+    label = label or email
+
+    def _entities(s):
+        return "".join(f"&#{ord(ch)};" for ch in s)
+
+    return Markup(f'<a href="mailto:{_entities(email)}">{_entities(label)}</a>')
 
 
 @app.context_processor
@@ -362,6 +408,17 @@ def robots_txt():
         "Disallow: /convert/\n"
         f"\nSitemap: {SITE_URL}/sitemap.xml\n"
     )
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/ads.txt")
+def ads_txt():
+    # Required by Google AdSense so ad exchanges can confirm KuickKonvert is
+    # an authorized seller of its own ad inventory. Format and the trailing
+    # certification ID (f08c47fec0942fa0) are Google's fixed standard for
+    # every AdSense publisher -- verified against Google's own AdSense Help
+    # documentation on 2026-08-29, not something specific to this site.
+    body = "google.com, pub-2468332370767807, DIRECT, f08c47fec0942fa0\n"
     return Response(body, mimetype="text/plain")
 
 

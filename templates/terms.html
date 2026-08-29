@@ -58,7 +58,7 @@
     <p>These Terms are governed by the laws of Pakistan, without regard to conflict-of-law principles, except where a user's local mandatory consumer-protection law provides otherwise. As with the Privacy notice, this section should be confirmed with legal counsel before the Terms are treated as final, particularly for visitors outside Pakistan.</p>
 
     <h2>10. Contact</h2>
-    <p>Questions about these Terms can be sent to <a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a>, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+    <p>Questions about these Terms can be sent to {{ obfuscated_mailto('info@kuickkonvert.com') }}, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
   </div>
 </section>
 {% endblock %}

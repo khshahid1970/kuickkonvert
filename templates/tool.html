@@ -27,12 +27,17 @@
     <h1>{{ tool.name }}</h1>
     <p class="tool-page-desc">{{ tool.intro }}</p>
 
-    <div class="ad-slot ad-slot--tool" aria-label="Advertisement">
-      <span class="ad-slot-label">Advertisement</span>
+    <div class="ad-slot ad-slot--tool">
       <!-- Deliberately placed above the form, clearly separated from the
            dropzone, Convert button, and any download result -- never
-           adjacent to a functional control on this page. See index.html
-           for how to activate this once an AdSense publisher ID exists. -->
+           adjacent to a functional control on this page.
+           House message shown while no real AdSense ad is live -- see the
+           .ad-slot-house comment in style.css, and the matching comment in
+           index.html, for exactly how to swap this for a real ad once
+           approved. -->
+      <div class="ad-slot-house">
+        <span class="ad-slot-house-line ad-slot-house-line--main">100% Free. No Sign-Up. No Credit Card. Just Convert.</span>
+      </div>
     </div>
 
     <form id="convert-form"

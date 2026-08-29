@@ -93,6 +93,8 @@ body {
 }
 .site-nav a:hover { color: var(--color-primary); }
 .nav-cta {
+  position: relative;
+  overflow: hidden;
   background: var(--color-primary);
   color: #fff !important;
   padding: 8px 16px;
@@ -100,6 +102,27 @@ body {
   font-weight: 600 !important;
 }
 .nav-cta:hover { background: var(--color-primary-dark); color: #fff !important; }
+
+/* Shimmer sweep -- chosen 2026-08-29 from the animation-options demo (option
+   B2) for the header CTA and the tool-page "Convert" button (see
+   .btn-primary below): a light diagonal highlight glides across the button
+   face every ~2.6s, like a subtle polish pass. Switched off for anyone with
+   prefers-reduced-motion set, same policy as the ad-slot flash effect. */
+@media (prefers-reduced-motion: no-preference) {
+  .nav-cta::after,
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -60%;
+    width: 40%; height: 100%;
+    background: linear-gradient(115deg, transparent, rgba(255,255,255,0.55), transparent);
+    animation: btn-shimmer 2.6s ease-in-out infinite;
+  }
+}
+@keyframes btn-shimmer {
+  0% { left: -60%; }
+  35%, 100% { left: 130%; }
+}
 
 .nav-toggle {
   display: none;
@@ -277,10 +300,15 @@ body {
 }
 .badge-doc { background: #2b579a; }
 .badge-xls { background: #1d7a46; }
-.badge-ppt { background: #d24726; }
+/* .badge-ppt and .badge-png were darkened slightly from their original
+   shades (#d24726 -> #ce4625, #159c8f -> #128378) to clear the WCAG AA
+   4.5:1 text-contrast minimum against the white badge text -- confirmed via
+   PageSpeed Insights accessibility audit on 2026-08-29 (was 4.50:1 and
+   3.40:1, now 4.66:1 and 4.61:1). Same hue, barely visible change. */
+.badge-ppt { background: #ce4625; }
 .badge-pdf { background: #e2231a; }
 .badge-jpg { background: #8e44ad; }
-.badge-png { background: #159c8f; }
+.badge-png { background: #128378; }
 
 .tool-card-name { font-weight: 600; font-size: 15px; }
 .tool-card-desc { font-size: 13px; color: var(--color-text-muted); }
@@ -360,6 +388,36 @@ body {
   text-transform: uppercase;
   color: #ffffff;
 }
+
+/* House message -- shown in these slots ONLY while there is no live
+   AdSense ad to display (account created 2026-08-29, currently under
+   Google's review). Deliberately does NOT use the word "Advertisement":
+   that label should only ever describe real, paid third-party ad content,
+   never KuickKonvert's own promotional text. Once AdSense is approved and
+   a real <ins class="adsbygoogle"> unit is dropped into one of these
+   slots (see the existing HTML comments in index.html / tool.html for
+   exactly where), remove that slot's .ad-slot-house block and restore its
+   <span class="ad-slot-label">Advertisement</span> + aria-label, matching
+   the pattern still used for that swap-in today. */
+.ad-slot-house {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 20px;
+  text-align: center;
+}
+.ad-slot-house-line {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.ad-slot-house-line--main { font-size: 15px; font-weight: 700; }
+.ad-slot-house-line--sub { font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.88); }
+.ad-slot--rail .ad-slot-house { gap: 12px; }
+.ad-slot--rail .ad-slot-house-line { font-size: 12px; }
 .ad-slot--tool { margin: 20px 0 28px; min-height: 90px; }
 .ad-slot--top { margin: 20px 0 8px; }
 
@@ -560,12 +618,15 @@ body {
   text-decoration: none;
 }
 .btn-primary {
+  position: relative;
+  overflow: hidden;
   background: var(--color-primary);
   color: #fff;
   margin-top: 20px;
 }
 .btn-primary:hover:not(:disabled) { background: var(--color-primary-dark); }
 .btn-primary:disabled { background: #cbb6dc; cursor: not-allowed; }
+.btn-primary:disabled::after { display: none; } /* no shimmer while the Convert button isn't clickable yet */
 .btn-secondary {
   background: var(--color-primary-tint);
   color: var(--color-primary-dark);
@@ -663,7 +724,7 @@ body {
   margin: 0;
   font-size: 12px;
 }
-.footer-col h4 {
+.footer-col h3 {
   font-size: 13px;
   color: var(--color-text);
   margin: 0 0 12px;

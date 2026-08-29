@@ -3,12 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google tag (gtag.js) -- Google Analytics 4, property created 2026-08-29. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K0VJLC113K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K0VJLC113K');
+</script>
+
 <title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
 <meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.{% endblock %}">
 <link rel="canonical" href="{{ canonical_url|default(site_url ~ request.path) }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
-<link rel="alternate icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
 
 <!-- Open Graph / Twitter Card -- used when a link to this page is shared on
@@ -36,13 +47,28 @@
   "description": "Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored."
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "KuickKonvert",
+  "url": "{{ site_url }}/",
+  "logo": "{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}"
+}
+</script>
 {% block structured_data %}{% endblock %}
 
-<!-- TODO once approved for Google AdSense: uncomment below and replace
-     ca-pub-XXXXXXXXXXXXXXXX with your real publisher ID, then add a
-     matching /ads.txt file at the domain root (Claude can add this once
-     you have the real ID -- it can't be created from a placeholder). -->
-<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<!-- Google AdSense site-connection script -- publisher ID pub-2468332370767807,
+     account created 2026-08-29, currently under Google's review. This script
+     only lets Google verify/serve on the site; it does not by itself place
+     any ads. The individual ad units below (search "adsbygoogle" in
+     index.html / tool.html) stay commented out until the account is
+     approved and real per-slot ad unit IDs exist -- deliberately not using
+     Auto ads, so the ad placements stay exactly where they were designed
+     (never next to Upload/Convert/Download), matching the policy-safety
+     layout already built into this site. A matching /ads.txt is served at
+     the domain root via the /ads.txt route in app.py. -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script>
 </head>
 <body>
 <header class="site-header">
@@ -82,18 +108,22 @@
           <span class="brand-name">Kuick<strong>Konvert</strong></span>
         </a>
         <p class="footer-tagline">Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, nothing stored.</p>
-        <p class="footer-credit">A production of Shahid Iqbal &middot; <a href="mailto:info@kuickkonvert.com">info@kuickkonvert.com</a></p>
+        <p class="footer-credit">A production of Shahid Iqbal &middot; {{ obfuscated_mailto('info@kuickkonvert.com') }}</p>
       </div>
       <div class="footer-col">
-        <h4>Tools</h4>
+        <h3>Tools</h3>
         <ul>
-          <li><a href="{{ url_for('index') }}#documents">Document conversion</a></li>
-          <li><a href="{{ url_for('index') }}#images">Image conversion</a></li>
-          <li><a href="{{ url_for('index') }}#pdf-tools">PDF tools</a></li>
+          <li><a href="{{ url_for('tool_page', slug='word-to-pdf') }}">Word to PDF</a></li>
+          <li><a href="{{ url_for('tool_page', slug='pdf-to-word') }}">PDF to Word</a></li>
+          <li><a href="{{ url_for('tool_page', slug='jpg-to-pdf') }}">JPG to PDF</a></li>
+          <li><a href="{{ url_for('tool_page', slug='pdf-to-jpg') }}">PDF to JPG</a></li>
+          <li><a href="{{ url_for('tool_page', slug='merge-pdf') }}">Merge PDF</a></li>
+          <li><a href="{{ url_for('tool_page', slug='compress-pdf') }}">Compress PDF</a></li>
+          <li><a href="{{ url_for('index') }}#documents">All conversion tools</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h3>Company</h3>
         <ul>
           <li><a href="{{ url_for('about') }}">About</a></li>
           <li><a href="{{ url_for('index') }}#how-it-works">How it works</a></li>
