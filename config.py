@@ -266,6 +266,8 @@ TOOL_CONTENT = {
         "faq": [
             ("Will my columns get cut off?", "Columns are automatically resized to fit, and very wide sheets switch to landscape orientation automatically to keep everything on the page."),
             ("Are my formulas or macros preserved?", "The PDF shows the calculated values currently in your sheet -- formulas and macros themselves aren't carried into the PDF, since PDF is a fixed, non-editable format."),
+            ("Can I convert XLSX to PDF online without installing Excel?", "Yes -- this tool runs entirely in your browser, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
+            ("Is this free, and is there a file size limit?", "It's free with no sign-up. The only limit is a 50MB file size cap, which covers the vast majority of spreadsheets."),
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
         "seo_title": "Excel to PDF Converter -- XLS & XLSX Online | KuickKonvert",
@@ -282,6 +284,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Will colors and cell formatting carry over?", "No -- only the data and its column layout are extracted; visual styling isn't preserved."),
             ("What if my PDF isn't a clear table?", "The tool works best on genuinely tabular content. Text outside a detected table is still included alongside it, but results are less structured for free-form pages."),
+            ("Is this PDF to Excel converter really free?", "Yes -- no sign-up, subscription, or watermark on the output file. The only limit is the 50MB upload cap."),
         ],
         "related": ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
         "seo_title": "PDF to Excel Converter -- Extract Tables | KuickKonvert",
@@ -330,6 +333,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I reorder the images after adding them?", "Not directly -- images are combined in the order you add them. Remove the files and re-add them in your preferred order if needed."),
             ("Is there a limit to how many images I can combine?", "There's no fixed count limit, but the combined upload must stay under the 50MB file size limit."),
+            ("Is converting JPG to PDF online free?", "Yes -- there's no charge, sign-up, or watermark, and the whole process happens in your browser."),
         ],
         "related": ["png-to-pdf", "pdf-to-jpg", "merge-pdf"],
         "seo_title": "JPG to PDF Converter -- Images to PDF | KuickKonvert",
@@ -346,6 +350,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What happens to transparent backgrounds?", "PDF pages don't support transparency, so any transparent area in your PNG is filled in with a solid background in the output."),
             ("Can I mix JPG and PNG files in one PDF?", "Use this tool for PNGs and JPG to PDF for JPGs -- each tool accepts one image type at a time to keep the upload validation simple."),
+            ("Can I convert PNG to PDF online for free?", "Yes -- this tool is completely free and works directly in your browser, with no account or software installation needed."),
         ],
         "related": ["jpg-to-pdf", "pdf-to-png", "merge-pdf"],
         "seo_title": "PNG to PDF Converter -- Images to PDF | KuickKonvert",
@@ -362,6 +367,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What resolution are the images?", "Pages are rendered at 300 DPI, which is sharp enough for most printing and screen use."),
             ("What do I get for a multi-page PDF?", "A ZIP file containing one JPG image per page."),
+            ("Is converting PDF to JPG online free?", "Yes -- there's no charge, sign-up, or limit beyond the 50MB upload cap, and the tool works entirely in your browser."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter -- PDF Pages to JPG | KuickKonvert",
@@ -416,7 +422,7 @@ TOOL_CONTENT = {
         "meta_description": "Split a PDF into separate pages online for free. Download individual PDF pages in a ZIP file with no sign-up.",
     },
     "compress-pdf": {
-        "intro": "Compress PDF reduces a PDF's file size while keeping it readable -- useful when a file is too large to email or upload, or you just want a smaller version to store.",
+        "intro": "Compress PDF reduces a PDF's file size online, for free, while keeping it readable -- useful when a file is too large to email or upload, or you just want a smaller version to store.",
         "good_to_know": "Three compression levels are available: Screen (smallest file, most aggressive image downsampling), Ebook (a balanced default), and Printer (best quality, least size reduction). Compression mainly shrinks embedded images -- a text-only PDF will compress less dramatically than an image-heavy one.",
         "use_cases": [
             "Shrinking a scanned document so it fits under an email attachment limit.",
@@ -426,9 +432,10 @@ TOOL_CONTENT = {
         "faq": [
             ("Which compression level should I choose?", "Ebook is a good default balance. Choose Screen for the smallest possible file if quality matters less, or Printer if quality matters most."),
             ("Will text quality be affected?", "Text stays sharp at every level -- compression mainly targets embedded images, so an image-heavy PDF will shrink more than a text-only one."),
+            ("Can I reduce a PDF's file size online for free?", "Yes -- Compress PDF is free to use with no sign-up. Choose a compression level and the file size is reduced automatically, right in your browser."),
         ],
         "related": ["merge-pdf", "split-pdf", "pdf-to-jpg"],
-        "seo_title": "Compress PDF Online -- Reduce File Size | KuickKonvert",
+        "seo_title": "Compress PDF Online -- Reduce File Size Free | KuickKonvert",
         "meta_description": "Compress PDF files online for free and reduce file size while keeping documents readable. No sign-up or installation.",
     },
     "rotate-pdf": {
@@ -442,6 +449,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I rotate individual pages differently?", "No -- the same rotation is applied to every page. Use Split PDF first if only some pages need rotating, then merge them back afterward."),
             ("Does rotating affect the file's quality?", "No -- rotation only changes page orientation; it doesn't re-encode or degrade the page content."),
+            ("Can I rotate a PDF online without installing software?", "Yes -- the whole process happens in your browser. Upload the file, choose a rotation angle, and download the corrected PDF; nothing is installed on your device."),
         ],
         "related": ["split-pdf", "merge-pdf", "compress-pdf"],
         "seo_title": "Rotate PDF Pages Online Free | KuickKonvert",
@@ -474,6 +482,8 @@ TOOL_CONTENT = {
         "faq": [
             ("What encryption does this use?", "Standard 128-bit PDF encryption, applied with the password you choose."),
             ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
+            ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up, subscription, or hidden limits beyond the 50MB file size cap."),
+            ("Do I need to install anything?", "No -- this works entirely in your browser. Upload your PDF, choose a password, and download the protected file; nothing is installed on your device."),
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
