@@ -58,17 +58,41 @@
 </script>
 {% block structured_data %}{% endblock %}
 
-<!-- Google AdSense site-connection script -- publisher ID pub-2468332370767807,
-     account created 2026-08-29, currently under Google's review. This script
-     only lets Google verify/serve on the site; it does not by itself place
-     any ads. The individual ad units below (search "adsbygoogle" in
-     index.html / tool.html) stay commented out until the account is
-     approved and real per-slot ad unit IDs exist -- deliberately not using
-     Auto ads, so the ad placements stay exactly where they were designed
-     (never next to Upload/Convert/Download), matching the policy-safety
-     layout already built into this site. A matching /ads.txt is served at
-     the domain root via the /ads.txt route in app.py. -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script>
+<!-- Google AdSense site connection -- publisher ID pub-2468332370767807,
+     account created 2026-08-29, currently under Google's review.
+
+     CHANGED 2026-08-31: switched from the JS <script> connector to Google's
+     verification-only meta tag. Both are documented, equally valid ways to
+     "connect" a site for AdSense (see AdSense Help > "Add your site to
+     AdSense") -- the meta tag confirms site ownership/publisher ID exactly
+     like the script did, but loads NO JavaScript at all, so it cannot
+     execute anything, serve a test/review ad, or affect page rendering.
+     Reason: PageSpeed Insights was showing a very poor Cumulative Layout
+     Shift score (~1.0, "poor") on both mobile and desktop against the live
+     v6 site, and this was the leading suspect -- Google's own AdSense help
+     content states ads (including blank/test ads) may be shown on a site
+     while it's under review, which is a well-known real-world cause of
+     exactly this kind of CLS signature, and the bare script-tag connector
+     (no explicit per-slot push() call) is Google's standard Auto-ads
+     enablement form. Swapping to the meta tag removes that JS entirely
+     while keeping the site "connected" for the pending review.
+
+     If PageSpeed's CLS score does NOT improve after this deploys, this was
+     not the cause -- put the <script> tag back (see kuickkonvert_build.md
+     for the exact prior version) and keep investigating.
+
+     Once the account is approved and you're ready to place real, manually
+     positioned ad units (search "adsbygoogle" in index.html / tool.html for
+     the commented-out slots -- deliberately not using Auto ads, so ad
+     placements stay exactly where designed, never next to
+     Upload/Convert/Download), restore the <script> connector alongside
+     those <ins> units, each with its real, final size reserved in CSS
+     before it goes live, and re-test PageSpeed again before treating that
+     as done. A matching /ads.txt is served at the domain root via the
+     /ads.txt route in app.py -- unaffected by this change. -->
+<meta name="google-adsense-account" content="ca-pub-2468332370767807">
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script> -->
+<!-- ^ restore this <script> line (removing this comment wrapper) instead of the meta tag above when placing real ad units after approval. -->
 </head>
 <body>
 <header class="site-header">
