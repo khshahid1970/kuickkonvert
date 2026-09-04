@@ -5,10 +5,11 @@ moment the response has been sent (see converters.utils.job_workspace).
 Nothing uploaded here is stored permanently. See PRIVACY_NOTICE.md.
 """
 import os
+import secrets
 import zipfile
 
 from flask import (
-    Flask, render_template, request, send_file, abort, jsonify, url_for, Response
+    Flask, render_template, request, send_file, abort, jsonify, url_for, Response, g
 )
 from markupsafe import Markup
 from werkzeug.utils import secure_filename
@@ -33,27 +34,100 @@ app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 
-# --- HTTP Strict Transport Security ---------------------------------------
-# Tells browsers that have already loaded this site over HTTPS to refuse any
-# future HTTP connection to it for the given period, instead upgrading
-# in-browser -- closing the window an attacker gets on a stray HTTP link or a
-# misconfigured redirect. The site already forces HTTPS at the host level, so
-# this only hardens what real visitors' browsers do with that guarantee; it
-# does not change how the app itself serves requests.
+# --- Per-request CSP nonce -------------------------------------------------
+# One random, unguessable value generated fresh for every request and used to
+# allow exactly one specific inline <script> block (the Google Analytics
+# gtag() init snippet in base.html) through the Content-Security-Policy below,
+# without resorting to the much weaker 'unsafe-inline' (which would let ANY
+# inline script run, including one injected by an attacker via a bug
+# elsewhere on the page). A nonce is preferred here over a CSP hash of the
+# script's exact text because a hash silently breaks (fails closed -- the
+# script just stops running, no error shown to visitors) the moment anyone
+# edits so much as a character of that inline block and forgets to
+# regenerate the hash; a nonce keeps working no matter what the script says,
+# since only base.html and this header need to agree on the nonce value, not
+# on the script's content.
+@app.before_request
+def _set_csp_nonce():
+    g.csp_nonce = secrets.token_urlsafe(16)
+
+
+# --- Security headers -------------------------------------------------------
+# Adds the standard baseline of browser-enforced hardening headers that were
+# missing as of the 2026-09-04 external audit (securityheaders.com: grade D;
+# Mozilla/MDN HTTP Observatory: 45/100, grade C-) -- only
+# Strict-Transport-Security was previously set. TLS/certificate configuration
+# itself was already excellent (SSL Labs: A+) and is untouched by this
+# change; these headers hardens what the BROWSER does with content this app
+# already serves, they do not change how the app serves it.
 #
-# max-age is 6 months (15768000s). includeSubDomains is intentionally left
-# off -- it would also force HTTPS on any subdomain (e.g. a future
-# mail.kuickkonvert.com or a status page) whether or not that subdomain is
-# ready for it, which is why it is treated separately from the base header
-# rather than turned on automatically. preload is deliberately not set: HSTS
-# preload lists are effectively permanent (removal takes months across
-# browser vendors) and are a separate, later decision, not a default.
+# Content-Security-Policy is scoped to exactly what this site actually loads
+# (verified directly against every template, 2026-09-04): its own
+# same-origin CSS/JS/images, Google Tag Manager's gtag.js loader plus the one
+# inline init snippet (allowed via the per-request nonce above), and
+# Google Analytics' own beacon/collection endpoints. There is currently no
+# other third-party script, font, iframe, or CDN asset anywhere in the
+# templates. The AdSense JS connector is intentionally still commented out
+# (see the long comment above the AdSense meta tag in base.html -- it was
+# swapped for a script-free verification meta tag to fix a severe CLS
+# regression while the account is under review) -- so no AdSense domains are
+# allowed yet. When that script is restored after AdSense approval, add
+# https://pagead2.googlesyndication.com and https://googleads.g.doubleclick.net
+# (and any other domain Google's own AdSense integration instructions name at
+# that time -- these do shift over time, so don't assume this list is still
+# current) to script-src, frame-src, and connect-src below, and give the
+# real <ins class="adsbygoogle"> tag a nonce or move it to a CSP-exempt path,
+# the same way the analytics inline script is handled here. Re-run a header
+# scan after any CSP change -- a wrong CSP fails closed (breaks the feature
+# it was blocking), it does not fail open.
+_CSP_DIRECTIVES = (
+    "default-src 'self'; "
+    "script-src 'self' https://www.googletagmanager.com 'nonce-{nonce}'; "
+    "style-src 'self'; "
+    "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; "
+    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com; "
+    "font-src 'self'; "
+    "object-src 'none'; "
+    "base-uri 'self'; "
+    "form-action 'self'; "
+    "frame-ancestors 'self'; "
+    "frame-src 'none'"
+)
+
+
 @app.after_request
-def _set_hsts_header(response):
-    if request.is_secure or request.headers.get("X-Forwarded-Proto", "") == "https":
-        response.headers.setdefault(
-            "Strict-Transport-Security", "max-age=15768000"
-        )
+def _set_security_headers(response):
+    is_https = request.is_secure or request.headers.get("X-Forwarded-Proto", "") == "https"
+    if is_https:
+        # max-age is 6 months (15768000s). includeSubDomains and preload are
+        # intentionally still left off, per the original reasoning: preload
+        # is effectively permanent once submitted (removal takes months
+        # across browser vendors) and is a deliberate later decision, and
+        # includeSubDomains would also force HTTPS on any future subdomain
+        # (e.g. mail.kuickkonvert.com) whether or not it's ready for it.
+        # Revisit once there's a firm reason to lock either in.
+        response.headers.setdefault("Strict-Transport-Security", "max-age=15768000")
+
+    response.headers.setdefault(
+        "Content-Security-Policy",
+        _CSP_DIRECTIVES.format(nonce=g.get("csp_nonce", "")),
+    )
+    # Legacy header kept alongside frame-ancestors above: frame-ancestors is
+    # the modern replacement and is what current browsers actually honor,
+    # but X-Frame-Options is still what a number of external scanners and
+    # older tooling check for specifically, so both are set to the same
+    # same-origin-only policy rather than relying on just one.
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    # Explicitly denies browser features this site has no use for. Extend
+    # this list (rather than deleting entries) if a real feature is ever
+    # added that genuinely needs one of them.
+    response.headers.setdefault(
+        "Permissions-Policy",
+        "camera=(), microphone=(), geolocation=(), payment=(), usb=(), "
+        "magnetometer=(), gyroscope=(), interest-cohort=()",
+    )
     return response
 
 # --- Rate limiting / abuse protection -------------------------------------
@@ -115,6 +189,14 @@ def inject_site_url():
     from each view -- base.html uses it to build a canonical/OG URL fallback
     for any page (e.g. the 404 handler) that doesn't explicitly pass one."""
     return {"site_url": SITE_URL}
+
+
+@app.context_processor
+def inject_csp_nonce():
+    """Makes {{ csp_nonce }} available in every template -- base.html applies
+    it to the one inline <script> the Content-Security-Policy header (see
+    _set_security_headers above) is configured to allow by nonce."""
+    return {"csp_nonce": g.get("csp_nonce", "")}
 
 
 def _ext_ok(filename, allowed):
