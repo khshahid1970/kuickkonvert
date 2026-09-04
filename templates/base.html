@@ -16,22 +16,7 @@
 <title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
 <meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.{% endblock %}">
 <link rel="canonical" href="{{ canonical_url|default(site_url ~ request.path) }}">
-<!-- Non-blocking stylesheet: PageSpeed flagged style.css as render-blocking
-     (roughly 140ms on this 7.6KB file). media="print" tells the browser this
-     link does not apply to normal (screen) rendering, so it does not hold up
-     first paint while it downloads. The nonce'd script below flips the media
-     to "all" only once the file has actually finished loading (the link's own
-     load event), which is what avoids a flash of unstyled content: swapping
-     media immediately, without waiting for load, would not save anything.
-     The noscript fallback keeps the page styled for the rare visitor with
-     JavaScript disabled. -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="print" id="kk-main-css">
-<script nonce="{{ csp_nonce }}">
-  document.getElementById('kk-main-css').addEventListener('load', function () {
-    this.media = 'all';
-  });
-</script>
-<noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></noscript>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
 <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
