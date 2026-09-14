@@ -98,15 +98,14 @@
         </tbody>
       </table>
 
-      <h2>Why use KuickKonvert?</h2>
-      <ul class="why-list">
-        <li>Free to use, with no subscription</li>
-        <li>No registration or account required</li>
-        <li>No software to install</li>
-        <li>Fast -- most files convert in seconds</li>
-        <li>Files are deleted automatically after conversion</li>
-        <li>Works on desktop, tablet, or mobile</li>
+      {% if related_guides %}
+      <h2>Further reading</h2>
+      <ul class="related-guides-list">
+        {% for guide in related_guides %}
+        <li><a href="{{ url_for('guide_page', slug=guide.slug) }}">{{ guide.title }}</a></li>
+        {% endfor %}
       </ul>
+      {% endif %}
 
       <h2>Good to know</h2>
       <p>{{ tool.good_to_know }}</p>

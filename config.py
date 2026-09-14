@@ -510,3 +510,175 @@ MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH_MB", "50")) * 1024 *
 ALLOWED_EXTENSIONS = {
     "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "jpg", "jpeg", "png"
 }
+
+# ---- Guides -----------------------------------------------------------
+# Original, long-form editorial content -- deliberately separate from the
+# 16 tool pages above. Those pages necessarily share a lot of structure
+# (upload box, "How to convert", supported formats, FAQ), which is fine on
+# its own but means the SITE as a whole leaned heavily on one repeated
+# template. This list is the permanent fix for that: a second, independent
+# content type that isn't tied to the tool-page skeleton at all, plus a
+# route (/guides, /guides/<slug>), a sitemap entry, and a "Further reading"
+# link from every related tool page -- all wired up automatically below.
+#
+# To add a new guide: append a dict with slug / title / seo_title /
+# meta_description / dek / published / related_tools / sections, and
+# nothing else needs to change -- it appears on /guides, gets its own page,
+# joins the sitemap, and shows up as "Further reading" on every tool page
+# listed in related_tools.
+#
+# Ground rule, same as TOOL_CONTENT above: every factual/technical claim in
+# a guide must be true of what this site's own converters do (cross-check
+# converters/*.py) or be an independently verifiable fact about the file
+# format itself. Nothing here is invented or aspirational -- an inaccurate
+# "helpful" guide is worse than no guide at all, both for readers and for
+# how Google evaluates the site's content quality.
+GUIDES = [
+    {
+        "slug": "docx-vs-doc",
+        "title": "DOCX vs DOC: What's Actually Different (and When It Matters)",
+        "seo_title": "DOCX vs DOC: The Real Difference Explained | KuickKonvert",
+        "meta_description": "DOC and DOCX both open in Word but aren't the same format underneath. Here's what actually changed, and when the difference affects you.",
+        "dek": "Both open in Word, but DOC and DOCX are built on completely different technology. Here's what that actually changes for you.",
+        "published": "2026-09-14",
+        "related_tools": ["word-to-pdf"],
+        "sections": [
+            {
+                "heading": "Two different formats, one program",
+                "paragraphs": [
+                    "DOC was Microsoft Word's format from Word 97 through Word 2003: a single binary file that only Word itself, or software specifically built to parse that binary structure, could reliably read.",
+                    "DOCX replaced it starting with Word 2007. It isn't a new version of the same format -- it's a completely different approach: a DOCX file is actually a ZIP archive containing a set of XML files (the \"Office Open XML\", or OOXML, standard). Rename any .docx file to .zip and a normal file archiver will open it and show you the XML inside.",
+                ],
+            },
+            {
+                "heading": "Why Microsoft made the switch",
+                "paragraphs": [
+                    "XML-based formats are openly documented, so other software -- Google Docs, LibreOffice, Apple Pages, and the conversion tools on this site included -- can read and write them accurately without reverse-engineering a proprietary binary layout. ZIP/XML-based files also compress well and are less prone to total corruption: damage to one part of the XML often leaves the rest of the document recoverable, which was much harder with the old binary format.",
+                ],
+            },
+            {
+                "heading": "When the difference actually matters to you",
+                "paragraphs": [
+                    "Compatibility with older software. Word 2003 and earlier can't open a .docx file without a separate compatibility pack -- the most common real-world reason someone still needs a plain .doc.",
+                    "File size. A DOCX file is typically smaller than the equivalent DOC file, because the underlying XML compresses well inside the ZIP container.",
+                    "Features. Several newer Word features were introduced alongside the DOCX format and have no clean equivalent in the older DOC structure.",
+                    "For most everyday use -- writing, editing, sharing with someone on a reasonably current version of Word or Google Docs -- the difference is invisible. It mainly surfaces when dealing with an older system, or converting the file to something else, like PDF.",
+                ],
+            },
+            {
+                "heading": "Converting either one to PDF",
+                "paragraphs": [
+                    "Our Word to PDF tool accepts both .doc and .docx and converts either to a fixed-layout PDF that looks the same regardless of which Word version -- or whether Word at all -- the recipient has installed.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "why-pdf-layout-shifts",
+        "title": "Why a PDF's Layout Sometimes Shifts After Conversion (and How to Avoid It)",
+        "seo_title": "Why PDF Layout Shifts After Conversion | KuickKonvert",
+        "meta_description": "Converted a document to PDF and the layout moved slightly? Here's the specific, technical reason why, and how to prevent it.",
+        "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution.",
+        "published": "2026-09-14",
+        "related_tools": ["word-to-pdf", "excel-to-pdf", "ppt-to-pdf"],
+        "sections": [
+            {
+                "heading": "The layout isn't stored as fixed positions -- it's calculated from the font",
+                "paragraphs": [
+                    "A Word or PowerPoint file doesn't store where every letter sits on the page. It stores the text and which font it's set in, and the software calculates line breaks and spacing at render time based on that specific font's actual letter widths.",
+                    "PDF, by contrast, is a fixed-layout format -- once converted, every letter's position is locked in. That conversion step is exactly where a font mismatch becomes visible.",
+                ],
+            },
+            {
+                "heading": "What happens when the exact font isn't available",
+                "paragraphs": [
+                    "Common commercial fonts like Calibri or Cambria are licensed by Microsoft and aren't necessarily installed on the server performing the conversion. Our Office-to-PDF conversions run through LibreOffice, which substitutes a metrically-compatible alternative when the exact font is missing -- Carlito in place of Calibri, Caladea in place of Cambria. These substitutes are specifically engineered to match the original font's character widths, so line breaks and page counts stay the same.",
+                    "What can still shift very slightly is the exact letterform (the visual shape of each character) and, in edge cases, spacing that depends on more than raw character width, such as kerning pairs unique to the original font.",
+                ],
+            },
+            {
+                "heading": "How to avoid it entirely",
+                "paragraphs": [
+                    "Stick to fonts that are genuinely cross-platform and open-licensed if layout precision matters -- Arial, Times New Roman, and the Carlito/Caladea/Liberation family all convert with no substitution needed, because they're already what gets used.",
+                    "If you must use a commercial font and need pixel-perfect fidelity, flatten the text to outlines or images in the original program before converting -- this preserves the exact look at the cost of making the text unselectable.",
+                    "For everyday documents, a font substitution is rarely noticeable and the line breaks stay correct. It's mainly worth planning around for heavily designed documents, like flyers or resumes, with tight, deliberate line breaks.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "pdf-compression-levels-explained",
+        "title": "PDF Compression Explained: Screen vs eBook vs Printer",
+        "seo_title": "PDF Compression Levels Explained | KuickKonvert",
+        "meta_description": "What do the Screen, eBook, and Printer PDF compression levels actually do? A plain-English explanation of what gets smaller, and why.",
+        "dek": "The three standard PDF compression presets aren't arbitrary labels -- each targets a specific balance of file size against image quality.",
+        "published": "2026-09-14",
+        "related_tools": ["compress-pdf"],
+        "sections": [
+            {
+                "heading": "Compression mostly targets images, not text",
+                "paragraphs": [
+                    "Text and vector graphics in a PDF are already stored efficiently, so there's very little to gain by compressing them further. The overwhelming majority of a PDF's file size, especially a scanned document or an image-heavy report, comes from its embedded images. That's what all three compression levels actually act on.",
+                ],
+            },
+            {
+                "heading": "The three levels, and what each one changes",
+                "paragraphs": [
+                    "Screen (smallest file): downsamples images aggressively, to roughly 72 dots per inch -- adequate for viewing on a screen but too low-resolution to print cleanly. Best for a document you only need to email or view digitally.",
+                    "eBook (balanced, the default here): downsamples to roughly 150 dpi, a middle ground that stays legible if printed at normal size while still meaningfully shrinking the file. The right default for most everyday documents.",
+                    "Printer (best quality, largest file): downsamples to roughly 300 dpi, standard print resolution -- image quality is preserved much more closely, at the cost of a smaller size reduction.",
+                ],
+            },
+            {
+                "heading": "Why a text-only PDF barely shrinks",
+                "paragraphs": [
+                    "If your PDF is mostly typed text with no images, none of the three levels will make a dramatic difference -- there simply isn't much image data to downsample. The tool still runs, but don't expect the same size reduction you'd see on a scanned document full of photos.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "jpg-vs-png",
+        "title": "JPG vs PNG: Which to Use When Scanning or Sharing a Document",
+        "seo_title": "JPG vs PNG for Documents: Which Should You Use? | KuickKonvert",
+        "meta_description": "JPG and PNG compress images completely differently. Here's which one is actually right for a scanned document, screenshot, or photo.",
+        "dek": "The two formats solve different problems. Picking the wrong one either bloats your file or blurs your text.",
+        "published": "2026-09-14",
+        "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"],
+        "sections": [
+            {
+                "heading": "The core difference: lossy vs lossless",
+                "paragraphs": [
+                    "JPG uses lossy compression -- it permanently discards some image detail to reach a much smaller file size. The quality loss is subtle on a photograph with lots of color variation and gradients, but shows up as visible blur or blocky artifacts around sharp edges, like text.",
+                    "PNG uses lossless compression -- no image data is discarded, so text and hard edges stay perfectly crisp, but the file is larger, especially for photographic content.",
+                ],
+            },
+            {
+                "heading": "Which to use for what",
+                "paragraphs": [
+                    "Scanned documents, screenshots, or anything with text or sharp lines: PNG. JPG's compression artifacts specifically degrade text edges, which is the one thing you don't want blurry on a document you might need to read later.",
+                    "Photographs -- a picture of a receipt on a table, a photo for a report: JPG is usually the better trade-off. The quality loss is far less noticeable on natural images, and the file size savings are substantial.",
+                    "If in doubt and file size isn't a major constraint, PNG is the safer default for anything you intend to read text from.",
+                ],
+            },
+            {
+                "heading": "Converting either one to PDF",
+                "paragraphs": [
+                    "Both our JPG to PDF and PNG to PDF tools combine one or more images into a single PDF in the order you add them, without re-compressing or altering the image data itself beyond embedding it in the PDF container.",
+                ],
+            },
+        ],
+    },
+]
+
+GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
+
+# Reverse index: tool slug -> the guides that reference it, so tool.html can
+# render a "Further reading" block without every TOOL_CONTENT entry having
+# to separately know which guides exist.
+from collections import defaultdict as _defaultdict
+
+GUIDES_BY_TOOL = _defaultdict(list)
+for _g in GUIDES:
+    for _slug in _g.get("related_tools", []):
+        GUIDES_BY_TOOL[_slug].append(_g)

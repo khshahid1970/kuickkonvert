@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ guide.seo_title }}{% endblock %}
+{% block description %}{{ guide.meta_description }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Guides", "item": "{{ site_url }}/guides"},
+    {"@type": "ListItem", "position": 3, "name": "{{ guide.title }}", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ url_for('guides_index') }}">Guides</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ guide.title }}</span>
+    </nav>
+    <h1>{{ guide.title }}</h1>
+    <p class="tool-page-desc">{{ guide.dek }}</p>
+
+    <section class="tool-info guide-body">
+      {% for section in guide.sections %}
+      <h2>{{ section.heading }}</h2>
+      {% for para in section.paragraphs %}
+      <p>{{ para }}</p>
+      {% endfor %}
+      {% endfor %}
+
+      {% if related_tools %}
+      <h2>Related tools</h2>
+      <ul class="related-tools-list">
+        {% for rt in related_tools %}
+        <li><a href="{{ url_for('tool_page', slug=rt.slug) }}">{{ rt.name }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+  </div>
+</section>
+{% endblock %}

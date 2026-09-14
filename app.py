@@ -18,7 +18,7 @@ from flask_limiter.util import get_remote_address
 
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
-    FORMAT_BADGE_CLASS, SITE_URL,
+    FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
 )
 from converters.utils import job_workspace, safe_name, change_ext
 from converters.office import (
@@ -408,6 +408,7 @@ def index():
         categories=CATEGORIES,
         by_category=by_category,
         badge_class=FORMAT_BADGE_CLASS,
+        guides=GUIDES,
         canonical_url=f"{SITE_URL}/",
     )
 
@@ -419,11 +420,38 @@ def tool_page(slug):
         abort(404)
     accepted_formats = [ext.strip(".").upper() for ext in tool["accept"].split(",")]
     related_tools = [TOOLS_BY_SLUG[s] for s in tool.get("related", []) if s in TOOLS_BY_SLUG]
+    related_guides = GUIDES_BY_TOOL.get(slug, [])
     return render_template(
         "tool.html",
         tool=tool,
         canonical_url=f"{SITE_URL}/tools/{slug}",
         accepted_formats=accepted_formats,
+        related_tools=related_tools,
+        related_guides=related_guides,
+    )
+
+
+@app.route("/guides")
+def guides_index():
+    return render_template(
+        "guides_index.html",
+        guides=GUIDES,
+        canonical_url=f"{SITE_URL}/guides",
+    )
+
+
+@app.route("/guides/<slug>")
+def guide_page(slug):
+    guide = GUIDES_BY_SLUG.get(slug)
+    if not guide:
+        abort(404)
+    related_tools = [
+        TOOLS_BY_SLUG[s] for s in guide.get("related_tools", []) if s in TOOLS_BY_SLUG
+    ]
+    return render_template(
+        "guide.html",
+        guide=guide,
+        canonical_url=f"{SITE_URL}/guides/{slug}",
         related_tools=related_tools,
     )
 
@@ -513,9 +541,10 @@ def sitemap_xml():
     # than guess one.
     urls = [
         f"{SITE_URL}/", f"{SITE_URL}/privacy", f"{SITE_URL}/about",
-        f"{SITE_URL}/contact", f"{SITE_URL}/terms",
+        f"{SITE_URL}/contact", f"{SITE_URL}/terms", f"{SITE_URL}/guides",
     ]
     urls += [f"{SITE_URL}/tools/{t['slug']}" for t in TOOLS]
+    urls += [f"{SITE_URL}/guides/{g['slug']}" for g in GUIDES]
 
     body = ['<?xml version="1.0" encoding="UTF-8"?>']
     body.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')

@@ -597,21 +597,43 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 .format-table th { color: var(--color-text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
-.why-list, .use-case-list, .related-tools-list {
+.why-list, .use-case-list, .related-tools-list, .related-guides-list {
   margin: 0;
   padding-left: 20px;
   color: var(--color-text-muted);
   font-size: 14.5px;
   line-height: 1.8;
 }
-.related-tools-list { list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 10px 20px; }
-.related-tools-list a {
+.related-tools-list, .related-guides-list { list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 10px 20px; }
+.related-tools-list a, .related-guides-list a {
   color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
 }
-.related-tools-list a:hover { text-decoration: underline; }
+.related-tools-list a:hover, .related-guides-list a:hover { text-decoration: underline; }
 .tool-info .faq-list { margin-top: 4px; }
+
+/* Guides index (/guides) */
+.guides-list { list-style: none; margin: 28px 0 0; padding: 0; }
+.guides-list-item { padding: 22px 0; border-bottom: 1px solid var(--color-border); }
+.guides-list-item:first-child { padding-top: 0; }
+.guides-list-item h2 { font-size: 19px; margin: 0 0 6px; }
+.guides-list-item h2 a { color: var(--color-text); text-decoration: none; }
+.guides-list-item h2 a:hover { color: var(--color-primary); text-decoration: underline; }
+.guides-list-item p { color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6; margin: 0; }
+
+/* Homepage guides teaser */
+.guides-teaser { padding: 56px 0; border-top: 1px solid var(--color-border); }
+.guides-teaser-list { list-style: none; margin: 20px 0 16px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.guides-teaser-list a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+}
+.guides-teaser-list a:hover { color: var(--color-primary); text-decoration: underline; }
+.guides-teaser-more { color: var(--color-primary); font-weight: 600; text-decoration: none; font-size: 14.5px; }
+.guides-teaser-more:hover { text-decoration: underline; }
 
 .dropzone {
   border: 2px dashed var(--color-border);

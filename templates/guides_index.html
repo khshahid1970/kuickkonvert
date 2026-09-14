@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Guides -- KuickKonvert{% endblock %}
+{% block description %}Plain-English guides to the file formats and conversion options behind KuickKonvert's tools -- what actually changes, and why.{% endblock %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Guides</span>
+    </nav>
+    <h1>Guides</h1>
+    <p class="tool-page-desc">Plain-English explanations of the file formats and conversion options behind KuickKonvert's tools -- what actually changes, and why.</p>
+
+    <ul class="guides-list">
+      {% for guide in guides %}
+      <li class="guides-list-item">
+        <h2><a href="{{ url_for('guide_page', slug=guide.slug) }}">{{ guide.title }}</a></h2>
+        <p>{{ guide.dek }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

@@ -258,6 +258,19 @@
   </div>
 </section>
 
+<section class="guides-teaser">
+  <div class="wrap wrap-narrow">
+    <h2>Guides</h2>
+    <p class="section-sub">Plain-English explanations of the file formats and conversion options behind these tools.</p>
+    <ul class="guides-teaser-list">
+      {% for guide in guides %}
+      <li><a href="{{ url_for('guide_page', slug=guide.slug) }}">{{ guide.title }}</a></li>
+      {% endfor %}
+    </ul>
+    <a class="guides-teaser-more" href="{{ url_for('guides_index') }}">All guides &rarr;</a>
+  </div>
+</section>
+
 <section class="faq-section" id="faq">
   <div class="wrap wrap-narrow">
     <h2>Frequently asked questions</h2>
