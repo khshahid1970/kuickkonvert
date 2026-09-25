@@ -4,13 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Google tag (gtag.js) -- Google Analytics 4, property created 2026-08-29. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K0VJLC113K"></script>
+<!-- Google tag (gtag.js) -- Google Analytics 4, property created 2026-08-29.
+     Deferred until the window 'load' event so it never competes with
+     style.css or other critical resources for bandwidth/main-thread time
+     during first render. gtag()/dataLayer are defined immediately so any
+     gtag() call elsewhere still queues safely; the GA4 library drains the
+     queue once it arrives (this queuing behaviour is documented by Google
+     for gtag.js). -->
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-K0VJLC113K');
+  window.addEventListener('load', function () {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-K0VJLC113K';
+    document.head.appendChild(s);
+  });
 </script>
 
 <title>{% block title %}KuickKonvert -- Free File Conversion Tools{% endblock %}</title>
