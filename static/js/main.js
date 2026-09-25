@@ -6,6 +6,7 @@
   const multi = form.dataset.multi === "true";
   const input = document.getElementById("file-input");
   const dropzone = document.getElementById("dropzone");
+  const chooseLabel = document.getElementById("file-input-label");
   const fileListEl = document.getElementById("file-list");
   const convertBtn = document.getElementById("convert-btn");
   const statusEl = document.getElementById("status");
@@ -49,6 +50,24 @@
   }
 
   input.addEventListener("change", () => addFiles(input.files));
+
+  // The "Choose file" control is a <label for="file-input">, styled as a
+  // button, with the real <input type="file"> hidden. A native click on the
+  // label already opens the file picker via the for/id association -- but
+  // <label> elements are not in the browser's default tab order (unlike
+  // <button> or <a>), and even a focusable label does not respond to
+  // Enter/Space the way a real button does. tabindex="0" was added on the
+  // label in tool.html to make it keyboard-reachable; this handler makes it
+  // keyboard-operable once reached, by forwarding Enter/Space to a real
+  // click on the hidden input.
+  if (chooseLabel) {
+    chooseLabel.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        input.click();
+      }
+    });
+  }
 
   ["dragenter", "dragover"].forEach((evt) => {
     dropzone.addEventListener(evt, (e) => {
