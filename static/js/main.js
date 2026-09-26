@@ -138,6 +138,11 @@
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
       setStatus("Done -- your download has started.", "success");
+      // Suggest related tools only after a successful conversion. Looked up
+      // here (not at page load) so this is harmless on a page without the
+      // #next-steps block.
+      const nextSteps = document.getElementById("next-steps");
+      if (nextSteps) nextSteps.hidden = false;
     } catch (err) {
       setStatus("Network error. Please check your connection and try again.", "error");
     } finally {
