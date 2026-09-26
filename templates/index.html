@@ -63,6 +63,7 @@
 </script>
 {% endblock %}
 {% block content %}
+{% set tool_count = by_category.values()|map('length')|sum %}
 <div class="hero-rail-zone">
   <div class="ad-slot ad-slot--rail ad-slot--rail-left">
     <!-- Vertical rail ad slot. Shown only on wide desktop viewports (see the
@@ -76,18 +77,18 @@
          the .ad-slot-house comment in style.css for exactly how to swap
          this back to a real ad + aria-label="Advertisement" once approved. -->
     <div class="ad-slot-house">
-      <span class="ad-slot-house-line">Fast.</span>
-      <span class="ad-slot-house-line">Simple.</span>
-      <span class="ad-slot-house-line">Secure.</span>
-      <span class="ad-slot-house-line">No Credit Card.</span>
+      <span class="ad-slot-house-line">{{ tool_count }} tools.</span>
+      <span class="ad-slot-house-line">Documents.</span>
+      <span class="ad-slot-house-line">Images.</span>
+      <span class="ad-slot-house-line">PDFs.</span>
     </div>
   </div>
   <div class="ad-slot ad-slot--rail ad-slot--rail-right">
     <div class="ad-slot-house">
-      <span class="ad-slot-house-line">Your Files.</span>
-      <span class="ad-slot-house-line">Your Privacy.</span>
-      <span class="ad-slot-house-line">Your Freedom.</span>
-      <span class="ad-slot-house-line">No Sign-Up.</span>
+      <span class="ad-slot-house-line">Nothing</span>
+      <span class="ad-slot-house-line">to install.</span>
+      <span class="ad-slot-house-line">Works in</span>
+      <span class="ad-slot-house-line">any browser.</span>
     </div>
   </div>
 
@@ -100,8 +101,8 @@
            .ad-slot-house comment in style.css before swapping this for a
            real <ins class="adsbygoogle"> unit once approved. -->
       <div class="ad-slot-house">
-        <span class="ad-slot-house-line ad-slot-house-line--main">100% Free. No Sign-Up. No Credit Card. Just Convert.</span>
-        <span class="ad-slot-house-line ad-slot-house-line--sub">Fast, secure, and simple &mdash; with no trials, subscriptions, or hidden costs.</span>
+        <span class="ad-slot-house-line ad-slot-house-line--main">{{ tool_count }} tools for Word, Excel, PowerPoint, images &amp; PDF.</span>
+        <span class="ad-slot-house-line ad-slot-house-line--sub">Convert, merge, split, compress, rotate, watermark and password-protect.</span>
       </div>
     </div>
   </div>
@@ -157,8 +158,8 @@
          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     -->
     <div class="ad-slot-house">
-      <span class="ad-slot-house-line ad-slot-house-line--main">Free to Convert. Free to Trust. No Catch.</span>
-      <span class="ad-slot-house-line ad-slot-house-line--sub">No sign-up, no subscription, no credit card &mdash; every time you use it.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--main">Deleted the moment your download is ready.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--sub">Each file is processed in its own temporary workspace &mdash; nothing is kept.</span>
     </div>
   </div>
 </div>
