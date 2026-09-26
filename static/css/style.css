@@ -894,3 +894,7 @@ body {
   max-width: 320px;
 }
 .footer-col .footer-featured a { text-decoration: underline; }
+
+/* Third-party listing badges in the footer (e.g. LaunchNest). */
+.footer-badges { margin: 12px 0 0; }
+.footer-badges img { display: block; max-width: 100%; height: auto; }
