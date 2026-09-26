@@ -536,20 +536,31 @@ def ads_txt():
 def sitemap_xml():
     # Static pages plus every tool page, generated from the same TOOLS list
     # that drives the homepage grid, so a new tool is picked up automatically.
-    # No <lastmod> is included -- it's optional per the sitemap protocol, and
-    # this app has no reliable per-page "last changed" date to report rather
-    # than guess one.
-    urls = [
-        f"{SITE_URL}/", f"{SITE_URL}/privacy", f"{SITE_URL}/about",
-        f"{SITE_URL}/contact", f"{SITE_URL}/terms", f"{SITE_URL}/guides",
+    # <lastmod> is only included where there is a genuinely accurate date:
+    # each guide's own "updated" (or, failing that, "published") date from
+    # config.py. Google uses <lastmod> only when it is "consistently and
+    # verifiably accurate", so pages with no reliable per-page change date
+    # (tools, static pages) are listed without one rather than guessed.
+    # When a guide's content is materially revised, add/refresh an
+    # "updated": "YYYY-MM-DD" key on it in config.py.
+    entries = [
+        (f"{SITE_URL}/", None), (f"{SITE_URL}/privacy", None),
+        (f"{SITE_URL}/about", None), (f"{SITE_URL}/contact", None),
+        (f"{SITE_URL}/terms", None), (f"{SITE_URL}/guides", None),
     ]
-    urls += [f"{SITE_URL}/tools/{t['slug']}" for t in TOOLS]
-    urls += [f"{SITE_URL}/guides/{g['slug']}" for g in GUIDES]
+    entries += [(f"{SITE_URL}/tools/{t['slug']}", None) for t in TOOLS]
+    entries += [
+        (f"{SITE_URL}/guides/{g['slug']}", g.get("updated") or g.get("published"))
+        for g in GUIDES
+    ]
 
     body = ['<?xml version="1.0" encoding="UTF-8"?>']
     body.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
-    for u in urls:
-        body.append(f"  <url><loc>{u}</loc></url>")
+    for loc, lastmod in entries:
+        if lastmod:
+            body.append(f"  <url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>")
+        else:
+            body.append(f"  <url><loc>{loc}</loc></url>")
     body.append("</urlset>")
     return Response("\n".join(body), mimetype="application/xml")
 
