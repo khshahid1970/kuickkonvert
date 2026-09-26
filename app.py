@@ -532,6 +532,19 @@ def ads_txt():
     return Response(body, mimetype="text/plain")
 
 
+# IndexNow (https://www.indexnow.org) lets Bing, Yandex, Seznam and Naver
+# learn about new or changed pages straight away. The protocol requires a key
+# file at the site root: /<key>.txt whose only content is the key itself.
+# This key is PUBLIC by design (search engines fetch it to confirm the site
+# owner) -- it is not a password. Google does not use IndexNow.
+INDEXNOW_KEY = "2408c240ba6c3916f8e395b4fdafec43"
+
+
+@app.route(f"/{INDEXNOW_KEY}.txt")
+def indexnow_key():
+    return Response(INDEXNOW_KEY, mimetype="text/plain")
+
+
 @app.route("/sitemap.xml")
 def sitemap_xml():
     # Static pages plus every tool page, generated from the same TOOLS list
