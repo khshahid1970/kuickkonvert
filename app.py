@@ -84,7 +84,7 @@ _CSP_DIRECTIVES = (
     "default-src 'self'; "
     "script-src 'self' https://www.googletagmanager.com 'nonce-{nonce}'; "
     "style-src 'self'; "
-    "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; "
+    "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://launchnest.io; "
     "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com; "
     "font-src 'self'; "
     "object-src 'none'; "
