@@ -545,6 +545,25 @@ def indexnow_key():
     return Response(INDEXNOW_KEY, mimetype="text/plain")
 
 
+# Yandex Webmaster site-ownership check. Yandex asks for this exact file at
+# the site root (HTML-file verification method). Keep it live so the site
+# stays verified in Yandex Webmaster -- do not delete this route.
+YANDEX_VERIFICATION_FILE = "yandex_1756538b996a2a41.html"
+YANDEX_VERIFICATION_BODY = (
+    "<html>\n"
+    "    <head>\n"
+    '        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n'
+    "    </head>\n"
+    "    <body>Verification: 1756538b996a2a41</body>\n"
+    "</html>\n"
+)
+
+
+@app.route(f"/{YANDEX_VERIFICATION_FILE}")
+def yandex_verification():
+    return Response(YANDEX_VERIFICATION_BODY, mimetype="text/html")
+
+
 @app.route("/sitemap.xml")
 def sitemap_xml():
     # Static pages plus every tool page, generated from the same TOOLS list
