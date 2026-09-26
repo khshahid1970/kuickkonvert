@@ -36,7 +36,7 @@
            index.html, for exactly how to swap this for a real ad once
            approved. -->
       <div class="ad-slot-house">
-        <span class="ad-slot-house-line ad-slot-house-line--main">100% Free. No Sign-Up. No Credit Card. Just Convert.</span>
+        <span class="ad-slot-house-line ad-slot-house-line--main">Word, Excel, PowerPoint, images &amp; PDF &mdash; all in one place.</span>
       </div>
     </div>
 
@@ -79,6 +79,19 @@
       <button type="submit" class="btn btn-primary" id="convert-btn" disabled>Convert</button>
       <div id="status" class="status" role="status" aria-live="polite"></div>
     </form>
+
+    {% if related_tools %}
+    <!-- Revealed by static/js/main.js only after a successful conversion,
+         so the suggestions never compete with the Convert button. -->
+    <div id="next-steps" class="next-steps" hidden>
+      <p class="next-steps-title">You might also need:</p>
+      <ul class="next-steps-list">
+        {% for rt in related_tools[:2] %}
+        <li><a href="{{ url_for('tool_page', slug=rt.slug) }}">{{ rt.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
 
     <section class="tool-info">
       <h2>How to convert {{ tool.name }}</h2>
