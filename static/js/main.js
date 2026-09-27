@@ -94,7 +94,15 @@
 
   function filenameFromDisposition(disposition, fallback) {
     if (!disposition) return fallback;
-    const match = /filename="?([^";]+)"?/.exec(disposition);
+    // Prefer the UTF-8 form (filename*=UTF-8''...), which carries names in
+    // any language (e.g. Urdu, Arabic, Hindi) exactly as the user saved them.
+    const star = /filename\*\s*=\s*UTF-8''([^;]+)/i.exec(disposition);
+    if (star) {
+      try {
+        return decodeURIComponent(star[1].trim());
+      } catch (_) {}
+    }
+    const match = /filename="?([^";]+)"?/i.exec(disposition);
     return match ? match[1] : fallback;
   }
 
