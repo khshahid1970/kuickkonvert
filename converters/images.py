@@ -9,26 +9,39 @@ from .office import ConversionError
 
 
 def images_to_pdf(image_paths: list, out_path: str) -> str:
-    """Combine one or more JPG/PNG (etc.) images into a single PDF, in order."""
+    """Combine one or more JPG/PNG images into a single PDF, in order.
+
+    img2pdf embeds JPEG files byte-for-byte and PNG data losslessly, so the
+    original upload is passed straight through whenever img2pdf supports its
+    colour mode (RGB, greyscale, black-and-white, CMYK). Only images img2pdf
+    can't embed as-is are rewritten first -- and always as lossless PNG:
+
+    * transparent images (RGBA / LA / palette with transparency) are placed
+      on a WHITE background first. (Before 2026-09-27 they were converted
+      with a plain RGB conversion, which turned transparent areas black,
+      and re-saved as JPEG.)
+    * any other colour mode (palette, 16-bit, etc.) is converted to RGB.
+    """
     try:
         normalized = []
         for p in image_paths:
-            # img2pdf chokes on some PNG color modes (e.g. palette+alpha) and
-            # on non-JPEG/PNG formats; normalize everything to RGB first so
-            # every supported upload converts reliably.
             with Image.open(p) as im:
-                if im.mode in ("RGBA", "P", "LA"):
-                    im = im.convert("RGB")
-                    fixed = p + ".rgb.jpg"
-                    im.save(fixed, "JPEG", quality=95)
+                has_alpha = im.mode in ("RGBA", "LA") or (
+                    im.mode == "P" and "transparency" in im.info
+                )
+                if has_alpha:
+                    rgba = im.convert("RGBA")
+                    flat = Image.new("RGB", rgba.size, (255, 255, 255))
+                    flat.paste(rgba, mask=rgba.getchannel("A"))
+                    fixed = p + ".flat.png"
+                    flat.save(fixed, "PNG")
                     normalized.append(fixed)
-                elif im.mode != "RGB" and im.mode != "CMYK":
-                    im = im.convert("RGB")
-                    fixed = p + ".rgb.jpg"
-                    im.save(fixed, "JPEG", quality=95)
-                    normalized.append(fixed)
-                else:
+                elif im.mode in ("RGB", "L", "1", "CMYK"):
                     normalized.append(p)
+                else:
+                    fixed = p + ".rgb.png"
+                    im.convert("RGB").save(fixed, "PNG")
+                    normalized.append(fixed)
 
         with open(out_path, "wb") as f:
             f.write(img2pdf.convert(normalized))
