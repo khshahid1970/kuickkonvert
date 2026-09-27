@@ -136,6 +136,12 @@ def compress_pdf(input_path: str, out_path: str, level: str = "ebook") -> str:
     Prefers Ghostscript (best real-world compression via image downsampling).
     Falls back to pikepdf stream recompression if Ghostscript isn't
     installed in this environment.
+
+    Ghostscript's own documentation says rewriting a PDF can produce a
+    LARGER file (tested 2026-09-27: text-only PDFs grew 24-170%, and a
+    200-dpi scan grew ~6% on "ebook"/"printer", which don't downsample it).
+    So if the result isn't smaller than the upload, the user gets their
+    original file back unchanged instead of a bigger one.
     """
     level = level if level in ("screen", "ebook", "printer") else "ebook"
     if shutil.which(GS_BIN):
@@ -157,12 +163,19 @@ def compress_pdf(input_path: str, out_path: str, level: str = "ebook") -> str:
         except subprocess.TimeoutExpired as exc:
             raise ConversionError("Compression took too long for this file.") from exc
         if result.returncode == 0 and os.path.exists(out_path) and os.path.getsize(out_path) > 0:
-            return out_path
+            return _keep_smaller(input_path, out_path)
         # fall through to pikepdf fallback if Ghostscript failed
 
     try:
         with Pdf.open(input_path) as pdf:
             pdf.save(out_path, compress_streams=True, object_stream_mode=pikepdf.ObjectStreamMode.generate)
-        return out_path
+        return _keep_smaller(input_path, out_path)
     except Exception as exc:
         raise ConversionError(f"Could not compress this PDF: {exc}") from exc
+
+
+def _keep_smaller(input_path: str, out_path: str) -> str:
+    """If compression didn't shrink the file, replace the output with the original."""
+    if os.path.getsize(out_path) >= os.path.getsize(input_path):
+        shutil.copyfile(input_path, out_path)
+    return out_path
