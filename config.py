@@ -266,7 +266,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Will my columns get cut off?", "Columns are automatically resized to fit, and very wide sheets switch to landscape orientation automatically to keep everything on the page."),
             ("Are my formulas or macros preserved?", "The PDF shows the calculated values currently in your sheet -- formulas and macros themselves aren't carried into the PDF, since PDF is a fixed, non-editable format."),
-            ("Can I convert XLSX to PDF online without installing Excel?", "Yes -- this tool runs entirely in your browser, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
+            ("Can I convert XLSX to PDF online without installing Excel?", "Yes -- you upload the file from your browser and the conversion runs on our server, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
             ("Is this free, and is there a file size limit?", "It's free with no sign-up. The only limit is a 50MB file size cap, which covers the vast majority of spreadsheets."),
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
@@ -324,7 +324,7 @@ TOOL_CONTENT = {
     },
     "jpg-to-pdf": {
         "intro": "JPG to PDF combines one or more JPG images into a single PDF file -- a quick way to turn photos of documents, receipts, or whiteboards into one shareable file.",
-        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want.",
+        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want. Your JPG files are placed into the PDF exactly as uploaded -- they aren't re-compressed, so there's no extra quality loss.",
         "use_cases": [
             "Combining several photographed pages of a document into one PDF to email.",
             "Turning receipt photos into a single PDF for an expense claim.",
@@ -333,7 +333,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I reorder the images after adding them?", "Not directly -- images are combined in the order you add them. Remove the files and re-add them in your preferred order if needed."),
             ("Is there a limit to how many images I can combine?", "There's no fixed count limit, but the combined upload must stay under the 50MB file size limit."),
-            ("Is converting JPG to PDF online free?", "Yes -- there's no charge, sign-up, or watermark, and the whole process happens in your browser."),
+            ("Is converting JPG to PDF online free?", "Yes -- there's no charge, sign-up, or watermark. You upload from your browser, the PDF is built on our server, and your files are deleted as soon as your download is ready."),
         ],
         "related": ["png-to-pdf", "pdf-to-jpg", "merge-pdf"],
         "seo_title": "JPG to PDF Converter -- Images to PDF | KuickKonvert",
@@ -341,16 +341,16 @@ TOOL_CONTENT = {
     },
     "png-to-pdf": {
         "intro": "PNG to PDF combines one or more PNG images into a single PDF file, keeping the sharp edges and transparency-free areas PNG is known for.",
-        "good_to_know": "Images are combined into the PDF in the order you add them, the same as JPG to PDF. Transparent areas in a PNG are filled in (PDF pages don't support transparency the way PNG does), so images with a transparent background will show a solid background in the PDF.",
+        "good_to_know": "Images are combined into the PDF in the order you add them, the same as JPG to PDF. PNG images are embedded losslessly, so text and sharp edges stay exactly as crisp as in your file. Transparent areas are placed on a white background, like a sheet of paper.",
         "use_cases": [
             "Combining screenshots into a single PDF for a bug report or walkthrough.",
             "Turning a set of scanned PNG pages into one document.",
             "Creating a simple PDF handout from PNG graphics.",
         ],
         "faq": [
-            ("What happens to transparent backgrounds?", "PDF pages don't support transparency, so any transparent area in your PNG is filled in with a solid background in the output."),
+            ("What happens to transparent backgrounds?", "Transparent areas are placed on a white background, so a logo or graphic with a transparent background appears on white in the PDF, just as it would on a printed page."),
             ("Can I mix JPG and PNG files in one PDF?", "Use this tool for PNGs and JPG to PDF for JPGs -- each tool accepts one image type at a time to keep the upload validation simple."),
-            ("Can I convert PNG to PDF online for free?", "Yes -- this tool is completely free and works directly in your browser, with no account or software installation needed."),
+            ("Can I convert PNG to PDF online for free?", "Yes -- this tool is completely free, with no account or software installation needed. You upload from your browser and the PDF is built on our server."),
         ],
         "related": ["jpg-to-pdf", "pdf-to-png", "merge-pdf"],
         "seo_title": "PNG to PDF Converter -- Images to PDF | KuickKonvert",
@@ -367,7 +367,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What resolution are the images?", "Pages are rendered at 300 DPI, which is sharp enough for most printing and screen use."),
             ("What do I get for a multi-page PDF?", "A ZIP file containing one JPG image per page."),
-            ("Is converting PDF to JPG online free?", "Yes -- there's no charge, sign-up, or limit beyond the 50MB upload cap, and the tool works entirely in your browser."),
+            ("Is converting PDF to JPG online free?", "Yes -- there's no charge, sign-up, or limit beyond the 50MB upload cap, and there's nothing to install: you upload from your browser and the images are created on our server."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter -- PDF Pages to JPG | KuickKonvert",
@@ -423,7 +423,7 @@ TOOL_CONTENT = {
     },
     "compress-pdf": {
         "intro": "Compress PDF reduces a PDF's file size online, for free, while keeping it readable -- useful when a file is too large to email or upload, or you just want a smaller version to store.",
-        "good_to_know": "Three compression levels are available: Screen (smallest file, most aggressive image downsampling), Ebook (a balanced default), and Printer (best quality, least size reduction). Compression mainly shrinks embedded images -- a text-only PDF will compress less dramatically than an image-heavy one.",
+        "good_to_know": "Three compression levels are available: Screen (smallest file -- images reduced to about 72 dpi), Ebook (the balanced default -- about 150 dpi), and Printer (keeps image resolution, so it usually shrinks the file very little). Compression works on embedded images, so a text-only PDF can't get much smaller. If the result wouldn't be smaller than your original, you get your original file back unchanged instead of a bigger one.",
         "use_cases": [
             "Shrinking a scanned document so it fits under an email attachment limit.",
             "Reducing a large PDF before uploading it to a form or portal with a size cap.",
@@ -432,7 +432,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Which compression level should I choose?", "Ebook is a good default balance. Choose Screen for the smallest possible file if quality matters less, or Printer if quality matters most."),
             ("Will text quality be affected?", "Text stays sharp at every level -- compression mainly targets embedded images, so an image-heavy PDF will shrink more than a text-only one."),
-            ("Can I reduce a PDF's file size online for free?", "Yes -- Compress PDF is free to use with no sign-up. Choose a compression level and the file size is reduced automatically, right in your browser."),
+            ("Can I reduce a PDF's file size online for free?", "Yes -- Compress PDF is free to use with no sign-up. Upload your PDF, choose a compression level, and our server returns the smaller file."),
         ],
         "related": ["merge-pdf", "split-pdf", "pdf-to-jpg"],
         "seo_title": "Compress PDF Online -- Reduce File Size Free | KuickKonvert",
@@ -449,7 +449,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I rotate individual pages differently?", "No -- the same rotation is applied to every page. Use Split PDF first if only some pages need rotating, then merge them back afterward."),
             ("Does rotating affect the file's quality?", "No -- rotation only changes page orientation; it doesn't re-encode or degrade the page content."),
-            ("Can I rotate a PDF online without installing software?", "Yes -- the whole process happens in your browser. Upload the file, choose a rotation angle, and download the corrected PDF; nothing is installed on your device."),
+            ("Can I rotate a PDF online without installing software?", "Yes -- upload the file from your browser, choose a rotation angle, and download the corrected PDF. The rotation runs on our server; nothing is installed on your device."),
         ],
         "related": ["split-pdf", "merge-pdf", "compress-pdf"],
         "seo_title": "Rotate PDF Pages Online Free | KuickKonvert",
@@ -483,7 +483,7 @@ TOOL_CONTENT = {
             ("What encryption does this use?", "Standard 128-bit PDF encryption, applied with the password you choose."),
             ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
             ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up, subscription, or hidden limits beyond the 50MB file size cap."),
-            ("Do I need to install anything?", "No -- this works entirely in your browser. Upload your PDF, choose a password, and download the protected file; nothing is installed on your device."),
+            ("Do I need to install anything?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
@@ -608,63 +608,135 @@ GUIDES = [
     },
     {
         "slug": "pdf-compression-levels-explained",
-        "title": "PDF Compression Explained: Screen vs eBook vs Printer",
-        "seo_title": "PDF Compression Levels Explained | KuickKonvert",
-        "meta_description": "What do the Screen, eBook, and Printer PDF compression levels actually do? A plain-English explanation of what gets smaller, and why.",
-        "dek": "The three standard PDF compression presets aren't arbitrary labels -- each targets a specific balance of file size against image quality.",
+        "title": "PDF Compression Explained: Screen vs eBook vs Printer (With Real Test Results)",
+        "seo_title": "PDF Compression Levels: Screen vs eBook vs Printer | KuickKonvert",
+        "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
+        "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
         "published": "2026-09-14",
+        "updated": "2026-09-27",
         "related_tools": ["compress-pdf"],
         "sections": [
             {
-                "heading": "Compression mostly targets images, not text",
+                "heading": "What actually makes a PDF big",
                 "paragraphs": [
-                    "Text and vector graphics in a PDF are already stored efficiently, so there's very little to gain by compressing them further. The overwhelming majority of a PDF's file size, especially a scanned document or an image-heavy report, comes from its embedded images. That's what all three compression levels actually act on.",
+                    "Typed text takes up very little space in a PDF: each letter is stored as a character code plus a reference to a font, not as a picture. Lines, charts and other vector graphics are similarly compact. A 20-page report of plain text is often well under a megabyte.",
+                    "Images are different. A single photo taken on a phone can be several megabytes, and a scanned document is nothing but images -- every page is one picture of paper. In practice, when a PDF is too big to email or upload, embedded images are almost always the reason. That's why every compression level works on images and leaves the text alone.",
                 ],
             },
             {
-                "heading": "The three levels, and what each one changes",
+                "heading": "What happens when you press Compress",
                 "paragraphs": [
-                    "Screen (smallest file): downsamples images aggressively, to roughly 72 dots per inch -- adequate for viewing on a screen but too low-resolution to print cleanly. Best for a document you only need to email or view digitally.",
-                    "eBook (balanced, the default here): downsamples to roughly 150 dpi, a middle ground that stays legible if printed at normal size while still meaningfully shrinking the file. The right default for most everyday documents.",
-                    "Printer (best quality, largest file): downsamples to roughly 300 dpi, standard print resolution -- image quality is preserved much more closely, at the cost of a smaller size reduction.",
+                    "Our Compress PDF tool rewrites your file with Ghostscript, a long-established open-source PDF engine, using one of its three standard presets: /screen, /ebook or /printer. Each preset combines two techniques.",
+                    "Downsampling lowers the resolution of images that are sharper than the preset needs. Resolution is measured in dots per inch (dpi) -- how many pixels the image uses for each inch of the printed page. Halving the resolution leaves roughly a quarter of the pixels, which is where most of the saving comes from.",
+                    "Re-encoding saves photographic images with JPEG compression, which discards fine detail the eye is unlikely to notice in exchange for a much smaller file.",
+                    "Text stays as real text at every level, so it remains sharp at any zoom and can still be selected and searched.",
                 ],
             },
             {
-                "heading": "Why a text-only PDF barely shrinks",
+                "heading": "The three levels, in numbers",
                 "paragraphs": [
-                    "If your PDF is mostly typed text with no images, none of the three levels will make a dramatic difference -- there simply isn't much image data to downsample. The tool still runs, but don't expect the same size reduction you'd see on a scanned document full of photos.",
+                    "The figures below come from Ghostscript's own documentation for the three presets our tool uses.",
+                    "Screen: colour and greyscale images are reduced to 72 dpi, and black-and-white images to 300 dpi. It also uses the stronger of the two JPEG settings. 72 dpi is fine on a screen but looks soft or blocky when printed.",
+                    "eBook (our default): colour and greyscale images are reduced to 150 dpi, black-and-white images to 300 dpi, with the same JPEG setting as Screen. A 150 dpi image generally still prints acceptably at normal size, so this is the sensible balance for most documents.",
+                    "Printer: the preset lists 300 dpi (1,200 dpi for black-and-white), but it has downsampling switched off, so images keep their original resolution. It also uses a gentler, higher-quality JPEG setting. The result looks almost identical to the original -- and is usually only slightly smaller, if at all.",
+                ],
+            },
+            {
+                "heading": "The 1.5x rule: why some images aren't touched at all",
+                "paragraphs": [
+                    "Ghostscript only downsamples an image when its resolution is more than 1.5 times the target. With the eBook target of 150 dpi, that means only images above 225 dpi are reduced; with Screen's 72 dpi, anything above 108 dpi is reduced.",
+                    "This explains a common surprise. Suppose your scanner saves pages at 200 dpi. That's below eBook's 225 dpi threshold, so eBook leaves those images as they are and the file hardly changes. Only Screen shrinks it. A 300 dpi scan, on the other hand, is reduced by both Screen and eBook.",
+                ],
+            },
+            {
+                "heading": "What we measured",
+                "paragraphs": [
+                    "We ran three typical files through the same Ghostscript presets our tool uses (Ghostscript 10.02, September 2026). Your own results will depend on what's inside your PDF, but the pattern is consistent.",
+                    "A PDF containing one 3000 x 2000 pixel photo at 300 dpi (3.2 MB): Screen produced 50 KB (1.6% of the original, photo now 72 dpi); eBook produced 127 KB (3.9%, photo now 150 dpi); Printer made no meaningful difference -- the photo kept its full 300 dpi.",
+                    "A one-page greyscale scan at 200 dpi (93 KB): Screen produced 24 KB (25%). eBook and Printer didn't reduce it at all, because 200 dpi is below their downsampling threshold -- Ghostscript's output was actually 6-9% larger.",
+                    "A five-page, text-only PDF (4.5 KB): every level produced a larger file -- about 25% larger on Screen and eBook, and 170% larger on Printer, which copied the font into the file. The text itself stayed as real, selectable text at every level.",
+                ],
+            },
+            {
+                "heading": "Why a \"compressed\" file can come out bigger -- and what we do about it",
+                "paragraphs": [
+                    "Ghostscript's developers state plainly that rewriting a PDF is not guaranteed to make it smaller, and can make it larger. There's no image data to shrink in a text-only file, and rewriting the file can add overhead -- for example by copying fonts into it, as Printer did in our test.",
+                    "So our tool compares the result with your upload. If the compressed version isn't smaller, you get your original file back unchanged instead of a bigger one. If that happens, your PDF is already about as small as these presets can make it.",
+                ],
+            },
+            {
+                "heading": "Which level to choose",
+                "paragraphs": [
+                    "Documents with photos that you'll email or read on screen: start with eBook. Try Screen only if you still need a smaller file and nobody will print it.",
+                    "Scanned documents: eBook works well on 300 dpi scans. For 200 dpi scans only Screen reduces the size -- but a scanned page is a picture of text, so at 72 dpi small print can become hard to read. Open the result and zoom in before you send it.",
+                    "Anything that will be printed professionally: use Printer, and expect only a small reduction.",
+                    "Text-only PDFs such as contracts or letters: these are usually small already. Compression won't help much -- you'll most likely get your original back.",
+                ],
+            },
+            {
+                "heading": "A quick checklist before you send the file",
+                "paragraphs": [
+                    "Check the new file size against the limit you're trying to meet, open the compressed PDF and zoom in on the smallest text and on any photos, and keep your original file until you're happy with the compressed copy. Your uploaded file and the result are deleted from our server as soon as your download is ready, so we don't keep a copy for you.",
                 ],
             },
         ],
     },
     {
         "slug": "jpg-vs-png",
-        "title": "JPG vs PNG: Which to Use When Scanning or Sharing a Document",
-        "seo_title": "JPG vs PNG for Documents: Which Should You Use? | KuickKonvert",
-        "meta_description": "JPG and PNG compress images completely differently. Here's which one is actually right for a scanned document, screenshot, or photo.",
-        "dek": "The two formats solve different problems. Picking the wrong one either bloats your file or blurs your text.",
+        "title": "JPG vs PNG for Documents: Which Format to Use (With Real Test Results)",
+        "seo_title": "JPG vs PNG for Documents and Scans: Which Is Better? | KuickKonvert",
+        "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
+        "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
+        "updated": "2026-09-27",
         "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"],
         "sections": [
             {
-                "heading": "The core difference: lossy vs lossless",
+                "heading": "The one difference that matters: lossy vs lossless",
                 "paragraphs": [
-                    "JPG uses lossy compression -- it permanently discards some image detail to reach a much smaller file size. The quality loss is subtle on a photograph with lots of color variation and gradients, but shows up as visible blur or blocky artifacts around sharp edges, like text.",
-                    "PNG uses lossless compression -- no image data is discarded, so text and hard edges stay perfectly crisp, but the file is larger, especially for photographic content.",
+                    "JPG (also written JPEG) uses lossy compression. It splits the picture into small blocks and throws away fine detail the eye is least likely to miss. On a photograph -- smooth skin tones, sky, foliage -- the loss is very hard to see, and the file becomes far smaller.",
+                    "PNG uses lossless compression -- its W3C specification describes it as a format for lossless storage of images. Nothing is thrown away, so what you save is exactly what you get back.",
+                    "The difference shows on sharp edges. The boundary between black text and white paper is exactly the kind of detail JPG simplifies, which leaves faint smudges and speckles (called artifacts) around letters. PNG keeps those edges perfectly clean.",
                 ],
             },
             {
-                "heading": "Which to use for what",
+                "heading": "Transparency: only PNG has it",
                 "paragraphs": [
-                    "Scanned documents, screenshots, or anything with text or sharp lines: PNG. JPG's compression artifacts specifically degrade text edges, which is the one thing you don't want blurry on a document you might need to read later.",
-                    "Photographs -- a picture of a receipt on a table, a photo for a report: JPG is usually the better trade-off. The quality loss is far less noticeable on natural images, and the file size savings are substantial.",
-                    "If in doubt and file size isn't a major constraint, PNG is the safer default for anything you intend to read text from.",
+                    "PNG can store an alpha channel -- a transparency value for every pixel -- which is why logos, icons and signatures with see-through backgrounds are usually PNGs. JPG has no transparency at all: every pixel is a solid colour.",
                 ],
             },
             {
-                "heading": "Converting either one to PDF",
+                "heading": "What we measured on a real document page",
                 "paragraphs": [
-                    "Both our JPG to PDF and PNG to PDF tools combine one or more images into a single PDF in the order you add them, without re-compressing or altering the image data itself beyond embedding it in the PDF container.",
+                    "We created a one-page A4 letter -- a heading and six paragraphs of ordinary 11-point text -- and turned it into images with our own PDF to PNG and PDF to JPG tools, which render at 300 dpi (2481 x 3508 pixels).",
+                    "The PNG was 645 KB. The JPG was 1.1 MB -- about 70% larger -- and it had lost detail: around 65,000 pixels around the letters changed noticeably compared with the exact PNG. Saved as a greyscale PNG, the same page was just 347 KB.",
+                    "The reason is simple. A text page is mostly large areas of plain white with sharp black edges. Lossless PNG compression handles plain areas extremely efficiently, while JPG spends a lot of data trying to approximate every sharp edge -- and still doesn't get them exactly right.",
+                ],
+            },
+            {
+                "heading": "Photos are the opposite",
+                "paragraphs": [
+                    "A photograph has almost no plain areas: every pixel differs slightly from its neighbours. Lossless PNG can't compress that kind of detail well, so a PNG of a camera photo is typically several times larger than a good-quality JPG of the same picture, and the extra detail PNG preserves is usually invisible. For photos, JPG is the right choice.",
+                ],
+            },
+            {
+                "heading": "Which one to use",
+                "paragraphs": [
+                    "PNG for scanned text documents, screenshots, forms, charts, diagrams, and anything you'll need to read or zoom into later.",
+                    "PNG for logos and graphics that need a transparent background.",
+                    "JPG for photographs -- including a photo of a receipt or a whiteboard, where the camera image itself is already full of fine texture.",
+                    "Already have a JPG? Converting it to PNG won't bring back the detail JPG discarded; it only makes the file bigger. Keep JPGs as JPGs.",
+                    "Editing an image several times? Work in PNG. Every time a JPG is edited and saved again, it is compressed again and loses a little more detail.",
+                ],
+            },
+            {
+                "heading": "How our converters handle JPG and PNG",
+                "paragraphs": [
+                    "PDF to PNG renders every page at 300 dpi and saves it losslessly -- the best choice for pages with text, tables or line drawings.",
+                    "PDF to JPG renders every page at 300 dpi and saves it as a standard-quality JPG (quality 75). That keeps photo-heavy pages compact, but as our test shows, text-heavy pages are often smaller and sharper as PNG.",
+                    "JPG to PDF places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss.",
+                    "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
+                    "Every uploaded image and every result is deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
