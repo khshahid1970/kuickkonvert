@@ -5,6 +5,7 @@ moment the response has been sent (see converters.utils.job_workspace).
 Nothing uploaded here is stored permanently. See PRIVACY_NOTICE.md.
 """
 import os
+import re
 import secrets
 import zipfile
 
@@ -204,6 +205,38 @@ def _ext_ok(filename, allowed):
     return ext in allowed
 
 
+# ---- File names -------------------------------------------------------
+# Two different names are used for every upload:
+#   * _storage_name(): a safe ASCII name for the TEMPORARY copy on our server
+#     (protects against path tricks like "../../"). It always keeps the file
+#     extension, so a file named entirely in Urdu/Arabic/Hindi letters is
+#     stored as "file.pdf" instead of an extension-less "pdf".
+#   * _display_stem(): the user's ORIGINAL name, used for the download, so
+#     "My Report (Final).pdf" comes back as "My Report (Final).pdf" (or
+#     ".docx" etc. for conversions) -- not "My_Report_Final.pdf". Only
+#     characters Windows/macOS forbid in file names are replaced.
+_FORBIDDEN_IN_FILENAMES = set('\\/:*?"<>|')
+
+
+def _storage_name(filename):
+    ext = os.path.splitext(filename or "")[1].lower()
+    if not re.fullmatch(r"\.[a-z0-9]{1,5}", ext):
+        ext = ""
+    stem = os.path.splitext(safe_name(filename))[0]
+    if not stem or stem.lower() == ext.lstrip("."):
+        stem = "file"
+    return stem + ext
+
+
+def _display_stem(filename):
+    base = (filename or "").replace("\\", "/").rsplit("/", 1)[-1]
+    stem = os.path.splitext(base)[0]
+    stem = "".join(
+        "_" if (c in _FORBIDDEN_IN_FILENAMES or ord(c) < 32) else c for c in stem
+    ).strip().strip(".")
+    return stem[:150] or "file"
+
+
 def _save_uploads(files, job_dir, allowed_exts):
     """Validate and save every uploaded file into job_dir. Returns saved paths in order."""
     if not files:
@@ -216,7 +249,7 @@ def _save_uploads(files, job_dir, allowed_exts):
             raise ConversionError(
                 f"'{f.filename}' has an unsupported file type for this tool."
             )
-        name = safe_name(f.filename)
+        name = _storage_name(f.filename)
         path = os.path.join(job_dir, name)
         # avoid collisions when two uploads share a sanitized name
         i = 1
@@ -471,6 +504,15 @@ def convert(slug):
     try:
         with job_workspace() as job_dir:
             out_path, download_name, mimetype = handler(files, request.form, job_dir)
+            # Give the download the user's original file name. Handlers build
+            # download_name from the safe storage name of the first upload;
+            # when that's the case, swap in the original name (keeping the
+            # new extension). Fixed names like "merged.pdf" are left alone.
+            first = next((f.filename for f in files if f and f.filename), None)
+            if first:
+                base, ext = os.path.splitext(download_name)
+                if base == os.path.splitext(_storage_name(first))[0]:
+                    download_name = _display_stem(first) + ext
             # send_file streams while the file exists; read fully into memory
             # first so we can safely delete the temp workspace on exit.
             with open(out_path, "rb") as fh:
