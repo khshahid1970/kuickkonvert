@@ -146,6 +146,16 @@
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
       setStatus("Done -- your download has started.", "success");
+      // Google Ads conversion ("File conversion completed"), sent only here,
+      // i.e. after the server returned a converted file and the download was
+      // started -- never for failed conversions or plain page views. The
+      // gtag() function is defined in base.html; the check keeps this line
+      // harmless if analytics is ever removed or blocked by the visitor.
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "conversion", {
+          send_to: "AW-18473004328/meE0CPKWqokdEKjazuhE",
+        });
+      }
       // Suggest related tools only after a successful conversion. Looked up
       // here (not at page load) so this is harmless on a page without the
       // #next-steps block.
