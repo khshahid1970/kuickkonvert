@@ -11,11 +11,35 @@
      gtag() call elsewhere still queues safely; the GA4 library drains the
      queue once it arrives (this queuing behaviour is documented by Google
      for gtag.js). -->
+<!-- Google Ads conversion tracking (AW-18473004328), added 2026-09-28. It
+     shares the single gtag.js loader below (Google documents one loader with
+     one 'config' line per destination). The conversion itself is sent from
+     static/js/main.js only after a file has actually downloaded.
+     Consent Mode v2: for visitors in the EEA, UK and Switzerland every
+     storage type defaults to 'denied' (no ad or analytics cookies; Google
+     receives only cookieless pings) because this site has no consent banner
+     yet. Everywhere else the defaults stay 'granted'. When a certified
+     consent banner is added (planned with AdSense), it will call
+     gtag('consent', 'update', ...) for visitors who agree. -->
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied',
+    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']
+  });
+  gtag('consent', 'default', {
+    'ad_storage': 'granted',
+    'ad_user_data': 'granted',
+    'ad_personalization': 'granted',
+    'analytics_storage': 'granted'
+  });
   gtag('js', new Date());
   gtag('config', 'G-K0VJLC113K');
+  gtag('config', 'AW-18473004328');
   window.addEventListener('load', function () {
     var s = document.createElement('script');
     s.async = true;
