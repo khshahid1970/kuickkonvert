@@ -81,18 +81,29 @@ def _set_csp_nonce():
 # the same way the analytics inline script is handled here. Re-run a header
 # scan after any CSP change -- a wrong CSP fails closed (breaks the feature
 # it was blocking), it does not fail open.
+# 2026-09-28: Google Ads conversion tracking (AW-18473004328) added. The
+# extra domains below are the ones Google's "Use a Content Security Policy"
+# guide lists for Google Ads conversions and for Google Analytics 4
+# (developers.google.com/tag-platform/security/guides/csp). CSP does not allow
+# wildcards for top-level domains, so each country Google domain must be
+# listed on its own: google.com plus the main target markets' domains
+# (Pakistan, India, UK) are included. A missing TLD only drops that one
+# measurement ping silently; it never breaks the site.
+_GOOGLE_TLDS = "https://www.google.com https://www.google.com.pk https://www.google.co.in https://www.google.co.uk"
 _CSP_DIRECTIVES = (
     "default-src 'self'; "
-    "script-src 'self' https://www.googletagmanager.com 'nonce-{nonce}'; "
+    "script-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com 'nonce-{nonce}'; "
     "style-src 'self'; "
-    "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://launchnest.io; "
-    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com; "
+    "img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
+    "https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://pagead2.googlesyndication.com " + _GOOGLE_TLDS + " https://launchnest.io; "
+    "connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
+    "https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://pagead2.googlesyndication.com https://ad.doubleclick.net " + _GOOGLE_TLDS + "; "
     "font-src 'self'; "
     "object-src 'none'; "
     "base-uri 'self'; "
     "form-action 'self'; "
     "frame-ancestors 'self'; "
-    "frame-src 'none'"
+    "frame-src https://www.googletagmanager.com"
 )
 
 
