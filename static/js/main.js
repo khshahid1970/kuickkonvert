@@ -155,6 +155,13 @@
         window.gtag("event", "conversion", {
           send_to: "AW-18473004328/meE0CPKWqokdEKjazuhE",
         });
+        // Same moment, reported to Google Analytics 4 so the owner can count
+        // successful conversions per tool (parameter "tool" = page slug,
+        // e.g. "pdf-to-word"). send_to keeps it out of Google Ads.
+        window.gtag("event", "file_conversion", {
+          send_to: "G-K0VJLC113K",
+          tool: slug,
+        });
       }
       // Suggest related tools only after a successful conversion. Looked up
       // here (not at page load) so this is harmless on a page without the
