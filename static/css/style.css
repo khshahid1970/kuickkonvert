@@ -898,3 +898,14 @@ body {
 /* Third-party listing badges in the footer (e.g. LaunchNest). */
 .footer-badges { margin: 12px 0 0; }
 .footer-badges img { display: block; max-width: 100%; height: auto; }
+
+/* Guide pages: author/date line and data tables (added 30 Sept 2026).
+   Tables reuse .format-table; the wrapper lets wide tables scroll sideways
+   on phones instead of squeezing the columns. */
+.guide-meta { color: var(--color-text-muted); font-size: 13px; margin: -4px 0 12px; }
+.guide-table-wrap { overflow-x: auto; margin: 8px 0 4px; -webkit-overflow-scrolling: touch; }
+.guide-table { width: 100%; min-width: 520px; }
+.guide-table caption { caption-side: top; text-align: left; font-weight: 600; font-size: 14px; color: var(--color-text); padding: 0 0 8px; }
+.guide-table th[scope="row"] { vertical-align: top; color: var(--color-text); font-weight: 600; font-size: 14px; text-transform: none; letter-spacing: 0; }
+.guide-table td { color: var(--color-text-muted); vertical-align: top; }
+.guide-table-note { font-size: 13px !important; margin-top: 6px; }
