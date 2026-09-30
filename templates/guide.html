@@ -13,7 +13,32 @@
   ]
 }
 </script>
+{#- Article markup: tells search engines who wrote the guide and when it was
+    published / last updated. Every value comes from the guide's entry in
+    config.py (GUIDES); tojson escapes the strings safely for JSON. -#}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ guide.title|tojson }},
+  "description": {{ guide.meta_description|tojson }},
+  "datePublished": {{ guide.published|tojson }},
+  "dateModified": {{ (guide.updated or guide.published)|tojson }},
+  "author": {"@type": "Person", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}},
+  "publisher": {"@type": "Organization", "name": "KuickKonvert", "url": "{{ site_url }}/"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "{{ canonical_url }}"}
+}
+</script>
 {% endblock %}
+
+{#- Turns an ISO date string ("2026-09-27") into "27 September 2026" without
+    needing any Python-side date handling. -#}
+{% macro nice_date(iso) -%}
+{%- set parts = iso.split('-') -%}
+{%- set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] -%}
+{{ parts[2]|int }} {{ months[parts[1]|int - 1] }} {{ parts[0] }}
+{%- endmacro %}
+
 {% block content %}
 <section class="tool-page">
   <div class="wrap wrap-narrow">
@@ -25,6 +50,13 @@
       <span aria-current="page">{{ guide.title }}</span>
     </nav>
     <h1>{{ guide.title }}</h1>
+    <p class="guide-meta">
+      By {{ guide.get('author', 'Shahid Iqbal') }}
+      &middot; Published <time datetime="{{ guide.published }}">{{ nice_date(guide.published) }}</time>
+      {% if guide.updated and guide.updated != guide.published %}
+      &middot; Updated <time datetime="{{ guide.updated }}">{{ nice_date(guide.updated) }}</time>
+      {% endif %}
+    </p>
     <p class="tool-page-desc">{{ guide.dek }}</p>
 
     <section class="tool-info guide-body">
@@ -33,6 +65,25 @@
       {% for para in section.paragraphs %}
       <p>{{ para }}</p>
       {% endfor %}
+      {#- Optional table for a section: {"caption", "headers", "rows", "note"}.
+          The wrapper scrolls sideways on narrow phones instead of squashing
+          the columns. -#}
+      {% if section.table %}
+      <div class="guide-table-wrap">
+        <table class="format-table guide-table">
+          {% if section.table.caption %}<caption>{{ section.table.caption }}</caption>{% endif %}
+          <thead>
+            <tr>{% for h in section.table.headers %}<th scope="col">{{ h }}</th>{% endfor %}</tr>
+          </thead>
+          <tbody>
+            {% for row in section.table.rows %}
+            <tr>{% for cell in row %}{% if loop.first %}<th scope="row">{{ cell }}</th>{% else %}<td>{{ cell }}</td>{% endif %}{% endfor %}</tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if section.table.note %}<p class="guide-table-note">{{ section.table.note }}</p>{% endif %}
+      {% endif %}
       {% endfor %}
 
       {% if related_tools %}
