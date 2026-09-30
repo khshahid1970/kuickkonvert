@@ -613,7 +613,7 @@ GUIDES = [
         "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
         "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
         "published": "2026-09-14",
-        "updated": "2026-09-27",
+        "updated": "2026-09-30",
         "related_tools": ["compress-pdf"],
         "sections": [
             {
@@ -640,6 +640,16 @@ GUIDES = [
                     "eBook (our default): colour and greyscale images are reduced to 150 dpi, black-and-white images to 300 dpi, with the same JPEG setting as Screen. A 150 dpi image generally still prints acceptably at normal size, so this is the sensible balance for most documents.",
                     "Printer: the preset lists 300 dpi (1,200 dpi for black-and-white), but it has downsampling switched off, so images keep their original resolution. It also uses a gentler, higher-quality JPEG setting. The result looks almost identical to the original -- and is usually only slightly smaller, if at all.",
                 ],
+                "table": {
+                    "caption": "The three presets at a glance",
+                    "headers": ["Level", "Colour and greyscale images", "Black-and-white images", "Colour images reduced only if above", "JPEG setting", "Best for"],
+                    "rows": [
+                        ["Screen", "72 dpi", "300 dpi", "108 dpi", "Stronger", "Reading on screen only"],
+                        ["eBook (default)", "150 dpi", "300 dpi", "225 dpi", "Stronger (same as Screen)", "Email and most documents"],
+                        ["Printer", "Not reduced (keeps original)", "Not reduced", "No downsampling", "Gentler, higher quality", "Professional printing"],
+                    ],
+                    "note": "Source: Ghostscript's documentation for the /screen, /ebook and /printer presets used by our Compress PDF tool.",
+                },
             },
             {
                 "heading": "The 1.5x rule: why some images aren't touched at all",
@@ -656,6 +666,16 @@ GUIDES = [
                     "A one-page greyscale scan at 200 dpi (93 KB): Screen produced 24 KB (25%). eBook and Printer didn't reduce it at all, because 200 dpi is below their downsampling threshold -- Ghostscript's output was actually 6-9% larger.",
                     "A five-page, text-only PDF (4.5 KB): every level produced a larger file -- about 25% larger on Screen and eBook, and 170% larger on Printer, which copied the font into the file. The text itself stayed as real, selectable text at every level.",
                 ],
+                "table": {
+                    "caption": "Our test results (Ghostscript 10.02, September 2026)",
+                    "headers": ["Test file", "Original", "Screen", "eBook", "Printer"],
+                    "rows": [
+                        ["One photo, 3000 x 2000 px at 300 dpi", "3.2 MB", "50 KB (1.6%)", "127 KB (3.9%)", "No meaningful change"],
+                        ["One-page greyscale scan at 200 dpi", "93 KB", "24 KB (25%)", "Not reduced (6-9% larger)", "Not reduced (6-9% larger)"],
+                        ["Five-page, text-only PDF", "4.5 KB", "About 25% larger", "About 25% larger", "About 170% larger"],
+                    ],
+                    "note": "When the result isn't smaller than your upload, our tool gives you back your original file instead.",
+                },
             },
             {
                 "heading": "Why a \"compressed\" file can come out bigger -- and what we do about it",
@@ -688,7 +708,7 @@ GUIDES = [
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
         "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
-        "updated": "2026-09-27",
+        "updated": "2026-09-30",
         "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"],
         "sections": [
             {
@@ -712,6 +732,15 @@ GUIDES = [
                     "The PNG was 645 KB. The JPG was 1.1 MB -- about 70% larger -- and it had lost detail: around 65,000 pixels around the letters changed noticeably compared with the exact PNG. Saved as a greyscale PNG, the same page was just 347 KB.",
                     "The reason is simple. A text page is mostly large areas of plain white with sharp black edges. Lossless PNG compression handles plain areas extremely efficiently, while JPG spends a lot of data trying to approximate every sharp edge -- and still doesn't get them exactly right.",
                 ],
+                "table": {
+                    "caption": "The same A4 text page, rendered at 300 dpi (2481 x 3508 pixels)",
+                    "headers": ["Saved as", "File size", "Exact copy of the page?"],
+                    "rows": [
+                        ["PNG (colour)", "645 KB", "Yes - lossless"],
+                        ["JPG (quality 75)", "1.1 MB (about 70% larger)", "No - around 65,000 pixels around the letters changed noticeably"],
+                        ["PNG (greyscale)", "347 KB", "Yes - lossless"],
+                    ],
+                },
             },
             {
                 "heading": "Photos are the opposite",
@@ -728,6 +757,19 @@ GUIDES = [
                     "Already have a JPG? Converting it to PNG won't bring back the detail JPG discarded; it only makes the file bigger. Keep JPGs as JPGs.",
                     "Editing an image several times? Work in PNG. Every time a JPG is edited and saved again, it is compressed again and loses a little more detail.",
                 ],
+                "table": {
+                    "caption": "JPG vs PNG at a glance",
+                    "headers": ["", "JPG", "PNG"],
+                    "rows": [
+                        ["Compression", "Lossy - discards fine detail", "Lossless - keeps every pixel"],
+                        ["Transparent background", "No", "Yes"],
+                        ["Text and sharp edges", "Faint smudges (artifacts) around letters", "Perfectly clean"],
+                        ["File size for photos", "Small", "Several times larger"],
+                        ["File size for text pages", "Larger in our test", "Smaller in our test"],
+                        ["Editing and re-saving", "Loses a little more detail each save", "No loss"],
+                        ["Best for", "Photographs", "Scans of text, screenshots, forms, charts, logos"],
+                    ],
+                },
             },
             {
                 "heading": "How our converters handle JPG and PNG",
