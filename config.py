@@ -250,6 +250,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Will bullet points and numbering be preserved?", "They convert to plain text lines rather than a live bulleted list -- you may need to reapply list formatting in Word."),
             ("Does this work on a scanned PDF?", "This tool extracts text that's already embedded in the PDF; it doesn't perform OCR, so a scanned image-only PDF won't produce editable text."),
+            ("Can I convert PDF to Word without sign-up?", "Yes -- there's no account, email or payment. Upload your PDF, convert it, and download the DOCX file. Your upload and the result are deleted from our server as soon as your download is ready."),
         ],
         "related": ["word-to-pdf", "pdf-to-excel", "pdf-to-ppt", "compress-pdf"],
         "seo_title": "PDF to Word Converter -- Editable DOCX | KuickKonvert",
@@ -266,7 +267,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Will my columns get cut off?", "Columns are automatically resized to fit, and very wide sheets switch to landscape orientation automatically to keep everything on the page."),
             ("Are my formulas or macros preserved?", "The PDF shows the calculated values currently in your sheet -- formulas and macros themselves aren't carried into the PDF, since PDF is a fixed, non-editable format."),
-            ("Can I convert XLSX to PDF online without installing Excel?", "Yes -- you upload the file from your browser and the conversion runs on our server, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
+            ("Can I convert Excel to PDF without Excel installed?", "Yes -- you upload the file from your browser and the conversion runs on our server, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
             ("Is this free, and is there a file size limit?", "It's free with no sign-up. The only limit is a 50MB file size cap, which covers the vast majority of spreadsheets."),
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
@@ -371,7 +372,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter -- PDF Pages to JPG | KuickKonvert",
-        "meta_description": "Convert PDF pages to JPG images online for free. Download individual images or a ZIP file for multi-page PDFs.",
+        "meta_description": "Convert PDF pages to 300 DPI JPG images online for free, with no sign-up. Get one JPG, or a ZIP file for multi-page PDFs.",
     },
     "pdf-to-png": {
         "intro": "PDF to PNG turns every page of a PDF into its own PNG image -- a good choice when you need a crisp image of a page with sharp text or line art, such as a diagram or a form.",
@@ -400,10 +401,11 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I change the order after adding files?", "Not directly -- files merge in the order you add them. Remove the files and re-add them in your preferred order if needed."),
             ("Is there a limit on how many files I can merge?", "There's no fixed file-count limit, but the combined upload must stay under the 50MB size limit."),
+            ("Can I merge PDF files without sign-up?", "Yes -- Merge PDF is free with no account or email needed. Add your files, merge them, and download the combined PDF."),
         ],
         "related": ["split-pdf", "compress-pdf", "pdf-to-word"],
         "seo_title": "Merge PDF Files Online Free | KuickKonvert",
-        "meta_description": "Merge multiple PDF files into one document online for free. Combine files in the order you add them, with no installation.",
+        "meta_description": "Merge multiple PDF files into one document online for free. Combine files in the order you add them, with no sign-up or installation.",
     },
     "split-pdf": {
         "intro": "Split PDF breaks every page of a PDF into its own single-page PDF file, delivered as a ZIP -- useful when you only need to send someone one page out of a longer document.",
@@ -432,7 +434,8 @@ TOOL_CONTENT = {
         "faq": [
             ("Which compression level should I choose?", "Ebook is a good default balance. Choose Screen for the smallest possible file if quality matters less, or Printer if quality matters most."),
             ("Will text quality be affected?", "Text stays sharp at every level -- compression mainly targets embedded images, so an image-heavy PDF will shrink more than a text-only one."),
-            ("Can I reduce a PDF's file size online for free?", "Yes -- Compress PDF is free to use with no sign-up. Upload your PDF, choose a compression level, and our server returns the smaller file."),
+            ("Can I compress a PDF without losing quality?", "Partly. Text and vector graphics stay sharp at every level, because compression only works on images. To keep images as close to the original as possible, choose \"Best quality, larger file\" (the Printer preset): it keeps image resolution and uses a gentler JPEG setting, but it usually shrinks the file only a little. A noticeably smaller file always means some loss of image detail -- our PDF compression guide shows real test results."),
+            ("Can I reduce a PDF's file size online for free?", "Yes -- use Compress PDF without sign-up or payment. Upload your PDF, choose a compression level, and our server returns the smaller file."),
         ],
         "related": ["merge-pdf", "split-pdf", "pdf-to-jpg"],
         "seo_title": "Compress PDF Online -- Reduce File Size Free | KuickKonvert",
@@ -487,7 +490,7 @@ TOOL_CONTENT = {
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
-        "meta_description": "Add password protection to a PDF online for free. Protect your PDF without installing software or creating an account.",
+        "meta_description": "Password protect a PDF online for free. No sign-up or installation -- add a password so only people who know it can open the file.",
     },
 }
 
@@ -577,14 +580,16 @@ GUIDES = [
         "slug": "why-pdf-layout-shifts",
         "title": "Why a PDF's Layout Sometimes Shifts After Conversion (and How to Avoid It)",
         "seo_title": "Why PDF Layout Shifts After Conversion | KuickKonvert",
-        "meta_description": "Converted a document to PDF and the layout moved slightly? Here's the specific, technical reason why, and how to prevent it.",
+        "meta_description": "Converted a Word document to PDF and the layout or fonts changed slightly? Here's the specific, technical reason why, and how to prevent it.",
         "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution.",
         "published": "2026-09-14",
+        "updated": "2026-10-02",
         "related_tools": ["word-to-pdf", "excel-to-pdf", "ppt-to-pdf"],
         "sections": [
             {
-                "heading": "The layout isn't stored as fixed positions -- it's calculated from the font",
+                "heading": "Why does the layout change when converting Word to PDF?",
                 "paragraphs": [
+                    "Because the layout isn't stored as fixed positions -- it's calculated from the font.",
                     "A Word or PowerPoint file doesn't store where every letter sits on the page. It stores the text and which font it's set in, and the software calculates line breaks and spacing at render time based on that specific font's actual letter widths.",
                     "PDF, by contrast, is a fixed-layout format -- once converted, every letter's position is locked in. That conversion step is exactly where a font mismatch becomes visible.",
                 ],
@@ -592,6 +597,7 @@ GUIDES = [
             {
                 "heading": "What happens when the exact font isn't available",
                 "paragraphs": [
+                    "If the fonts changed after you converted a Word file to PDF, this is almost always the reason.",
                     "Common commercial fonts like Calibri or Cambria are licensed by Microsoft and aren't necessarily installed on the server performing the conversion. Our Office-to-PDF conversions run through LibreOffice, which substitutes a metrically-compatible alternative when the exact font is missing -- Carlito in place of Calibri, Caladea in place of Cambria. These substitutes are specifically engineered to match the original font's character widths, so line breaks and page counts stay the same.",
                     "What can still shift very slightly is the exact letterform (the visual shape of each character) and, in edge cases, spacing that depends on more than raw character width, such as kerning pairs unique to the original font.",
                 ],
@@ -613,7 +619,7 @@ GUIDES = [
         "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
         "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
         "published": "2026-09-14",
-        "updated": "2026-09-30",
+        "updated": "2026-10-02",
         "related_tools": ["compress-pdf"],
         "sections": [
             {
@@ -685,6 +691,15 @@ GUIDES = [
                 ],
             },
             {
+                "heading": "Can you compress a PDF without losing quality?",
+                "paragraphs": [
+                    "It depends on what is in the file. Text and vector graphics never lose quality: they stay as real text at every level. What can lose quality is images, because making a PDF smaller mostly means storing its images with fewer pixels or stronger JPEG compression.",
+                    "If you want to compress a PDF without losing quality you can see, choose Printer (\"Best quality, larger file\" in our tool). It keeps every image at its original resolution and uses the gentler JPEG setting. The trade-off, as our test showed, is that the file usually gets only slightly smaller, if at all.",
+                    "To reduce a PDF's file size without losing quality that matters on screen, eBook is the practical middle ground: photos are reduced to 150 dpi, which still looks sharp on a phone or laptop and generally prints acceptably at normal size, while the text is untouched.",
+                    "Whichever level you choose, open the compressed file, zoom in on the smallest text and on any photos, and keep your original until you're happy with the result.",
+                ],
+            },
+            {
                 "heading": "Which level to choose",
                 "paragraphs": [
                     "Documents with photos that you'll email or read on screen: start with eBook. Try Screen only if you still need a smaller file and nobody will print it.",
@@ -708,7 +723,7 @@ GUIDES = [
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
         "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
-        "updated": "2026-09-30",
+        "updated": "2026-10-02",
         "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"],
         "sections": [
             {
@@ -749,6 +764,15 @@ GUIDES = [
                 ],
             },
             {
+                "heading": "JPG vs PNG quality for printing",
+                "paragraphs": [
+                    "For printing, resolution matters more than format. 300 dpi is a common standard for sharp prints at normal size, which is why our PDF to JPG and PDF to PNG tools render every page at 300 dpi.",
+                    "Text, forms, line drawings and logos: print from PNG. Because PNG is lossless, letter edges stay clean, while the smudges JPG leaves around text can show up on paper.",
+                    "Photographs: a good-quality JPG prints well and keeps the file small. If a print shop asks for a particular format, follow their instructions.",
+                    "In short, the PNG vs JPG quality difference is easiest to see on text and hardest to see on photos.",
+                ],
+            },
+            {
                 "heading": "Which one to use",
                 "paragraphs": [
                     "PNG for scanned text documents, screenshots, forms, charts, diagrams, and anything you'll need to read or zoom into later.",
@@ -767,6 +791,7 @@ GUIDES = [
                         ["File size for photos", "Small", "Several times larger"],
                         ["File size for text pages", "Larger in our test", "Smaller in our test"],
                         ["Editing and re-saving", "Loses a little more detail each save", "No loss"],
+                        ["Printing", "Good for photos", "Best for text, forms, line art and logos"],
                         ["Best for", "Photographs", "Scans of text, screenshots, forms, charts, logos"],
                     ],
                 },
