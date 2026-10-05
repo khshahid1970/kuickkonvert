@@ -122,7 +122,8 @@ def convert_pdf_to_excel(input_path: str, out_dir: str) -> str:
     if not any_content:
         raise ConversionError(
             "No text or tables could be found in this PDF -- it may be a scanned "
-            "image. Try PDF OCR first (coming soon), or a text-based PDF."
+            "image. This tool needs a PDF with selectable text; a scanned page "
+            "has to be turned into text with OCR software first."
         )
 
     wb.save(out_path)
