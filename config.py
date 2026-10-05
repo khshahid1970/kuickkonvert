@@ -541,37 +541,64 @@ GUIDES = [
         "slug": "docx-vs-doc",
         "title": "DOCX vs DOC: What's Actually Different (and When It Matters)",
         "seo_title": "DOCX vs DOC: The Real Difference Explained | KuickKonvert",
-        "meta_description": "DOC and DOCX both open in Word but aren't the same format underneath. Here's what actually changed, and when the difference affects you.",
-        "dek": "Both open in Word, but DOC and DOCX are built on completely different technology. Here's what that actually changes for you.",
+        "meta_description": "DOC and DOCX both open in Word but aren't the same format underneath. What changed, what our own size test found, and when the difference affects you.",
+        "dek": "Both open in Word, but DOC and DOCX are built on completely different technology. Here's what that changes for you -- including one common claim our own test didn't bear out.",
         "published": "2026-09-14",
+        "updated": "2026-10-05",
         "related_tools": ["word-to-pdf"],
         "sections": [
             {
                 "heading": "Two different formats, one program",
                 "paragraphs": [
                     "DOC was Microsoft Word's format from Word 97 through Word 2003: a single binary file that only Word itself, or software specifically built to parse that binary structure, could reliably read.",
-                    "DOCX replaced it starting with Word 2007. It isn't a new version of the same format -- it's a completely different approach: a DOCX file is actually a ZIP archive containing a set of XML files (the \"Office Open XML\", or OOXML, standard). Rename any .docx file to .zip and a normal file archiver will open it and show you the XML inside.",
+                    "DOCX replaced it as Word's default starting with Word 2007. It isn't a new version of the same format -- it's a completely different approach: a DOCX file is actually a ZIP archive containing a set of XML files (the \"Office Open XML\", or OOXML, standard). Rename any .docx file to .zip and a normal file archiver will open it and show you the XML inside.",
                 ],
+            },
+            {
+                "heading": "What we found inside each file",
+                "paragraphs": [
+                    "We created a four-page test document in DOCX and saved a copy as DOC with LibreOffice (October 2026), then looked at the raw files.",
+                    "The DOCX file starts with the letters PK -- the signature of every ZIP file -- and unzips into separate parts: the text in word/document.xml, the formatting in word/styles.xml, the theme in word/theme/theme1.xml, document properties in docProps, and, when the document has them, a separate part for comments and a folder for images. The DOC file starts with a different signature (D0 CF 11 E0), the marker of Microsoft's older compound binary file format, and can't be opened with a file archiver.",
+                ],
+            },
+            {
+                "heading": "Is DOCX really smaller? Our test says: not always",
+                "paragraphs": [
+                    "Microsoft's own support page says Open XML files are automatically compressed and \"can be up to 75 percent smaller in some cases\". That is true for some documents, but it isn't a rule.",
+                    "In our test the two formats came out almost the same size. The four-page text document was 37.3 KB as DOCX and 36.5 KB as DOC. With one large photo added, it was 5,510 KB as DOCX and 5,565 KB as DOC -- the photo, already compressed as a JPG, was most of the file in both formats, and zipping it again saves almost nothing.",
+                    "So if you need a smaller Word file, switching between DOC and DOCX is rarely the answer. Compressing or resizing the pictures inside it makes far more difference.",
+                ],
+                "table": {
+                    "caption": "The same document saved both ways (our test, October 2026)",
+                    "headers": ["Test document", "DOCX", "DOC", "Converted to PDF with our tool"],
+                    "rows": [
+                        ["Four pages of text", "37.3 KB", "36.5 KB", "4 pages from either format"],
+                        ["Same document plus one 4000 x 3000 photo", "5,510 KB", "5,565 KB", "-"],
+                    ],
+                    "note": "The DOC copy was saved with LibreOffice, not Microsoft Word; sizes from Word itself can differ.",
+                },
             },
             {
                 "heading": "Why Microsoft made the switch",
                 "paragraphs": [
-                    "XML-based formats are openly documented, so other software -- Google Docs, LibreOffice, Apple Pages, and the conversion tools on this site included -- can read and write them accurately without reverse-engineering a proprietary binary layout. ZIP/XML-based files also compress well and are less prone to total corruption: damage to one part of the XML often leaves the rest of the document recoverable, which was much harder with the old binary format.",
+                    "XML-based formats are openly documented, so other software -- Google Docs, LibreOffice, Apple Pages, and the conversion tools on this site included -- can read and write them without reverse-engineering a proprietary binary layout.",
+                    "Microsoft also points to resilience: because the parts of a DOCX file are stored separately, it says a file can still be opened even if one component, such as a chart or table, is damaged.",
                 ],
             },
             {
                 "heading": "When the difference actually matters to you",
                 "paragraphs": [
-                    "Compatibility with older software. Word 2003 and earlier can't open a .docx file without a separate compatibility pack -- the most common real-world reason someone still needs a plain .doc.",
-                    "File size. A DOCX file is typically smaller than the equivalent DOC file, because the underlying XML compresses well inside the ZIP container.",
-                    "Features. Several newer Word features were introduced alongside the DOCX format and have no clean equivalent in the older DOC structure.",
-                    "For most everyday use -- writing, editing, sharing with someone on a reasonably current version of Word or Google Docs -- the difference is invisible. It mainly surfaces when dealing with an older system, or converting the file to something else, like PDF.",
+                    "Compatibility with older software. Word 2003 and earlier can't open a .docx file without Microsoft's separate compatibility pack -- the most common real-world reason someone still asks for a plain .doc.",
+                    "Macros. A normal .docx file can't contain macros; Word uses the separate .docm extension for macro-enabled documents. That makes a .docx a little safer to open from an unknown sender, while an old .doc may contain macros.",
+                    "Converting to PDF. In our test, both formats converted to the same four-page PDF with our Word to PDF tool, so either one is fine to upload.",
+                    "For everyday writing, editing and sharing with someone on a current version of Word or Google Docs, the difference is invisible.",
                 ],
             },
             {
-                "heading": "Converting either one to PDF",
+                "heading": "Which one should you use?",
                 "paragraphs": [
-                    "Our Word to PDF tool accepts both .doc and .docx and converts either to a fixed-layout PDF that looks the same regardless of which Word version -- or whether Word at all -- the recipient has installed.",
+                    "Use DOCX unless someone specifically needs DOC for an old program. It is Word's default, it is the format other software supports best, and it keeps macros out unless you deliberately choose .docm.",
+                    "If a form or portal asks for \"a Word document\" without saying which, DOCX is the safe choice. If it must not be edited at all, send a PDF instead -- our Word to PDF tool accepts both .doc and .docx. Your upload and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
@@ -580,34 +607,66 @@ GUIDES = [
         "slug": "why-pdf-layout-shifts",
         "title": "Why a PDF's Layout Sometimes Shifts After Conversion (and How to Avoid It)",
         "seo_title": "Why PDF Layout Shifts After Conversion | KuickKonvert",
-        "meta_description": "Converted a Word document to PDF and the layout or fonts changed slightly? Here's the specific, technical reason why, and how to prevent it.",
-        "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution.",
+        "meta_description": "Converted a Word document to PDF and the fonts or page count changed? Our test shows exactly why -- and why Word's newer default font, Aptos, is affected.",
+        "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution. Our test shows how much difference it can make.",
         "published": "2026-09-14",
-        "updated": "2026-10-02",
+        "updated": "2026-10-05",
         "related_tools": ["word-to-pdf", "excel-to-pdf", "ppt-to-pdf"],
         "sections": [
             {
                 "heading": "Why does the layout change when converting Word to PDF?",
                 "paragraphs": [
                     "Because the layout isn't stored as fixed positions -- it's calculated from the font.",
-                    "A Word or PowerPoint file doesn't store where every letter sits on the page. It stores the text and which font it's set in, and the software calculates line breaks and spacing at render time based on that specific font's actual letter widths.",
+                    "A Word or PowerPoint file doesn't store where every letter sits on the page. It stores the text and which font it's set in, and the software calculates line breaks and spacing at the moment it displays the document, based on that font's actual letter widths.",
                     "PDF, by contrast, is a fixed-layout format -- once converted, every letter's position is locked in. That conversion step is exactly where a font mismatch becomes visible.",
                 ],
             },
             {
                 "heading": "What happens when the exact font isn't available",
                 "paragraphs": [
-                    "If the fonts changed after you converted a Word file to PDF, this is almost always the reason.",
-                    "Common commercial fonts like Calibri or Cambria are licensed by Microsoft and aren't necessarily installed on the server performing the conversion. Our Office-to-PDF conversions run through LibreOffice, which substitutes a metrically-compatible alternative when the exact font is missing -- Carlito in place of Calibri, Caladea in place of Cambria. These substitutes are specifically engineered to match the original font's character widths, so line breaks and page counts stay the same.",
-                    "What can still shift very slightly is the exact letterform (the visual shape of each character) and, in edge cases, spacing that depends on more than raw character width, such as kerning pairs unique to the original font.",
+                    "Commercial fonts such as Calibri, Cambria, Arial and Times New Roman are licensed by Microsoft and aren't necessarily installed on the server that performs the conversion. Our Office-to-PDF conversions run through LibreOffice, and our server has free, metric-compatible replacements installed for the most common ones: Carlito for Calibri, Caladea for Cambria, and the Liberation fonts for Arial, Times New Roman and Courier New.",
+                    "\"Metric-compatible\" means each letter is exactly as wide as in the original font, so line breaks and page counts stay the same. What can still differ slightly is the shape of the letters themselves.",
+                    "Any font without such a replacement falls back to a general-purpose font with different letter widths -- and that is when lines rewrap and pages move.",
                 ],
             },
             {
-                "heading": "How to avoid it entirely",
+                "heading": "What we measured",
                 "paragraphs": [
-                    "Stick to fonts that are genuinely cross-platform and open-licensed if layout precision matters -- Arial, Times New Roman, and the Carlito/Caladea/Liberation family all convert with no substitution needed, because they're already what gets used.",
-                    "If you must use a commercial font and need pixel-perfect fidelity, flatten the text to outlines or images in the original program before converting -- this preserves the exact look at the cost of making the text unselectable.",
-                    "For everyday documents, a font substitution is rarely noticeable and the line breaks stay correct. It's mainly worth planning around for heavily designed documents, like flyers or resumes, with tight, deliberate line breaks.",
+                    "We wrote the same document -- headings, about 1,600 words of text, a link and a header -- three times, changing only the body font, and converted each one with the same code and the same set of fonts our server uses (LibreOffice 24.2, October 2026). We then checked which font actually ended up in each PDF.",
+                    "Calibri and Arial were replaced by their metric-compatible twins, and both documents stayed at four pages. Aptos was replaced by DejaVu Sans, a font with wider letters, and the same text grew to five pages.",
+                ],
+                "table": {
+                    "caption": "The same document in three fonts, converted with our Word to PDF tool (October 2026)",
+                    "headers": ["Font chosen in Word", "Font used in the PDF", "Pages", "Layout kept?"],
+                    "rows": [
+                        ["Calibri", "Carlito (metric-compatible)", "4", "Yes"],
+                        ["Arial", "Liberation Sans (metric-compatible)", "4", "Yes"],
+                        ["Aptos", "DejaVu Sans (fallback, wider letters)", "5", "No - text rewrapped onto an extra page"],
+                    ],
+                    "note": "Headings in all three tests used Word's heading style and came out in Carlito Bold. Exact results can vary with the LibreOffice version.",
+                },
+            },
+            {
+                "heading": "Why Aptos matters: Word's newer default font",
+                "paragraphs": [
+                    "Microsoft has replaced Calibri with Aptos as the default font in Microsoft 365, so many new documents are now written in Aptos without anyone choosing it. Aptos has no free metric-compatible replacement installed on our server, so as our test shows, a document in Aptos can change its line breaks and page count when converted here.",
+                    "If your document was created recently in Microsoft 365 and its exact layout matters, check which font it uses before converting.",
+                ],
+            },
+            {
+                "heading": "How to check which font your document uses",
+                "paragraphs": [
+                    "In Word, click inside the text: the font box on the Home tab shows the font. If it shows Aptos, or a font you don't recognise, that is the text most likely to move.",
+                    "In the finished PDF, most readers can list the fonts actually used. In Adobe Acrobat Reader, open File > Properties and choose the Fonts tab; a name such as DejaVu Sans where you expected your own font means a substitution took place.",
+                ],
+            },
+            {
+                "heading": "How to avoid it",
+                "paragraphs": [
+                    "Choose a font with a metric-compatible replacement if layout precision matters. Calibri and Arial kept their layout exactly in our test, and Cambria, Times New Roman and Courier New also have metric-compatible replacements on our server.",
+                    "To change a whole document quickly in Word, select all the text (Ctrl+A) and pick the new font, or change the font of the Normal style so every paragraph using it follows.",
+                    "If you must keep a font with no replacement, such as Aptos or a decorative brand font, and need an exact match, save the PDF from Word itself (File > Save As > PDF) on a computer that has that font installed.",
+                    "Always open the PDF and compare the page count and the last line of each page with your original before sending it. Your upload and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
@@ -1223,6 +1282,284 @@ GUIDES = [
                 "paragraphs": [
                     "Text-based PDFs with a simple layout -- letters, contracts, reports -- convert best. Complex layouts, such as multi-column brochures or text over images, can need tidying in Word afterwards.",
                     "Our tool cannot open password-protected PDFs, so remove the password first. Your upload and the Word file are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "powerpoint-to-pdf-and-back",
+        "title": "PowerPoint to PDF and PDF to PowerPoint: What Carries Over (With Test Results)",
+        "seo_title": "PowerPoint to PDF and PDF to PPT: What Carries Over | KuickKonvert",
+        "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF -- and why PDF to PowerPoint gives picture slides. Our tests.",
+        "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found.",
+        "published": "2026-10-05",
+        "related_tools": ["ppt-to-pdf", "pdf-to-ppt"],
+        "sections": [
+            {
+                "heading": "What PowerPoint to PDF does",
+                "paragraphs": [
+                    "Our PPT to PDF tool converts .ppt and .pptx files with LibreOffice and produces one PDF page per slide. The page has the same shape as your slides, so a widescreen 16:9 deck gives widescreen 13.33 x 7.5 inch pages, not A4 or Letter.",
+                    "The result is a fixed copy of the deck: it looks the same on any device, and nobody needs PowerPoint to open it -- which is why PDF is the usual way to send slides to a client or attach them to an application.",
+                ],
+            },
+            {
+                "heading": "What we measured",
+                "paragraphs": [
+                    "We built a five-slide widescreen test deck with a title and two bullet points on each slide, speaker notes on every slide, a web link on slide 2, and slide 4 set to hidden. We converted it with the same code and fonts our server uses (LibreOffice 24.2, October 2026).",
+                    "The PDF had four pages, because the hidden slide was left out. None of the speaker notes appeared. The link on slide 2 stayed clickable, and all the slide text could be selected and searched. The 39.7 KB presentation became a 20.5 KB PDF.",
+                ],
+                "table": {
+                    "caption": "Converting a five-slide test deck with our PPT to PDF tool (October 2026)",
+                    "headers": ["What we checked", "Result in the PDF"],
+                    "rows": [
+                        ["Number of pages", "4 - one per visible slide"],
+                        ["Hidden slide", "Left out"],
+                        ["Speaker notes", "Not included"],
+                        ["Web link on a slide", "Kept and clickable"],
+                        ["Slide text", "Real text - selectable and searchable"],
+                        ["Page size", "13.33 x 7.5 inches, the same as the 16:9 slides"],
+                        ["Calibri text", "Shown in Carlito, its metric-compatible replacement"],
+                    ],
+                },
+            },
+            {
+                "heading": "Before you convert a presentation",
+                "paragraphs": [
+                    "Unhide any slide you want in the PDF. Hidden slides are skipped, which is useful for backup slides you don't want to send -- and a surprise if you forgot one was hidden. In PowerPoint's Slide Sorter view, hidden slides are easy to spot because their slide numbers are crossed out.",
+                    "Don't rely on speaker notes. If the reader needs them, move the key points onto the slides, or create notes pages in PowerPoint itself (its Notes Pages print layout) and print those to PDF.",
+                    "Check your fonts. The same font substitution that can shift Word documents applies to slides, including Aptos, the newer Microsoft 365 default -- see our guide on why a PDF's layout sometimes shifts. Text that just fits a box in PowerPoint can wrap differently in another font.",
+                    "Keep the file under our 50 MB upload limit.",
+                ],
+            },
+            {
+                "heading": "PDF to PowerPoint: why you get picture slides",
+                "paragraphs": [
+                    "Our PDF to PPT tool makes one slide per PDF page, and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
+                    "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is a guaranteed, exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
+                    "Pictures take more space than text, so expect a bigger file: our 20.5 KB PDF became a 170.5 KB presentation.",
+                ],
+            },
+            {
+                "heading": "When PDF to PowerPoint is the right tool -- and when it isn't",
+                "paragraphs": [
+                    "It works well when you need to present a PDF in PowerPoint or Google Slides, add your own slides before or after it, or draw and write on top of the pages during a talk.",
+                    "It is the wrong tool if you need to edit the words. The text on each slide is part of a picture, so it can't be changed. Ask the sender for the original .pptx, or, if you only need the wording, use our PDF to Word tool on a text-based PDF and copy the text from there.",
+                ],
+            },
+            {
+                "heading": "Quick checklist",
+                "paragraphs": [
+                    "Unhide the slides you need, move essential notes onto the slides, use common fonts, and open the PDF to check every slide before sending it. For PDF to PowerPoint, expect picture slides and a larger file. Your upload and the result are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "watermark-pdf-what-it-protects",
+        "title": "Watermarking a PDF: What a Text Watermark Does and Doesn't Protect",
+        "seo_title": "Watermark PDF: What a Text Watermark Protects | KuickKonvert",
+        "meta_description": "What our Watermark PDF tool adds to each page, how much text fits, what a watermark can't stop, and how to combine it with a password. Our own test results.",
+        "dek": "A watermark labels every page -- CONFIDENTIAL, DRAFT, COPY -- so nobody can mistake what the document is. It doesn't lock anything. Here's what our tests showed, and how to use one well.",
+        "published": "2026-10-05",
+        "related_tools": ["watermark-pdf", "protect-pdf"],
+        "sections": [
+            {
+                "heading": "What our Watermark PDF tool adds",
+                "paragraphs": [
+                    "The tool stamps the text you type diagonally across the centre of every page, at a 45-degree angle, in bold grey letters that are 35% opaque, so the page underneath stays readable. The letters are sized to the page's shorter side: 49 points on an A4 page and 51 points on US Letter, whether the page is portrait or landscape.",
+                    "The watermark is placed on top of the page content, not behind it, so it also shows over photos and scanned pages, where a watermark behind the content would be hidden.",
+                    "You can type up to 120 characters. Anything longer is cut off at 120.",
+                ],
+            },
+            {
+                "heading": "How much text fits",
+                "paragraphs": [
+                    "The diagonal of an A4 page is about 1,031 points long, and the watermark text is not made smaller to fit. So the length of your text decides whether it is all visible.",
+                    "In our tests (October 2026), CONFIDENTIAL used about 365 points -- roughly a third of the diagonal -- and sat neatly in the middle. A 58-character sentence was about 1,644 points wide, so only around 30 of its 58 characters landed on the page; the beginning and end ran off the edges. In practice, keep watermark text to about 25 characters for an A4 page.",
+                ],
+                "table": {
+                    "caption": "Watermark text on an A4 page with our tool (October 2026)",
+                    "headers": ["Watermark text", "Length", "Width at 49 pt", "Fits on the page?"],
+                    "rows": [
+                        ["DRAFT", "5 characters", "About 166 pt", "Yes"],
+                        ["CONFIDENTIAL", "12 characters", "About 365 pt", "Yes"],
+                        ["COPY - NOT VALID", "16 characters", "About 446 pt", "Yes"],
+                        ["A 58-character sentence", "58 characters", "About 1,644 pt", "No - about 30 characters visible"],
+                        ["150 characters typed", "Cut to 120", "Far wider than the page", "No"],
+                    ],
+                    "note": "Widths are for capital letters in Helvetica Bold, the font the tool uses. Lower-case text is narrower.",
+                },
+            },
+            {
+                "heading": "Scans, mixed page sizes and every page",
+                "paragraphs": [
+                    "Because the watermark sits on top of the page, it stays visible on scanned documents, where each page is a single photo. On a scan the watermark is the only real text on the page, so searching a scanned, watermarked file finds the watermark but not the words in the scan.",
+                    "Every page is watermarked; there is no option to skip the cover or choose pages. If a file mixes page sizes -- say A4 pages and a landscape table -- the tool sizes the watermark separately for each page size, so it stays centred on every page.",
+                ],
+            },
+            {
+                "heading": "What a watermark does -- and what it doesn't",
+                "paragraphs": [
+                    "It labels the document. Every page, including printouts and screenshots of it, carries the word you chose, which makes a draft hard to pass off as final and makes the purpose of a copy clear.",
+                    "It doesn't stop anyone opening, reading, copying or printing the file. In our test, the original page text was still fully selectable after watermarking, and the watermark itself was ordinary text too -- searching the page found it, and copying text from the page picked it up.",
+                    "Because it is ordinary content added to each page, it can be edited or removed by someone with PDF editing software. Treat a watermark as a clear label and a deterrent, not as protection.",
+                    "Watermarking added very little to the file size: our two-page test PDF grew from 2.5 KB to 9.2 KB.",
+                ],
+            },
+            {
+                "heading": "Watermark and password together: do it in the right order",
+                "paragraphs": [
+                    "If a document needs both a label and protection, watermark it first, then run the watermarked file through Protect PDF. Our tools can't open a password-protected PDF, so if you protect it first, the watermark step will stop with a message that the file is password-protected.",
+                    "A password stops people without it from opening the file; the watermark stays on every page for the people who do open it.",
+                ],
+            },
+            {
+                "heading": "Tips for an effective watermark",
+                "paragraphs": [
+                    "Keep it short and specific: DRAFT, CONFIDENTIAL, SAMPLE, or COPY - NOT VALID read instantly.",
+                    "To show who a copy was for, a short label such as \"Copy for ABC Ltd\" fits comfortably; a full sentence will run off the page.",
+                    "Keep an unwatermarked original. The tool doesn't remove watermarks, so you'll need the original to make a clean final version.",
+                    "Open the result and check a page before sending it. Your upload and the watermarked file are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "split-and-rotate-pdf-pages",
+        "title": "Split PDF and Rotate PDF: What Happens Inside the File (With Test Results)",
+        "seo_title": "Split and Rotate PDF Pages: What Changes Inside | KuickKonvert",
+        "meta_description": "Why split PDF pages can add up to far more than the original, why rotating a PDF loses no quality, and how to rotate or extract just some pages. Our tests.",
+        "dek": "Splitting and rotating look like the simplest PDF jobs, but our tests turned up two things worth knowing: split pages can take up many times the space of the original, and rotation never touches your content.",
+        "published": "2026-10-05",
+        "related_tools": ["split-pdf", "rotate-pdf", "merge-pdf"],
+        "sections": [
+            {
+                "heading": "What Split PDF gives you",
+                "paragraphs": [
+                    "Split PDF turns every page of your file into its own one-page PDF. For a multi-page file you download a ZIP containing page-001.pdf, page-002.pdf and so on, in page order; a one-page PDF simply comes back as a PDF. There is no option to choose a page range -- every page is split.",
+                    "Each page file is a complete, normal PDF: in our test the text on it was still real, selectable text. Like Merge, Split does not copy the document's title from the original's properties into the new files.",
+                ],
+            },
+            {
+                "heading": "Why the split pages can add up to far more than the original",
+                "paragraphs": [
+                    "This is the result that surprised us. We split a 10-page text report of 50.3 KB, which used an embedded font. The ten page files added up to 421.3 KB -- more than eight times the original -- and each single page was about 42 KB on its own.",
+                    "The reason is fonts. A PDF that embeds a font stores it once and shares it between all its pages. When the pages are separated, every page file needs its own copy of the font, so the same font is stored ten times.",
+                    "A scanned document behaves differently. We split a five-page scan of 3,214 KB, and the five page files added up to 3,214 KB -- almost exactly the same -- because each page's picture belongs to that page alone and nothing is shared.",
+                ],
+                "table": {
+                    "caption": "Splitting two test files with our Split PDF tool (October 2026)",
+                    "headers": ["Test file", "Original", "All page files together", "One page file"],
+                    "rows": [
+                        ["10-page text report with an embedded font", "50.3 KB", "421.3 KB (8.4x)", "About 42 KB"],
+                        ["5-page scanned document (200 dpi)", "3,214 KB", "3,214 KB (1.0x)", "About 640 KB"],
+                    ],
+                },
+            },
+            {
+                "heading": "What that means in practice",
+                "paragraphs": [
+                    "Sending one page is still efficient: a single 42 KB page file is smaller than the whole 50.3 KB report.",
+                    "But don't split a document to make it smaller overall, and don't send all the separate pages when the whole file would do -- with text documents the pages together can be several times bigger. To shrink a file, use Compress PDF instead.",
+                    "To keep only some pages, split the file, then put the pages you want back together with Merge PDF, adding them one at a time in the order you want. The merged file shares its fonts again.",
+                ],
+            },
+            {
+                "heading": "What Rotate PDF does -- and why it loses no quality",
+                "paragraphs": [
+                    "Rotate PDF turns every page by 90, 180 or 270 degrees. In the PDF format, page rotation is a setting stored with each page that tells the reader how to display it; the PDF standard defines it as a clockwise turn. So 90 degrees turns pages a quarter turn clockwise, 270 degrees a quarter turn anticlockwise, and 180 degrees turns them upside down.",
+                    "We checked what changes inside the file. After rotating, the content of each page -- the text and drawing instructions -- was byte-for-byte identical to the original; only the rotation setting changed. The text stayed selectable and searchable, and the file size barely moved: 50.3 KB became 49.7 KB, and a 3,214 KB scan stayed at 3,213 KB.",
+                    "Rotations add up. Rotating a file by 90 degrees and then rotating the result by 90 degrees again gave a total rotation of 180 degrees, so you can always rotate again if the first choice was wrong.",
+                ],
+                "table": {
+                    "caption": "Rotating test files with our Rotate PDF tool (October 2026)",
+                    "headers": ["What we checked", "Result"],
+                    "rows": [
+                        ["Page content (text and drawing instructions)", "Unchanged, byte for byte"],
+                        ["Text", "Still selectable and searchable"],
+                        ["File size, 10-page text report", "50.3 KB to 49.7 KB"],
+                        ["File size, 5-page scan", "3,214 KB to 3,213 KB"],
+                        ["Rotating by 90 degrees twice", "Total rotation 180 degrees"],
+                        ["Which pages are rotated", "All pages"],
+                    ],
+                },
+            },
+            {
+                "heading": "Rotating just one page",
+                "paragraphs": [
+                    "Rotate PDF always turns every page. If only one page of a scan is sideways, split the file, rotate that single page file, then merge all the pages back together in order with Merge PDF. Our guide to merging PDFs in the right order walks through the merge step.",
+                    "Your uploads and results are deleted from our server as soon as your download is ready, so keep your original until you've checked the result.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "word-to-pdf-what-carries-over",
+        "title": "Word to PDF: What Carries Over -- Links, Headings, Comments and Photos (With Test Results)",
+        "seo_title": "Word to PDF: What Carries Over (Tested) | KuickKonvert",
+        "meta_description": "Do links, headings, headers, comments and photos survive Word to PDF conversion? Our test results, including how photos are resized, and what to check first.",
+        "dek": "A Word document holds more than the words on the page: links, heading structure, comments, full-size photos. We tested which of these make it into the PDF our tool creates.",
+        "published": "2026-10-05",
+        "related_tools": ["word-to-pdf"],
+        "sections": [
+            {
+                "heading": "What we tested",
+                "paragraphs": [
+                    "We created a four-page Word document with two main headings and one sub-heading, a page header, a web link, a comment in the margin, and a 4000 x 3000 pixel photo placed 6 inches wide. We converted it with the same code and fonts our server uses (LibreOffice 24.2, October 2026) and examined the PDF.",
+                ],
+                "table": {
+                    "caption": "A four-page test document converted with our Word to PDF tool (October 2026)",
+                    "headers": ["Part of the document", "In the PDF?"],
+                    "rows": [
+                        ["Text", "Yes - real, selectable and searchable text"],
+                        ["Web link", "Yes - still clickable"],
+                        ["Page header", "Yes - on the pages"],
+                        ["Headings (Heading styles)", "Yes - also turned into PDF bookmarks"],
+                        ["Comment in the margin", "No - comments are not included"],
+                        ["Photo", "Yes - resized to 300 dpi for its printed size and saved as JPEG"],
+                    ],
+                },
+            },
+            {
+                "heading": "Links and headings",
+                "paragraphs": [
+                    "The web link stayed clickable in the PDF, so readers can still follow it.",
+                    "Our headings, formatted with Word's built-in Heading styles, also appeared as bookmarks: the clickable outline most PDF readers show in a side panel, with each sub-heading nested under its main heading. This makes long documents much easier to navigate. In a second test, a line we had simply made large and bold did not become a bookmark -- so use Word's Heading 1 and Heading 2 styles if you want them.",
+                ],
+            },
+            {
+                "heading": "Page numbers and tables",
+                "paragraphs": [
+                    "In a second test we put an automatic page number in the footer (Word's PAGE field) and added a table. The six-page PDF showed the correct number on every page -- Page 1 to Page 6 -- and the table came through as a table, with its cell text still selectable.",
+                    "Automatic fields like this are calculated during conversion, so they match the PDF's pages. If a page number or date was typed in by hand, it stays exactly as typed.",
+                ],
+            },
+            {
+                "heading": "Comments are left out",
+                "paragraphs": [
+                    "The comment we added in the margin did not appear anywhere in the PDF. For most people that's what they want: a PDF sent to a client shouldn't carry internal review notes.",
+                    "If you do need the comments, for example to share a review, keep sending the Word file, or print the document from Word with its markup shown and choose a PDF printer.",
+                    "Leaving comments out of the PDF doesn't remove them from your Word file, so don't send the .docx itself if the comments are private.",
+                ],
+            },
+            {
+                "heading": "Photos are resized -- usually a good thing",
+                "paragraphs": [
+                    "Our 4000 x 3000 photo was placed 6 inches wide on the page. In the PDF it was stored at 1800 x 1350 pixels -- exactly 300 pixels for every inch it occupies on the page -- and saved as a JPEG. The JPG photo file itself was 5.4 MB; in the PDF it took up 518 KB.",
+                    "300 dpi is a common standard for sharp printing, so the photo still looks sharp on paper and on screen at normal zoom. The benefit is size: the whole four-page document was 5,510 KB as a Word file and only 544 KB as a PDF.",
+                    "If you need the original full-resolution photo -- for example for a print shop -- send the image file separately instead of relying on the copy inside the PDF.",
+                ],
+            },
+            {
+                "heading": "Fonts: the one thing to check",
+                "paragraphs": [
+                    "Text is converted as real text, but in the fonts available on our server. Calibri and Arial are replaced by metric-compatible twins, so the layout stays the same. Aptos, the newer Microsoft 365 default, is not, and in our test the same document grew from four pages to five. Our guide on why a PDF's layout sometimes shifts explains this in detail.",
+                ],
+            },
+            {
+                "heading": "Checklist before converting",
+                "paragraphs": [
+                    "Use Word's Heading styles if you want bookmarks, use a common font such as Calibri or Arial, remember that comments won't appear, and keep the original photos if anyone needs them at full size. Then open the PDF, check the page count and click a link or two. Our Word to PDF tool accepts both .doc and .docx, and your upload and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
