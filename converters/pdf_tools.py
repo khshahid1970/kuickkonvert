@@ -13,20 +13,51 @@ from .office import ConversionError
 GS_BIN = os.environ.get("GS_BIN", "gs")
 
 
+LOCKED_PDF_MESSAGE = (
+    "{name} is password-protected, so it can't be opened here. Open it with "
+    "its password in your PDF reader, save or print a copy without a "
+    "password, and upload that copy."
+)
+
+
+def ensure_pdf_unlocked(path: str, display_name: str = "This PDF") -> None:
+    """Raise a clear ConversionError if a PDF needs a password to open.
+
+    Called once for every uploaded PDF (see _save_uploads in app.py) so that
+    EVERY PDF tool -- not only the pypdf-based ones -- gives the same clear
+    message instead of a generic "Something went wrong" error.
+
+    Before 2026-10-05 a password-protected upload reached pypdf, whose
+    decrypt("") returns PasswordType.NOT_DECRYPTED (it does not raise) when
+    the password is wrong, so the tool crashed later with an unhandled
+    FileNotDecryptedError and the user saw the generic 500 message.
+
+    PDFs with only an owner password (permission restrictions, no password
+    needed to open) still open here and are processed as before. Any other
+    problem with the file is left for the tool itself to report.
+    """
+    try:
+        with pikepdf.open(path):
+            pass
+    except pikepdf.PasswordError:
+        raise ConversionError(LOCKED_PDF_MESSAGE.format(name=display_name))
+    except Exception:
+        pass
+
+
 def _open_reader(path):
     try:
         reader = PdfReader(path)
         if reader.is_encrypted:
-            # Try an empty password (some "protected" PDFs use owner-only
-            # passwords with no user password); otherwise we cannot proceed
-            # without asking the user for the password.
+            # Owner-password-only PDFs open with an empty user password.
+            # decrypt() RETURNS PasswordType.NOT_DECRYPTED (0) on failure
+            # rather than raising, so the result has to be checked.
             try:
-                reader.decrypt("")
+                result = reader.decrypt("")
             except Exception:
-                raise ConversionError(
-                    "This PDF is password-protected. Remove the password "
-                    "before using this tool, or use a PDF that isn't encrypted."
-                )
+                result = 0
+            if not result:
+                raise ConversionError(LOCKED_PDF_MESSAGE.format(name="This PDF"))
         return reader
     except PdfReadError as exc:
         raise ConversionError("This file doesn't look like a valid PDF.") from exc
@@ -118,15 +149,37 @@ def watermark_pdf(input_path: str, out_path: str, text: str) -> str:
 
 
 def protect_pdf(input_path: str, out_path: str, password: str) -> str:
+    """Encrypt a PDF with AES-256 (security handler revision 6).
+
+    Until 2026-10-05 this used pypdf's 128-bit RC4 (revision 3). PDF 2.0
+    (ISO 32000-2) deprecates every use of RC4 and makes 256-bit AES the
+    standard for password-protected PDFs, so the file is now written with
+    pikepdf/qpdf using R=6 AES-256. Adobe Acrobat/Reader has supported
+    256-bit AES since version 9.
+
+    The same password is used as both the user (open) and owner password and
+    all permissions are left allowed, exactly as before: anyone with the
+    password can use the document normally.
+    """
     if not password or len(password) < 4:
         raise ConversionError("Choose a password with at least 4 characters.")
-    reader = _open_reader(input_path)
-    writer = PdfWriter()
-    for page in reader.pages:
-        writer.add_page(page)
-    writer.encrypt(password, use_128bit=True)
-    with open(out_path, "wb") as f:
-        writer.write(f)
+    try:
+        with pikepdf.open(input_path) as pdf:
+            pdf.save(
+                out_path,
+                encryption=pikepdf.Encryption(
+                    user=password,
+                    owner=password,
+                    R=6,
+                    # pikepdf's default Permissions() disallows "modify
+                    # assembly"; allow everything, as the old RC4 output did.
+                    allow=pikepdf.Permissions(modify_assembly=True),
+                ),
+            )
+    except pikepdf.PasswordError as exc:
+        raise ConversionError(LOCKED_PDF_MESSAGE.format(name="This PDF")) from exc
+    except pikepdf.PdfError as exc:
+        raise ConversionError("This file doesn't look like a valid PDF.") from exc
     return out_path
 
 
