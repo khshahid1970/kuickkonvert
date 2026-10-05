@@ -476,14 +476,14 @@ TOOL_CONTENT = {
     },
     "protect-pdf": {
         "intro": "Protect PDF adds a password to a PDF file, so only someone who has the password can open it -- useful before emailing a document with sensitive information.",
-        "good_to_know": "The file is encrypted with a password you choose (at least 4 characters) using standard 128-bit PDF encryption. Keep the password somewhere safe -- if it's lost, the file can't be opened or recovered by KuickKonvert, since we don't keep a copy of your file or password.",
+        "good_to_know": "The file is encrypted with a password you choose (at least 4 characters) using 256-bit AES encryption, the standard set by PDF 2.0. Keep the password somewhere safe -- if it's lost, the file can't be opened or recovered by KuickKonvert, since we don't keep a copy of your file or password.",
         "use_cases": [
             "Password-protecting a document with personal or financial details before emailing it.",
             "Restricting who can open a contract before it's signed.",
             "Adding a basic layer of protection to a file shared over an unsecured channel.",
         ],
         "faq": [
-            ("What encryption does this use?", "Standard 128-bit PDF encryption, applied with the password you choose."),
+            ("What encryption does this use?", "256-bit AES encryption, applied with the password you choose. This is the method the current PDF standard (PDF 2.0) specifies for password-protected PDFs, and Adobe Acrobat and Reader have supported it since version 9."),
             ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
             ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up, subscription, or hidden limits beyond the 50MB file size cap."),
             ("Do I need to install anything?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
@@ -804,6 +804,425 @@ GUIDES = [
                     "JPG to PDF places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss.",
                     "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
                     "Every uploaded image and every result is deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "merge-pdf-in-the-right-order",
+        "title": "How to Merge PDFs in the Right Order (and Fix the Page Order If It's Wrong)",
+        "seo_title": "How to Merge PDFs in the Right Order | KuickKonvert",
+        "meta_description": "How our Merge PDF tool decides page order, what survives a merge in our own tests, and how to fix a merged PDF whose pages came out in the wrong order.",
+        "dek": "A merged PDF follows one simple rule: files are joined in the order they appear in your list. Here's how to get that list right first time, what a merge keeps and drops, and how to repair a file that came out wrong.",
+        "published": "2026-10-05",
+        "related_tools": ["merge-pdf", "split-pdf", "rotate-pdf"],
+        "sections": [
+            {
+                "heading": "The one rule: list order is page order",
+                "paragraphs": [
+                    "Our Merge PDF tool takes your files from top to bottom of the list shown under the upload box and copies every page of each file, in that order, into one new PDF. Nothing is sorted by name, date or size. If the list reads Cover, Report, Appendix, the merged file starts with every page of Cover, then every page of Report, then every page of Appendix.",
+                    "Each time you choose or drop more files, they are added to the end of the list. That gives you a simple way to control the order: add your files one at a time, in the order you want them in the finished document.",
+                    "If you select several files in one go, they appear in whatever order your browser passes them to the page, which is not always the order you clicked them. Always read the list before you press the button.",
+                    "Each file in the list has a Remove button. There is no drag-to-reorder, so if a file is in the wrong place, remove it and the files after it, then add them again in the right order.",
+                ],
+            },
+            {
+                "heading": "Prepare your files before you upload",
+                "paragraphs": [
+                    "Number the file names. Renaming files to 01-cover.pdf, 02-report.pdf, 03-appendix.pdf makes the intended order obvious in the list, and in your file picker, which usually sorts by name.",
+                    "Fix sideways pages first. Our Rotate PDF tool turns every page of a file by 90, 180 or 270 degrees, so rotate a sideways file on its own before merging rather than after.",
+                    "Remove passwords. Merge cannot open a password-protected PDF, so the merge will stop with an error. Open the file with its password in your PDF reader, save or print an unprotected copy, and merge that copy.",
+                    "Check the combined size. All uploads together must stay under our 50 MB limit. If a scanned file is very large, run it through Compress PDF first.",
+                ],
+            },
+            {
+                "heading": "What a merge keeps and what it drops: our test",
+                "paragraphs": [
+                    "We merged three test files with the same code our tool runs (October 2026): a one-page A4 cover, a three-page US Letter report containing three bookmarks and a web link, and a two-page landscape A4 appendix.",
+                    "The result had all six pages in the correct order. Each page kept its own size and orientation -- the A4, Letter and landscape pages were not forced to one size -- and the web link was kept.",
+                    "Two things did not carry over. The report's three bookmarks (the clickable outline some PDF readers show in a side panel) were gone, and the document title stored in the first file's properties was not copied into the merged file. If you need bookmarks, add them again in a PDF editor after merging.",
+                ],
+                "table": {
+                    "caption": "Merging three test files with our Merge PDF tool (October 2026)",
+                    "headers": ["What we checked", "Result"],
+                    "rows": [
+                        ["Page order", "Kept - all 6 pages in list order"],
+                        ["Page sizes (A4, US Letter, landscape A4)", "Kept - each page keeps its own size and orientation"],
+                        ["Web link inside the report", "Kept"],
+                        ["Bookmarks (3 in the report)", "Not kept - the merged file had none"],
+                        ["Document title in file properties", "Not kept"],
+                        ["Password-protected input file", "Not accepted - the merge stops with an error"],
+                    ],
+                },
+            },
+            {
+                "heading": "How to fix a merged PDF with the pages in the wrong order",
+                "paragraphs": [
+                    "If whole files are in the wrong order, the quickest fix is to merge again from your original files. Add them one at a time, check the list, then merge.",
+                    "If you no longer have the originals, or need to move individual pages, use Split PDF and then Merge PDF. Split PDF breaks a file into one PDF per page and gives you a ZIP of files named page-001.pdf, page-002.pdf and so on. Unzip it, then merge the pages back together in the order you want, adding them one at a time.",
+                    "If just one page is sideways, the same method works. Split the file, run that single page through Rotate PDF, then merge all the pages again. Rotate PDF turns every page of the file you give it, which is why the page has to be on its own first.",
+                    "The same split-and-merge method also removes pages: simply leave out the ones you don't need when you merge the pages back together.",
+                ],
+            },
+            {
+                "heading": "Final checks before you send it",
+                "paragraphs": [
+                    "Scroll through the whole merged file once. Check the first and last page of each original file, since the joins between files are where order mistakes show up.",
+                    "Check the page count. It should equal the page counts of your original files added together.",
+                    "If the recipient relies on bookmarks or a document title, add them back in a PDF editor -- a merge doesn't keep them.",
+                    "Keep your original files until you're happy with the result. Your uploads and the merged file are deleted from our server as soon as your download is ready, so we can't recover them for you.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "pdf-password-protection-explained",
+        "title": "Password-Protecting a PDF: What AES-256 Encryption Protects (and What It Doesn't)",
+        "seo_title": "PDF Password Protection Explained (AES-256) | KuickKonvert",
+        "meta_description": "What our Protect PDF tool's AES-256 encryption hides, what stays visible, why your password still matters most, and our own test results.",
+        "dek": "A password-protected PDF hides its contents from anyone without the password. But some details stay visible, and in practice the strength of your password decides how safe the file is.",
+        "published": "2026-10-05",
+        "related_tools": ["protect-pdf"],
+        "sections": [
+            {
+                "heading": "What our Protect PDF tool actually does",
+                "paragraphs": [
+                    "Protect PDF encrypts your file with a password you choose (at least 4 characters), using 256-bit AES encryption -- the method the current PDF standard, PDF 2.0 (ISO 32000-2), specifies for password-protected PDFs. Adobe Acrobat and Reader have supported 256-bit AES since version 9, so the recipient only needs the password and an up-to-date PDF reader.",
+                    "Some very old PDF software can't open this type of file. For example, the developers of the iText PDF library note that iText 5 and earlier versions can't read it. If someone can't open your protected file, ask them to update their PDF reader.",
+                    "When we checked a protected file with three independent PDF programs (October 2026), opening it without the password failed, and opening it with the password worked normally.",
+                    "The password you set is used to open the file. Our tool does not add separate restrictions on printing, copying or editing, so anyone who has the password can do everything with the document that they could with the original.",
+                    "Until 5 October 2026 our tool used an older method, 128-bit RC4 encryption, which Adobe Acrobat and Reader have supported since version 7. Files protected before that date keep that older method.",
+                ],
+            },
+            {
+                "heading": "What is hidden, and what isn't",
+                "paragraphs": [
+                    "We protected a three-page test report and then searched the raw bytes of the protected file for anything readable without the password (October 2026).",
+                    "The page text could not be found, and neither could the document's title. Encryption scrambles the text, images and other content of every page, and the document's properties -- such as its title and author -- are kept in the file but encrypted too, so they only appear once the file is opened with the password.",
+                    "Some structural details are not encrypted, because PDF encryption is designed to protect content, not the file's layout. The page count and each page's size could still be read directly from the file. And, as with any file, its name and size are visible to anyone who can see the file -- so don't put sensitive information in the file name.",
+                ],
+                "table": {
+                    "caption": "Reading a protected test file without the password (October 2026)",
+                    "headers": ["Part of the file", "Readable without the password?"],
+                    "rows": [
+                        ["Text on the pages", "No"],
+                        ["Images on the pages", "No - all page content is encrypted"],
+                        ["Title, author and other document properties", "No - kept in the file, but encrypted"],
+                        ["Number of pages", "Yes"],
+                        ["Size of each page", "Yes"],
+                        ["File name and file size", "Yes - like any file"],
+                    ],
+                },
+            },
+            {
+                "heading": "Why your password matters more than the encryption",
+                "paragraphs": [
+                    "Guessing a 256-bit encryption key directly isn't practical, but the key is protected by your password -- and a password can be guessed. Anyone with a copy of the file can try passwords on it as many times as they like, with no lockout. So the real question is how long it would take to try every possible password of yours.",
+                    "To give a feel for it, we timed a simple password-guessing script on a single processor core. Against a file protected by our tool it managed about 130 guesses per second. Against the same file protected with the older 128-bit RC4 method, the same script managed roughly 2,100 to 2,700 guesses per second -- the newer method takes far more computing work to check each password. The table shows the worst case at 130 guesses per second: the time to try every combination of a given length.",
+                    "Dedicated password-recovery software running on graphics cards is many times faster than our simple script, and real attackers try common words and patterns first. Treat these times as the most optimistic case, not a guarantee.",
+                ],
+                "table": {
+                    "caption": "Time to try every possible password at about 130 guesses per second (our single-core test on an AES-256 file, October 2026)",
+                    "headers": ["Password", "Possible combinations", "Time to try them all"],
+                    "rows": [
+                        ["4 lowercase letters", "456,976", "About 1 hour"],
+                        ["6 lowercase letters", "About 309 million", "About 4 weeks"],
+                        ["8 lowercase letters", "About 209 billion", "About 51 years"],
+                        ["8 characters: upper, lower and digits", "About 218 trillion", "About 53,000 years"],
+                        ["10 characters: upper, lower and digits", "About 839 quadrillion", "About 205 million years"],
+                    ],
+                    "note": "Faster tools reduce these times a great deal. A password that is a word or name can be found far sooner than the table suggests.",
+                },
+            },
+            {
+                "heading": "A note on encryption standards",
+                "paragraphs": [
+                    "PDF 2.0 deprecates every use of RC4 encryption and promotes AES-256 instead, as summarised by the PDF Association. That is why our tool now uses AES-256.",
+                    "If you protected a file with our tool before 5 October 2026, it uses 128-bit RC4. To move it to AES-256, open it with its password in your PDF reader, save or print a copy without a password, and run that copy through Protect PDF again.",
+                    "Whatever the method, for everyday privacy -- sending a payslip, a bank statement or a signed form so that it can't be opened by someone who intercepts it or finds it later -- the deciding factor is still the password.",
+                ],
+            },
+            {
+                "heading": "Good practice for protecting a PDF",
+                "paragraphs": [
+                    "Use at least 10 characters mixing upper-case letters, lower-case letters and digits, and avoid names, dates and dictionary words.",
+                    "Send the password separately: for example, email the PDF and send the password by text message or tell it to the recipient by phone. A password in the same email as the file protects nothing.",
+                    "Keep an unprotected original somewhere safe. A forgotten password cannot be recovered or reset -- not by us, and not by anyone else without guessing it -- and we don't keep a copy of your file or your password. Your upload and the protected file are deleted from our server as soon as your download is ready.",
+                    "Don't put sensitive details in the file name, since the name stays visible.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "excel-to-pdf-fit-on-one-page",
+        "title": "Excel to PDF: How to Make a Spreadsheet Fit on One Page",
+        "seo_title": "Excel to PDF: Fit a Spreadsheet on One Page | KuickKonvert",
+        "meta_description": "Why spreadsheets split across pages in a PDF, what our Excel to PDF tool does automatically, our measured results, and how to keep the text readable.",
+        "dek": "Our Excel to PDF tool always fits every column across the page width. The real question is how small the text becomes -- and that is something you can control before you upload.",
+        "published": "2026-10-05",
+        "related_tools": ["excel-to-pdf"],
+        "sections": [
+            {
+                "heading": "Why spreadsheets split across pages",
+                "paragraphs": [
+                    "A spreadsheet has no page size; a PDF does. Converting one to the other means fitting a grid that can be any width onto pages of a fixed size. Unless the file says otherwise, a spreadsheet program prints columns that don't fit onto extra pages, so a wide sheet can turn into a PDF where the right-hand columns are on page 2 -- separated from the rows they belong to.",
+                ],
+            },
+            {
+                "heading": "What our tool does automatically",
+                "paragraphs": [
+                    "Before converting, our Excel to PDF tool adjusts the page setup of every sheet in your workbook.",
+                    "Every column is fitted across the page width. The tool sets each sheet to fit one page wide, so no column is ever cut off or pushed onto a separate page. Long sheets are not squeezed vertically; they simply continue onto further pages, top to bottom.",
+                    "Column widths are set from your content. Each column is widened to fit its longest entry (with a minimum of 8 characters and a maximum of 60), so entries aren't cut off in the PDF.",
+                    "Wide sheets are turned to landscape. If a sheet's columns add up to more than about 80 characters across, the page is set to landscape, which gives noticeably more width and lets the text stay larger.",
+                    "Your own print area, print titles and hidden columns are respected, as our tests below show. Hidden sheets are not included in the PDF.",
+                ],
+            },
+            {
+                "heading": "What we measured",
+                "paragraphs": [
+                    "We converted several test workbooks with the same code our tool runs and measured the result (LibreOffice 24.2, October 2026). The text size is the size the cell text came out at in the PDF; 11 pt is the size it was typed in.",
+                    "The pattern is clear: the tool always keeps every column, but the more total width a sheet has, the smaller the text. A 12-month budget fitted comfortably at full size. Twenty columns with long headings shrank the text to 3.6 pt, which is very hard to read on paper. Forty columns still fitted, but at 1.8 pt.",
+                ],
+                "table": {
+                    "caption": "Our Excel to PDF tests (LibreOffice 24.2, October 2026)",
+                    "headers": ["Test sheet", "PDF pages", "Text size in the PDF"],
+                    "rows": [
+                        ["Budget: 14 short columns (Jan-Dec and Total), 25 rows", "1", "11 pt - full size"],
+                        ["20 columns with long headings, 30 rows", "1", "3.6 pt - hard to read"],
+                        ["40 columns, 30 rows", "1", "1.8 pt - all columns present, but unreadable on paper"],
+                        ["5 columns, 300 rows", "10", "11 pt - headings on page 1 only"],
+                        ["Same sheet with row 1 set as a print title", "10", "11 pt - headings repeated on every page"],
+                        ["20-column sheet with print area A1:H31", "1", "9.3 pt - only columns A to H"],
+                        ["20-column sheet with columns I to T hidden", "1", "9.3 pt - hidden columns left out"],
+                    ],
+                    "note": "Exact text sizes can vary slightly between LibreOffice versions and fonts; the pattern does not.",
+                },
+            },
+            {
+                "heading": "How to keep the text readable",
+                "paragraphs": [
+                    "Set a print area. If only part of the sheet needs to be in the PDF, select that range in Excel and choose Page Layout > Print Area > Set Print Area, then save. In our test, limiting a 20-column sheet to columns A to H raised the text from 3.6 pt to 9.3 pt.",
+                    "Hide or delete columns the reader doesn't need. Helper columns, IDs and working calculations take up width. Hidden columns are left out of the PDF, with the same effect as a print area in our test.",
+                    "Shorten long headings and long text. Because each column is sized to its longest entry, one long heading or comment widens the whole column. Wrap or abbreviate long headings, or move long notes to a separate sheet.",
+                    "Split one very wide sheet into two. A sheet of 40 columns will never be comfortable on one page. Two sheets of 20 columns each, or one summary sheet plus a detail sheet, are far easier to read.",
+                ],
+            },
+            {
+                "heading": "Long sheets: repeat the headings on every page",
+                "paragraphs": [
+                    "Fitting the width never squeezes rows onto one page, so a long list still runs to several pages. In our 300-row test the column headings only appeared on page 1, which makes pages 2 to 10 hard to follow.",
+                    "The fix is a print title. In Excel, choose Page Layout > Print Titles and set Rows to repeat at top to your heading row (for example $1:$1), then save. With that set, our tool repeated the headings at the top of every one of the 10 pages.",
+                ],
+            },
+            {
+                "heading": "Quick checklist before converting",
+                "paragraphs": [
+                    "Hide or delete columns the reader doesn't need, set a print area if only part of the sheet matters, shorten very long headings, set a print title on long sheets, and unhide any sheet you want included. Then convert and zoom in on the PDF to check the smallest text. Your upload and the PDF are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "pdf-to-excel-table-conversion-results",
+        "title": "PDF to Excel: Why Some Tables Don't Convert Cleanly (With Test Results)",
+        "seo_title": "PDF to Excel: Why Tables Don't Convert Cleanly | KuickKonvert",
+        "meta_description": "Why some PDF tables convert to Excel cleanly and others don't: our tests on ruled, borderless, merged and multi-page tables, and how to fix each one.",
+        "dek": "A PDF doesn't actually contain a table -- just text and lines placed on a page. How well a table converts to Excel depends on how clearly those lines mark out the cells. Here's what we found.",
+        "published": "2026-10-05",
+        "related_tools": ["pdf-to-excel"],
+        "sections": [
+            {
+                "heading": "Why tables are hard to get out of a PDF",
+                "paragraphs": [
+                    "A spreadsheet knows which cell every value is in. A PDF doesn't: it records each piece of text and each line as a drawing instruction at a position on the page. When you look at a PDF table you see rows and columns, but the file only knows that some text sits near some lines.",
+                    "So a PDF to Excel converter has to rebuild the table. Our tool uses an open-source library called pdfplumber to find table structures on each page, mainly from the ruling lines drawn around and between cells, and then writes each table into a worksheet, with the text found above and below it.",
+                ],
+            },
+            {
+                "heading": "How our tool lays out the Excel file",
+                "paragraphs": [
+                    "Each page of the PDF that has content becomes its own worksheet, named Page 1, Page 2 and so on.",
+                    "Text around a table is kept. A heading above a table and a total below it are written into the same sheet, one line per row, so nothing on the page is silently dropped.",
+                    "A page where no table is detected still contributes its text, one line per row in column A.",
+                    "Every value is written as text. The tool does not guess whether 1,000.50 is a number, a code or a date, so it leaves that decision to you. The next sections show how to turn those values into real numbers.",
+                ],
+            },
+            {
+                "heading": "What we measured",
+                "paragraphs": [
+                    "We built five test PDFs of a typical invoice table -- Date, Description, Qty, Unit price and Amount -- and converted each with the same code our tool runs (October 2026).",
+                ],
+                "table": {
+                    "caption": "Our PDF to Excel tests (October 2026)",
+                    "headers": ["Test PDF", "Result in Excel", "What to do"],
+                    "rows": [
+                        ["Table with ruled lines around every cell", "All 5 columns correct; heading and Total line kept", "Convert number columns from text to numbers"],
+                        ["Same table with no lines (borderless)", "Each whole row placed as one line in column A", "Use Data > Text to Columns, then check every row"],
+                        ["Table with a merged title cell across the top", "Title placed in the first column only; table below correct", "Merge or re-centre the title in Excel if needed"],
+                        ["Ruled table running across 2 pages", "Two sheets (Page 1 and Page 2); header row repeated on sheet 2", "Copy the rows into one sheet and delete the repeated header"],
+                        ["Scanned PDF (a picture of the same table)", "Not converted - message that no text or tables could be found", "Needs OCR first - see below"],
+                    ],
+                },
+            },
+            {
+                "heading": "Fix 1: numbers stored as text",
+                "paragraphs": [
+                    "In our test, values like 1,000.50 and PKR 1,000 arrived in Excel as text. You'll often see a small green triangle in the cell's corner, and SUM formulas will ignore those cells.",
+                    "For plain numbers, select the column, click the warning icon that appears next to the selection and choose Convert to Number.",
+                    "For values with a currency label or other text, remove the text first. Select the column, press Ctrl+H, type the label exactly as it appears -- for example PKR followed by a space -- in Find what, leave Replace with empty, and choose Replace All. Then use Convert to Number.",
+                ],
+            },
+            {
+                "heading": "Fix 2: borderless tables land in column A",
+                "paragraphs": [
+                    "Without ruling lines there is nothing reliable to show where one column ends and the next begins, so in our test each row came through as a single line of text in column A.",
+                    "Excel can split those lines for you. Select column A, choose Data > Text to Columns, pick Delimited and tick Space. Check the result carefully: a value that itself contains spaces, such as a description like \"Office chair\", will be split across two columns and needs to be joined back together. If you can get the original file the PDF was made from, such as the Excel or Word file, use that instead.",
+                ],
+            },
+            {
+                "heading": "Fix 3: one table spread over several sheets",
+                "paragraphs": [
+                    "Because each PDF page becomes its own sheet, a long table is split into pieces -- and if the PDF repeats the header row on every page, each piece starts with that header. Copy the rows from Page 2 onwards onto the end of the Page 1 sheet, then delete the extra header rows. Sorting or filtering by the first column can help you spot the repeats.",
+                ],
+            },
+            {
+                "heading": "Scanned PDFs need OCR first",
+                "paragraphs": [
+                    "A scanned PDF is a picture of a page. There is no text in it for a converter to read, so our tool stops with a message that no text or tables could be found. Our site does not currently offer OCR (optical character recognition, which turns a picture of text into real text).",
+                    "To check whether a PDF is scanned, open it and try to select a word, or search for a word with Ctrl+F. If you can't, it's a picture. The best option is usually to ask the sender for the original file, or for a PDF exported directly from the software that created it.",
+                ],
+            },
+            {
+                "heading": "Getting the best result",
+                "paragraphs": [
+                    "PDFs exported from accounting or banking software, with lines around every cell, convert best. Check totals in Excel against the PDF after converting, convert number columns from text, and keep the original PDF for reference. Your upload and the Excel file are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "photos-to-one-pdf-jpg-to-pdf-tips",
+        "title": "How to Turn Photos into One PDF for Applications and Forms (JPG to PDF Tips)",
+        "seo_title": "Photos to One PDF: JPG to PDF Tips for Forms | KuickKonvert",
+        "meta_description": "Combine phone photos into one PDF for an application or form: why photo PDFs get huge, why compression may not help, and our tested fix.",
+        "dek": "Combining photos into one PDF is easy. Getting a PDF small enough for an upload portal, with sensibly sized pages, takes one extra step before you upload -- here's what our tests showed.",
+        "published": "2026-10-05",
+        "related_tools": ["jpg-to-pdf", "compress-pdf", "merge-pdf"],
+        "sections": [
+            {
+                "heading": "How our JPG to PDF tool builds the PDF",
+                "paragraphs": [
+                    "Our JPG to PDF tool puts each photo on its own page, in the order of the file list. Files are added to the end of the list each time you choose more, and each one has a Remove button, so the easiest way to get the order right is to add the photos one at a time.",
+                    "Your JPGs are placed into the PDF exactly as uploaded, byte for byte. There is no second round of compression, so no quality is lost -- but it also means the PDF ends up about the same size as all your photos added together. In our test, three images totalling 14,124 KB produced a 14,126 KB PDF.",
+                    "Photos taken with the phone held upright are shown upright. Phones often store such photos sideways with a tag telling viewers how to turn them, and our tool follows that tag: our sideways-stored test photo was set to display upright in the PDF.",
+                ],
+            },
+            {
+                "heading": "Why the pages can come out enormous",
+                "paragraphs": [
+                    "The page size of each PDF page is worked out from the photo's pixel count and its dpi label (dots per inch) -- the setting that says how big the picture should be when printed. Photos from cameras and phones are often labelled 72 dpi, or have no dpi label at all.",
+                    "In our test, a 12-megapixel photo (4032 x 3024 pixels) labelled 72 dpi became a page of 56 x 42 inches -- about 142 x 107 cm, far larger than A4. The same photo with no dpi label became a 42 x 31.5 inch page. A scan saved at 300 dpi by contrast came out at its true size, 8.3 x 11.7 inches (A4).",
+                    "Most people won't notice, because PDF readers zoom to fit the screen. But a reviewer who prints the file, or a portal that checks page size, may.",
+                ],
+            },
+            {
+                "heading": "Why Compress PDF may not shrink a photo PDF",
+                "paragraphs": [
+                    "This surprised us. We combined two realistic phone photos (about 2.7 MB each) into a 5,456 KB PDF and ran it through Compress PDF at all three levels. The file stayed at 5,456 KB every time.",
+                    "The reason is the page size. Compression reduces image resolution in dots per inch, and on a 56-inch-wide page a 4032-pixel photo is only 72 dpi -- already below every threshold, so there is nothing for the compressor to reduce. Our Compress PDF tool gives you the original back when it can't make the file smaller.",
+                    "When we labelled one of the same photos 300 dpi, compression worked as expected: the 2,726 KB one-photo PDF shrank to 319 KB on eBook and 116 KB on Screen.",
+                ],
+            },
+            {
+                "heading": "The reliable fix: resize the photos first",
+                "paragraphs": [
+                    "For applications and forms, a photo doesn't need 12 megapixels. Resizing each photo before converting makes the PDF smaller and the pages more sensible at the same time.",
+                    "In our test, resizing a 12-megapixel photo to 1600 x 1200 pixels at JPEG quality 85 cut it to 359 KB, and a PDF of two such photos was 720 KB -- down from 5,456 KB. At 2000 x 1500 pixels each photo was 526 KB, which still keeps small print on a document readable.",
+                    "On Windows, open the photo in Paint, choose Resize, select Pixels and enter a width, then save a copy. On a Mac, open it in Preview and use Tools > Adjust Size. Many phone gallery and sharing apps also offer a smaller size option.",
+                ],
+                "table": {
+                    "caption": "Two phone photos combined into one PDF (our tests, October 2026)",
+                    "headers": ["What we did", "PDF size"],
+                    "rows": [
+                        ["Original 12-megapixel photos (about 2.7 MB each)", "5,456 KB"],
+                        ["Same PDF through Compress PDF (any level)", "5,456 KB - not reduced"],
+                        ["Photos resized to 2000 x 1500 first", "About 1,050 KB (526 KB per photo)"],
+                        ["Photos resized to 1600 x 1200, quality 85, first", "720 KB"],
+                    ],
+                    "note": "The 2000 x 1500 PDF size is estimated from the measured photo sizes, since JPG to PDF keeps each JPG unchanged.",
+                },
+            },
+            {
+                "heading": "Tips for application and form uploads",
+                "paragraphs": [
+                    "Read the portal's rules first: maximum file size, whether it wants one PDF or separate files, and whether it asks for a particular page size.",
+                    "Photograph documents flat, in good light, with the whole page in frame, and crop away the background before converting.",
+                    "Add pages in the order the form asks for -- for example ID front, ID back, then certificates -- adding one photo at a time.",
+                    "Our JPG to PDF tool accepts JPG files. For PNG screenshots, use PNG to PDF, then join the two PDFs with Merge PDF.",
+                    "Open the finished PDF and check every page is upright, readable and in order before you submit. Your photos and the PDF are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "pdf-to-word-text-vs-scanned",
+        "title": "PDF to Word: Text-Based vs Scanned PDFs, and What to Do With a Scan",
+        "seo_title": "PDF to Word: Text vs Scanned PDFs Explained | KuickKonvert",
+        "meta_description": "Why some PDFs convert to editable Word text and others become a picture: how to spot a scan, our own test results, and a free way to handle scans.",
+        "dek": "Whether a PDF converts into editable Word text depends on one thing: whether the PDF contains real text or a picture of text. Here's how to tell in five seconds, and what to do when it's a scan.",
+        "published": "2026-10-05",
+        "related_tools": ["pdf-to-word"],
+        "sections": [
+            {
+                "heading": "Two kinds of PDF that look the same",
+                "paragraphs": [
+                    "A text-based PDF is created by software -- Word, Excel, an accounting system, a website's Save as PDF button. Each letter is stored as a real character in a font, so it can be selected, searched and copied.",
+                    "A scanned PDF is created by a scanner or a phone camera. Each page is a single photograph of paper. It looks identical on screen, but to a computer there are no letters in it, only pixels.",
+                    "PDF to Word conversion rebuilds a Word document from the text, tables and images in the PDF. With a text-based PDF there is plenty to work with. With a scan, the only thing on the page is a picture.",
+                ],
+            },
+            {
+                "heading": "How to tell which one you have",
+                "paragraphs": [
+                    "Open the PDF and try to highlight a sentence with your mouse. If individual words highlight, the PDF has real text. If a whole rectangle is selected, or nothing is, it's a picture.",
+                    "Or press Ctrl+F (Cmd+F on a Mac) and search for a word you can see on the page. If the reader can't find it, the page is an image.",
+                    "Our test files showed the difference plainly: the text-based version of our test document contained 801 selectable characters; the scanned version contained none.",
+                ],
+            },
+            {
+                "heading": "What we measured",
+                "paragraphs": [
+                    "We made a one-page test document -- a heading, four short clauses and a small rent table -- and converted three versions of it with the same code our tool runs (October 2026). Our PDF to Word tool uses an open-source converter called pdf2docx, with LibreOffice as a fallback.",
+                    "The text-based PDF converted into an editable Word document: 140 words of text and a real Word table, with \"Monthly rent\" and \"PKR 45,000\" in editable cells.",
+                    "The scanned PDF became a Word document containing one picture of the page and no text.",
+                    "The third version is the one that catches people out. We ran the scan through Tesseract, a free OCR program, which adds an invisible text layer behind the picture so the PDF becomes searchable. That PDF had 818 selectable characters -- yet our tool still produced one picture and no text. The converter did not use the invisible OCR text at all.",
+                ],
+                "table": {
+                    "caption": "Converting three versions of the same page with our PDF to Word tool (October 2026)",
+                    "headers": ["PDF version", "Selectable characters in the PDF", "Word result"],
+                    "rows": [
+                        ["Text-based (exported from software)", "801", "Editable: 140 words and 1 Word table"],
+                        ["Scanned (picture only)", "0", "1 picture, no editable text"],
+                        ["Scanned, then made searchable with OCR", "818 (invisible layer)", "1 picture, no editable text"],
+                    ],
+                },
+            },
+            {
+                "heading": "What to do with a scanned PDF",
+                "paragraphs": [
+                    "Ask for the original. If the document came from an office or a company, the Word file or a PDF exported directly from their software will convert far better than any scan.",
+                    "Use OCR to turn the picture into text. Google Drive offers this for free. According to Google's help page, open drive.google.com on a computer, upload the PDF, right-click it and choose Open with > Google Docs. Google converts the file and opens the result as a Google Doc, which you can download as a Word file with File > Download > Microsoft Word (.docx).",
+                    "Google lists some requirements for good results: the file should be 2 MB or smaller, text should be at least 10 pixels high, pages must be the right way up, and common fonts such as Arial or Times New Roman work best. Google also notes that bold, italics, font size, font type and line breaks are likely to be kept, but lists, tables, columns, footnotes and endnotes are not likely to be detected -- so expect to rebuild tables by hand.",
+                    "If a scanned page is sideways or upside down, fix it with our Rotate PDF tool before uploading it to Drive. If the file is over 2 MB, our Compress PDF tool may bring it under the limit, but zoom in afterwards to make sure small text is still sharp, because OCR needs clear letters.",
+                    "Tesseract is also free and open source if you prefer software on your own computer, but as our test shows, its searchable PDF output still converts to a picture in our tool. Use it for copying text, not as a step before our PDF to Word tool.",
+                ],
+            },
+            {
+                "heading": "Getting the best result from a text-based PDF",
+                "paragraphs": [
+                    "Text-based PDFs with a simple layout -- letters, contracts, reports -- convert best. Complex layouts, such as multi-column brochures or text over images, can need tidying in Word afterwards.",
+                    "Our tool cannot open password-protected PDFs, so remove the password first. Your upload and the Word file are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
