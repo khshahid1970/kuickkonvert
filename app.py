@@ -503,6 +503,14 @@ def guide_page(slug):
     )
 
 
+# At most this many conversions run at the same time in each gunicorn worker
+# (2 workers -> 4 in total). Other requests wait their turn instead of all
+# running at once. Added 2026-10-05 after three out-of-memory restarts on the
+# 2 GB instance. If the wait is too long the visitor gets a clear "busy" message.
+import threading as _threading
+_CONVERT_SLOTS = _threading.BoundedSemaphore(int(os.environ.get("CONVERT_SLOTS", "2")))
+
+
 @app.route("/convert/<slug>", methods=["POST"])
 @limiter.limit("10 per minute; 100 per hour")
 def convert(slug):
@@ -515,6 +523,8 @@ def convert(slug):
     if not tool.get("multi") and len(files) > 1:
         files = files[:1]
 
+    if not _CONVERT_SLOTS.acquire(timeout=90):
+        return jsonify({"error": "The converter is busy right now. Please try again in a minute."}), 503
     try:
         with job_workspace() as job_dir:
             out_path, download_name, mimetype = handler(files, request.form, job_dir)
@@ -536,6 +546,8 @@ def convert(slug):
     except Exception as exc:
         app.logger.exception("Unhandled conversion error on %s", slug)
         return jsonify({"error": "Something went wrong during conversion. Please try again."}), 500
+    finally:
+        _CONVERT_SLOTS.release()
 
     import io
     return send_file(
