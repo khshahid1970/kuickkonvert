@@ -29,6 +29,7 @@ from converters.tables import convert_pdf_to_excel
 from converters.images import images_to_pdf, pdf_to_images
 from converters.pdf_tools import (
     merge_pdfs, split_pdf, rotate_pdf, watermark_pdf, protect_pdf, compress_pdf,
+    ensure_pdf_unlocked,
 )
 
 app = Flask(__name__)
@@ -271,6 +272,8 @@ def _save_uploads(files, job_dir, allowed_exts):
         f.save(path)
         if os.path.getsize(path) == 0:
             raise ConversionError(f"'{f.filename}' is empty.")
+        if path.lower().endswith(".pdf"):
+            ensure_pdf_unlocked(path, f"'{f.filename}'")
         saved.append(path)
     if not saved:
         raise ConversionError("Please choose at least one file to upload.")
