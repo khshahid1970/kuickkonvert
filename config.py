@@ -309,7 +309,7 @@ TOOL_CONTENT = {
     },
     "pdf-to-ppt": {
         "intro": "PDF to PPT turns each page of a PDF into a slide in a PowerPoint file, preserving the exact visual layout of the original document.",
-        "good_to_know": "Each PDF page becomes a full-slide image on its own slide, so the layout is reproduced exactly -- but the text on those slides isn't editable, since it's an image rather than live PowerPoint text.",
+        "good_to_know": "Each PDF page becomes a full-slide image on its own slide, so the layout is reproduced exactly -- but the text on those slides isn't editable, since it's an image rather than live PowerPoint text. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
         "use_cases": [
             "Turning a PDF report into slides for a presentation without redesigning it.",
             "Getting PDF content into a format you can present directly from PowerPoint.",
@@ -359,7 +359,7 @@ TOOL_CONTENT = {
     },
     "pdf-to-jpg": {
         "intro": "PDF to JPG turns every page of a PDF into its own JPG image, useful when you need to drop a page into a slide, a website, or a chat message rather than share the whole PDF.",
-        "good_to_know": "Pages are rendered at 300 DPI, sharp enough for most printing and on-screen use. A single-page PDF downloads as one JPG; a multi-page PDF downloads as a ZIP file containing one JPG per page.",
+        "good_to_know": "Pages are rendered at 300 DPI, sharp enough for most printing and on-screen use. A single-page PDF downloads as one JPG; a multi-page PDF downloads as a ZIP file containing one JPG per page. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
         "use_cases": [
             "Dropping one page of a PDF into a presentation or webpage as an image.",
             "Sharing a document preview somewhere that only accepts images, not PDFs.",
@@ -368,7 +368,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What resolution are the images?", "Pages are rendered at 300 DPI, which is sharp enough for most printing and screen use."),
             ("What do I get for a multi-page PDF?", "A ZIP file containing one JPG image per page."),
-            ("Is converting PDF to JPG online free?", "Yes -- there's no charge, sign-up, or limit beyond the 50MB upload cap, and there's nothing to install: you upload from your browser and the images are created on our server."),
+            ("Is converting PDF to JPG online free?", "Yes -- there's no charge or sign-up; the only limits are the 50MB upload cap and 50 pages per conversion, and there's nothing to install: you upload from your browser and the images are created on our server."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter -- PDF Pages to JPG | KuickKonvert",
@@ -376,7 +376,7 @@ TOOL_CONTENT = {
     },
     "pdf-to-png": {
         "intro": "PDF to PNG turns every page of a PDF into its own PNG image -- a good choice when you need a crisp image of a page with sharp text or line art, such as a diagram or a form.",
-        "good_to_know": "Pages are rendered at 300 DPI. A single-page PDF downloads as one PNG; a multi-page PDF downloads as a ZIP file containing one PNG per page.",
+        "good_to_know": "Pages are rendered at 300 DPI. A single-page PDF downloads as one PNG; a multi-page PDF downloads as a ZIP file containing one PNG per page. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
         "use_cases": [
             "Extracting a diagram or chart from a PDF as a clean image.",
             "Getting a sharp image of a form or certificate to insert elsewhere.",
@@ -1334,7 +1334,7 @@ GUIDES = [
             {
                 "heading": "PDF to PowerPoint: why you get picture slides",
                 "paragraphs": [
-                    "Our PDF to PPT tool makes one slide per PDF page, and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
+                    "Our PDF to PPT tool makes one slide per PDF page (up to 50 pages at a time), and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
                     "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is a guaranteed, exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
                     "Pictures take more space than text, so expect a bigger file: our 20.5 KB PDF became a 170.5 KB presentation.",
                 ],
