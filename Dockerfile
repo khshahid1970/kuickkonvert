@@ -39,4 +39,7 @@ RUN mkdir -p tmp
 ENV PORT=8080
 EXPOSE 8080
 
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4", "--timeout", "180"]
+# --max-requests: each worker is replaced with a fresh process after about
+# 200 requests, so memory that Python keeps after a large conversion is
+# handed back to the system (added 2026-10-05 after out-of-memory restarts).
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4", "--timeout", "180", "--max-requests", "200", "--max-requests-jitter", "50"]
