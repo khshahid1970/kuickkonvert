@@ -198,14 +198,13 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
     nothing in it.
     """
     import pypdf
-    from pdf2image import convert_from_path
     from pptx import Presentation
     from pptx.util import Emu
+    from .images import check_render_page_limit, render_pdf_page
 
     try:
         reader = pypdf.PdfReader(input_path)
-        if len(reader.pages) == 0:
-            raise ConversionError("This PDF has no pages to convert.")
+        check_render_page_limit(len(reader.pages))
 
         first_box = reader.pages[0].mediabox
         slide_w = Emu(max(int(float(first_box.width) * 12700), 1))
@@ -216,8 +215,10 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
         prs.slide_height = slide_h
         blank_layout = prs.slide_layouts[6]
 
-        images = convert_from_path(input_path, dpi=200)
-        for i, img in enumerate(images):
+        # One page at a time (see images.render_pdf_page): rendering every
+        # page up front peaked at about 1.4 GB for a 40-page PDF in testing.
+        for i in range(len(reader.pages)):
+            img = render_pdf_page(input_path, i + 1, 200)
             page_box = reader.pages[i].mediabox
             page_w = max(int(float(page_box.width) * 12700), 1)
             page_h = max(int(float(page_box.height) * 12700), 1)
@@ -231,6 +232,7 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
             slide = prs.slides.add_slide(blank_layout)
             buf = io.BytesIO()
             img.save(buf, format="PNG")
+            img.close()
             buf.seek(0)
             slide.shapes.add_picture(buf, left, top, width=draw_w, height=draw_h)
 
