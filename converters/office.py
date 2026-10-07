@@ -10,8 +10,11 @@ concurrently against the same user profile directory.
 """
 import glob
 import io
+import logging
 import os
 import subprocess
+
+from converters.isolate import is_out_of_memory
 
 SOFFICE_BIN = os.environ.get("SOFFICE_BIN", "soffice")
 CONVERT_TIMEOUT = int(os.environ.get("CONVERT_TIMEOUT_SECONDS", "120"))
@@ -156,6 +159,15 @@ def convert_office_to_pdf(input_path: str, out_dir: str) -> str:
 
 def convert_pdf_to_word(input_path: str, out_dir: str) -> str:
     out_path = os.path.join(out_dir, "converted_via_pdf2docx.docx")
+    # Privacy (added 2026-10-07): pdf2docx writes to the server log through
+    # Python's root logger -- "Start to convert <full file path>" (the path
+    # contains the visitor's original file name), page-by-page progress, and
+    # in some cases lines of the document's own text. Visitors' file names
+    # and content must never appear in the Render logs, so all logging is
+    # switched off while pdf2docx runs and switched back on afterwards.
+    # (This runs inside the isolated child process -- see converters/isolate.py
+    # -- so it does not silence the website's own logs.)
+    logging.disable(logging.CRITICAL)
     try:
         from pdf2docx import Converter
 
@@ -166,8 +178,15 @@ def convert_pdf_to_word(input_path: str, out_dir: str) -> str:
             cv.close()
         if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
             return out_path
-    except Exception:
-        pass
+    except Exception as exc:
+        # Hit the per-conversion memory cap (converters/isolate.py)? Then don't
+        # fall back to LibreOffice -- it would need even more memory and then
+        # show a misleading "could not convert" message. The visitor gets the
+        # "file too large" message instead.
+        if is_out_of_memory(exc):
+            raise MemoryError() from None
+    finally:
+        logging.disable(logging.NOTSET)
 
     return _run_soffice(
         input_path, out_dir, "docx:MS Word 2007 XML", infilter="writer_pdf_import"
