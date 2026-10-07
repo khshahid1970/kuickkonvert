@@ -781,7 +781,7 @@ body {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 24px;
 }
@@ -909,3 +909,28 @@ body {
 .guide-table th[scope="row"] { vertical-align: top; color: var(--color-text); font-weight: 600; font-size: 14px; text-transform: none; letter-spacing: 0; }
 .guide-table td { color: var(--color-text-muted); vertical-align: top; }
 .guide-table-note { font-size: 13px !important; margin-top: 6px; }
+
+/* Footer "Follow us" column: official social accounts + email (added 7 Oct 2026).
+   Icons are inline SVG (Font Awesome Free, CC BY 4.0) in a small brand-tinted
+   circle; they turn purple on hover/focus. */
+.footer-social .social-list { gap: 10px; }
+.footer-social .social-list li { display: flex; align-items: center; }
+.footer-social .social-list a,
+.footer-social .social-email { display: inline-flex; align-items: center; gap: 10px; }
+.footer-social .social-email a { color: var(--color-text-muted); text-decoration: none; word-break: break-all; }
+.footer-social .social-email a:hover { color: var(--color-primary); }
+.social-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  transition: background-color .15s ease, color .15s ease;
+}
+.social-icon { width: 16px; height: 16px; display: block; }
+.footer-social a:hover .social-badge,
+.footer-social a:focus-visible .social-badge { background: var(--color-primary); color: #fff; }
