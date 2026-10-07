@@ -13,7 +13,8 @@ needs more memory than the cap allows, only that one conversion fails and
 the visitor gets a clear message; the website itself stays up.
 
 Settings (Render > Environment; both optional):
-  JOB_MEMORY_MB        memory cap per conversion, default 700 (MB)
+  JOB_MEMORY_MB        memory allowance per conversion, default 700 (MB),
+                       on top of the web worker's own starting size
   JOB_TIMEOUT_SECONDS  hard time limit per conversion, default 170 (s);
                        gunicorn's own request timeout is 180 s
 With CONVERT_SLOTS=1 (one conversion at a time per worker, 2 workers) the
@@ -64,7 +65,24 @@ def is_out_of_memory(exc):
 
 class JobFailed(Exception):
     """The isolated conversion could not finish (memory cap, crash or time limit).
-    The message is safe to show to the visitor."""
+    str(exc) is the message for the visitor; exc.detail is a short technical
+    note for the server log (never contains file names or file content)."""
+
+    def __init__(self, message, detail=""):
+        super().__init__(message)
+        self.detail = detail or "no detail"
+
+
+def _vm_data_mb():
+    """This process's current data/heap size in MB (Linux /proc), or 0."""
+    try:
+        with open("/proc/self/status") as fh:
+            for line in fh:
+                if line.startswith("VmData:"):
+                    return int(line.split()[1]) // 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return 0
 
 
 def _child(func, args, write_fd, conversion_error_cls):
@@ -72,7 +90,13 @@ def _child(func, args, write_fd, conversion_error_cls):
     exit_code = 1
     try:
         os.setpgid(0, 0)  # own process group, so a timeout can stop LibreOffice too
-        limit = JOB_MEMORY_MB * 1024 * 1024
+        # The child starts with a copy of the web worker's address space
+        # (mostly shared, untouched memory). The cap is set as an ALLOWANCE on
+        # top of that starting size, so the worker's own size never eats into
+        # the memory a conversion may use. (Fix 7 Oct 2026: an absolute cap
+        # made PDF to Word fail on Render, even for a 3-page file.)
+        base_mb = _vm_data_mb()
+        limit = (base_mb + JOB_MEMORY_MB) * 1024 * 1024
         resource.setrlimit(resource.RLIMIT_DATA, (limit, limit))
         try:
             out_path, download_name, mimetype = func(*args)
@@ -80,12 +104,14 @@ def _child(func, args, write_fd, conversion_error_cls):
                        "download_name": download_name, "mimetype": mimetype}
         except conversion_error_cls as exc:
             if is_out_of_memory(exc):  # e.g. "...: std::bad_alloc"
-                payload = {"ok": False, "kind": "memory"}
+                payload = {"ok": False, "kind": "memory", "error": type(exc).__name__,
+                           "base_mb": base_mb, "peak_mb": _vm_data_mb()}
             else:
                 payload = {"ok": False, "kind": "conversion", "message": str(exc)}
         except BaseException as exc:  # noqa: BLE001 -- reported to the parent
             if is_out_of_memory(exc):
-                payload = {"ok": False, "kind": "memory"}
+                payload = {"ok": False, "kind": "memory", "error": type(exc).__name__,
+                           "base_mb": base_mb, "peak_mb": _vm_data_mb()}
             else:
                 payload = {"ok": False, "kind": "error", "error": type(exc).__name__}
         data = json.dumps(payload).encode("utf-8")
@@ -146,7 +172,7 @@ def run_isolated(func, args, conversion_error_cls):
         pass
 
     if timed_out:
-        raise JobFailed(TOO_SLOW_MESSAGE)
+        raise JobFailed(TOO_SLOW_MESSAGE, "time limit %ss" % JOB_TIMEOUT_SECONDS)
 
     try:
         payload = json.loads(b"".join(chunks).decode("utf-8"))
@@ -154,12 +180,17 @@ def run_isolated(func, args, conversion_error_cls):
         payload = None
     if not payload:
         # Child was killed or crashed before reporting (typically memory).
-        raise JobFailed(TOO_LARGE_MESSAGE)
+        if os.WIFSIGNALED(status):
+            how = "killed by signal %d" % os.WTERMSIG(status)
+        else:
+            how = "exit code %d" % os.WEXITSTATUS(status)
+        raise JobFailed(TOO_LARGE_MESSAGE, "child ended without result, %s" % how)
     if payload.get("ok"):
         return payload["out_path"], payload["download_name"], payload["mimetype"]
     if payload.get("kind") == "conversion":
         raise conversion_error_cls(payload.get("message") or "Conversion failed.")
     if payload.get("kind") == "memory":
-        raise JobFailed(TOO_LARGE_MESSAGE)
+        raise JobFailed(TOO_LARGE_MESSAGE, "memory cap: %s, start %s MB + allowance %s MB, at failure %s MB" % (
+            payload.get("error"), payload.get("base_mb"), JOB_MEMORY_MB, payload.get("peak_mb")))
     # Any other unexpected error inside the child.
     raise RuntimeError("Isolated conversion failed: %s" % payload.get("error", "unknown"))
