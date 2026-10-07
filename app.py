@@ -5,6 +5,19 @@ moment the response has been sent (see converters.utils.job_workspace).
 Nothing uploaded here is stored permanently. See PRIVACY_NOTICE.md.
 """
 import os
+
+# Added 2026-10-07: keep the number-crunching libraries (numpy's OpenBLAS,
+# OpenCV used by pdf2docx) to ONE thread each. By default they start one
+# thread per CPU they can see -- on Render that can be the whole host
+# machine's CPU count, not our 1 CPU -- and every extra thread reserves
+# memory. That reserved memory counts against the per-conversion memory cap
+# (converters/isolate.py) and is the likely reason PDF to Word failed on
+# Render on 7 Oct 2026 even for a 3-page file. Must run BEFORE numpy/OpenCV
+# are imported (i.e. right here).
+for _var in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",
+             "OPENCV_FOR_THREADS_NUM"):
+    os.environ.setdefault(_var, "1")
+
 import re
 import secrets
 import zipfile
@@ -554,7 +567,7 @@ def convert(slug):
     except JobFailed as exc:
         # Memory cap or time limit hit in the child process. Logged without
         # the file name (privacy); the visitor gets a clear message.
-        app.logger.warning("Conversion stopped on %s: %s", slug, exc)
+        app.logger.warning("Conversion stopped on %s (%s)", slug, exc.detail)
         return jsonify({"error": str(exc)}), 413
     except Exception as exc:
         app.logger.exception("Unhandled conversion error on %s", slug)
