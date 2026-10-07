@@ -22,6 +22,7 @@ from config import (
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
 )
 from converters.utils import job_workspace, safe_name, change_ext
+from converters.isolate import run_isolated, JobFailed
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
 )
@@ -504,11 +505,16 @@ def guide_page(slug):
 
 
 # At most this many conversions run at the same time in each gunicorn worker
-# (2 workers -> 4 in total). Other requests wait their turn instead of all
-# running at once. Added 2026-10-05 after three out-of-memory restarts on the
-# 2 GB instance. If the wait is too long the visitor gets a clear "busy" message.
+# (2 workers -> 2 in total with the default of 1). Other requests wait their
+# turn instead of all running at once. Added 2026-10-05 after three
+# out-of-memory restarts on the 2 GB instance; default lowered from 2 to 1 on
+# 2026-10-07 after two more. If the wait is too long the visitor gets a clear
+# "busy" message. Can be changed with the CONVERT_SLOTS setting on Render.
+# Each conversion also runs in its own memory-capped child process
+# (converters/isolate.py), so one oversized file fails on its own instead of
+# restarting the whole server.
 import threading as _threading
-_CONVERT_SLOTS = _threading.BoundedSemaphore(int(os.environ.get("CONVERT_SLOTS", "2")))
+_CONVERT_SLOTS = _threading.BoundedSemaphore(int(os.environ.get("CONVERT_SLOTS", "1")))
 
 
 @app.route("/convert/<slug>", methods=["POST"])
@@ -527,7 +533,9 @@ def convert(slug):
         return jsonify({"error": "The converter is busy right now. Please try again in a minute."}), 503
     try:
         with job_workspace() as job_dir:
-            out_path, download_name, mimetype = handler(files, request.form, job_dir)
+            out_path, download_name, mimetype = run_isolated(
+                handler, (files, request.form, job_dir), ConversionError
+            )
             # Give the download the user's original file name. Handlers build
             # download_name from the safe storage name of the first upload;
             # when that's the case, swap in the original name (keeping the
@@ -543,6 +551,11 @@ def convert(slug):
                 data = fh.read()
     except ConversionError as exc:
         return jsonify({"error": str(exc)}), 400
+    except JobFailed as exc:
+        # Memory cap or time limit hit in the child process. Logged without
+        # the file name (privacy); the visitor gets a clear message.
+        app.logger.warning("Conversion stopped on %s: %s", slug, exc)
+        return jsonify({"error": str(exc)}), 413
     except Exception as exc:
         app.logger.exception("Unhandled conversion error on %s", slug)
         return jsonify({"error": "Something went wrong during conversion. Please try again."}), 500
