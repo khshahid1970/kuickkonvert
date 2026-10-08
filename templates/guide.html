@@ -63,7 +63,7 @@
       {% for section in guide.sections %}
       <h2>{{ section.heading }}</h2>
       {% for para in section.paragraphs %}
-      <p>{{ para }}</p>
+      <p>{{ para|tool_links }}</p>
       {% endfor %}
       {#- Optional table for a section: {"caption", "headers", "rows", "note"}.
           The wrapper scrolls sideways on narrow phones instead of squashing
