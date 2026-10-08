@@ -73,7 +73,7 @@ TOOLS = [
         "slug": "pdf-to-ppt",
         "name": "PDF to PPT",
         "category": "Documents",
-        "description": "Convert PDF pages into an editable PPTX presentation.",
+        "description": "Turn each PDF page into a slide in a PPTX presentation.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -84,8 +84,8 @@ TOOLS = [
         "slug": "jpg-to-pdf",
         "name": "JPG to PDF",
         "category": "Images",
-        "description": "Combine one or more JPG images into a single PDF.",
-        "accept": ".jpg,.jpeg",
+        "description": "Combine one or more JPG or PNG images into a single PDF.",
+        "accept": ".jpg,.jpeg,.png",
         "multi": True,
         "from_fmt": "JPG",
         "to_fmt": "PDF",
@@ -222,9 +222,14 @@ TOOLS_BY_SLUG = {t["slug"]: t for t in TOOLS}
 # and dedicated SEO title/meta description text. Every technical claim here
 # describes how the actual converter in converters/*.py behaves -- nothing
 # here is invented or aspirational.
+#
+# Optional keys (added 8 Oct 2026, keyword-gap plan): "h1" replaces the
+# page's H1 (the short "name" is still used in the menu, cards and
+# breadcrumb), and "how_to_heading" replaces the default "How to convert
+# <name>" heading -- used by the PDF tools, where "convert" doesn't fit.
 TOOL_CONTENT = {
     "word-to-pdf": {
-        "intro": "Word to PDF turns a DOC or DOCX file into a PDF that looks the same on every device. It's the simplest way to share a Word document with someone you can't be sure has Microsoft Word installed, or to lock in a finished document's layout before sending it.",
+        "intro": "Word to PDF is a free online converter that turns MS Word files into PDF -- DOC to PDF or DOCX to PDF -- so your document looks the same on every device. It's the simplest way to share a Word document with someone you can't be sure has Microsoft Word installed, or to lock in a finished document's layout before sending it.",
         "good_to_know": "Converting to PDF preserves your document's current layout, so it won't shift when opened elsewhere. If your file uses a font we don't have installed, we substitute a metrically-compatible alternative (for example Carlito in place of Calibri) -- line breaks stay the same, though exact letterforms may differ slightly.",
         "use_cases": [
             "Sending a document to someone you're not sure has Word installed.",
@@ -236,11 +241,11 @@ TOOL_CONTENT = {
             ("Can I convert a password-protected Word file?", "No -- remove the password in Word first (File → Info → Protect Document), then convert."),
         ],
         "related": ["pdf-to-word", "excel-to-pdf", "ppt-to-pdf"],
-        "seo_title": "Word to PDF Converter -- DOC & DOCX Online | KuickKonvert",
-        "meta_description": "Convert DOC and DOCX files to PDF online for free. No sign-up or installation -- fast, simple, private Word to PDF conversion.",
+        "seo_title": "Word to PDF Converter - DOC & DOCX to PDF | KuickKonvert",
+        "meta_description": "Free online DOC to PDF converter: convert Word files (DOC and DOCX) to PDF with no sign-up or installation. Files are deleted automatically.",
     },
     "pdf-to-word": {
-        "intro": "PDF to Word converts a PDF's pages into an editable DOCX file, so you can update text you'd otherwise have to retype. It works best on PDFs that already contain real text, rather than a scan of a printed page.",
+        "intro": "PDF to Word lets you convert PDF to Word online for free: it turns a PDF's pages into an editable DOCX file (PDF to DOCX), so you can update text you'd otherwise have to retype. It works best on PDFs that already contain real text, rather than a scan of a printed page.",
         "good_to_know": "We use pdf2docx first, with a LibreOffice-based fallback if that doesn't produce a usable result. Bulleted and numbered lists currently convert to plain text lines rather than a live Word list -- you may need to reapply bullet formatting afterward. Complex layouts, tables, and heavily designed pages may need manual adjustment once opened in Word.",
         "use_cases": [
             "Editing text from a PDF you only have as a final, uneditable file.",
@@ -251,10 +256,11 @@ TOOL_CONTENT = {
             ("Will bullet points and numbering be preserved?", "They convert to plain text lines rather than a live bulleted list -- you may need to reapply list formatting in Word."),
             ("Does this work on a scanned PDF?", "This tool extracts text that's already embedded in the PDF; it doesn't perform OCR, so a scanned image-only PDF won't produce editable text."),
             ("Can I convert PDF to Word without sign-up?", "Yes -- there's no account, email or payment. Upload your PDF, convert it, and download the DOCX file. Your upload and the result are deleted from our server as soon as your download is ready."),
+            ("Can I convert PDF to DOC instead of DOCX?", "Our PDF to Word converter creates a DOCX file -- the standard Word format since Word 2007, which opens in Microsoft Word, Google Docs and LibreOffice. If you specifically need the older .doc format, open the DOCX in Word and choose File → Save As → Word 97-2003 Document (*.doc)."),
         ],
         "related": ["word-to-pdf", "pdf-to-excel", "pdf-to-ppt", "compress-pdf"],
-        "seo_title": "PDF to Word Converter -- Editable DOCX | KuickKonvert",
-        "meta_description": "Convert PDF files to editable DOCX documents online. Free, fast, private PDF to Word conversion with no sign-up -- best results with text-based PDFs.",
+        "seo_title": "PDF to Word Converter Online Free (DOCX) | KuickKonvert",
+        "meta_description": "Free online PDF to Word converter: turn a PDF into an editable Word (DOCX) file with no sign-up. Best results with text-based PDFs.",
     },
     "excel-to-pdf": {
         "intro": "Excel to PDF turns an XLS or XLSX spreadsheet into a fixed-layout PDF -- useful whenever you want to share numbers without letting the recipient edit formulas, or print a clean copy of a sheet.",
@@ -271,11 +277,11 @@ TOOL_CONTENT = {
             ("Is this free, and is there a file size limit?", "It's free with no sign-up. The only limit is a 50MB file size cap, which covers the vast majority of spreadsheets."),
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
-        "seo_title": "Excel to PDF Converter -- XLS & XLSX Online | KuickKonvert",
+        "seo_title": "Excel to PDF Converter - XLS & XLSX to PDF | KuickKonvert",
         "meta_description": "Convert XLS and XLSX spreadsheets to PDF online for free. No installation or sign-up -- fast, private Excel to PDF conversion.",
     },
     "pdf-to-excel": {
-        "intro": "PDF to Excel pulls tables out of a PDF and rebuilds them as an editable XLSX file, so you can sort, filter, or recalculate data that arrived as a static document.",
+        "intro": "PDF to Excel extracts tables from a PDF and rebuilds them as an editable XLSX file, so you can sort, filter, or recalculate data that arrived as a static document.",
         "good_to_know": "Tables are detected by their visible layout on the page, along with the text immediately around them. Cell values and column structure carry over, but formatting like colors, borders, and merged cells doesn't -- this works best on PDFs with genuinely tabular data rather than free-flowing text.",
         "use_cases": [
             "Pulling a table from a bank statement or invoice into a spreadsheet for review.",
@@ -288,11 +294,11 @@ TOOL_CONTENT = {
             ("Is this PDF to Excel converter really free?", "Yes -- no sign-up, subscription, or watermark on the output file. The only limit is the 50MB upload cap."),
         ],
         "related": ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
-        "seo_title": "PDF to Excel Converter -- Extract Tables | KuickKonvert",
+        "seo_title": "PDF to Excel Converter Online Free | KuickKonvert",
         "meta_description": "Convert PDF tables into editable Excel XLSX files online. Free PDF to Excel converter with no sign-up or installation.",
     },
     "ppt-to-pdf": {
-        "intro": "PPT to PDF converts a PowerPoint presentation to PDF, so slides display exactly as designed on any device without needing PowerPoint installed.",
+        "intro": "PPT to PDF converts PowerPoint presentations to PDF online for free -- PPT and PPTX to PDF -- so slides display exactly as designed on any device, without needing PowerPoint installed.",
         "good_to_know": "Slide layout, images, and text positioning are preserved. As with other Office conversions, a font we don't have installed is substituted with a metrically-compatible alternative, which can very slightly affect line spacing on text-heavy slides.",
         "use_cases": [
             "Sending a deck to someone without PowerPoint.",
@@ -304,7 +310,7 @@ TOOL_CONTENT = {
             ("Will my fonts look exactly the same?", "If your presentation uses a font we don't have, a metrically-compatible substitute is used, which keeps layout intact but may look slightly different from the original."),
         ],
         "related": ["pdf-to-ppt", "word-to-pdf", "compress-pdf"],
-        "seo_title": "PowerPoint to PDF Converter Online | KuickKonvert",
+        "seo_title": "PPT to PDF Converter - PowerPoint to PDF Free | KuickKonvert",
         "meta_description": "Convert PPT and PPTX presentations to PDF online for free. Fast, simple, private -- no sign-up or software required.",
     },
     "pdf-to-ppt": {
@@ -320,12 +326,13 @@ TOOL_CONTENT = {
             ("Will the slide size match my PDF's page size?", "Yes, each slide is sized to match the corresponding PDF page."),
         ],
         "related": ["ppt-to-pdf", "pdf-to-word", "pdf-to-jpg"],
-        "seo_title": "PDF to PowerPoint Converter Online | KuickKonvert",
-        "meta_description": "Convert PDF pages to editable PPTX presentations online. Free PDF to PowerPoint conversion with no sign-up.",
+        "seo_title": "PDF to PPT Converter - PDF to PowerPoint Free | KuickKonvert",
+        "meta_description": "Convert PDF to PowerPoint online for free: each PDF page becomes a slide in a PPTX file, with the layout kept exactly. No sign-up.",
     },
     "jpg-to-pdf": {
-        "intro": "JPG to PDF combines one or more JPG images into a single PDF file -- a quick way to turn photos of documents, receipts, or whiteboards into one shareable file.",
-        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want. Your JPG files are placed into the PDF exactly as uploaded -- they aren't re-compressed, so there's no extra quality loss.",
+        "h1": "JPG to PDF Converter - Photo to PDF",
+        "intro": "Convert images to PDF online for free: turn a single JPG photo into a PDF, or merge JPG to PDF to combine several photos into one file. It's a quick way to turn pictures of documents, receipts, or whiteboards into one shareable PDF -- and PNG images work too.",
+        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want. Your JPG files are placed into the PDF exactly as uploaded -- they aren't re-compressed, so there's no extra quality loss. PNG files are embedded losslessly, and any transparent areas are placed on a white background.",
         "use_cases": [
             "Combining several photographed pages of a document into one PDF to email.",
             "Turning receipt photos into a single PDF for an expense claim.",
@@ -335,10 +342,12 @@ TOOL_CONTENT = {
             ("Can I reorder the images after adding them?", "Not directly -- images are combined in the order you add them. Remove the files and re-add them in your preferred order if needed."),
             ("Is there a limit to how many images I can combine?", "There's no fixed count limit, but the combined upload must stay under the 50MB file size limit."),
             ("Is converting JPG to PDF online free?", "Yes -- there's no charge, sign-up, or watermark. You upload from your browser, the PDF is built on our server, and your files are deleted as soon as your download is ready."),
+            ("Can I mix JPG and PNG files in one PDF?", "Yes -- add JPG and PNG images together and they're combined into one PDF, in the order you add them."),
+            ("Can I convert a picture to PDF on my phone?", "Yes -- open this page in your phone's browser, tap \"Choose files\" and pick one or more photos (JPG or PNG). They're combined into one PDF that downloads straight to your phone, with no app to install."),
         ],
         "related": ["png-to-pdf", "pdf-to-jpg", "merge-pdf"],
-        "seo_title": "JPG to PDF Converter -- Images to PDF | KuickKonvert",
-        "meta_description": "Convert JPG images to PDF online for free. Combine multiple JPG files into one PDF without installing software or creating an account.",
+        "seo_title": "JPG to PDF - Image to PDF Converter Free | KuickKonvert",
+        "meta_description": "Free image to PDF converter: convert JPG or PNG photos and pictures to PDF online, or combine several images into one PDF. No sign-up.",
     },
     "png-to-pdf": {
         "intro": "PNG to PDF combines one or more PNG images into a single PDF file, keeping the sharp edges and transparency-free areas PNG is known for.",
@@ -350,14 +359,15 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("What happens to transparent backgrounds?", "Transparent areas are placed on a white background, so a logo or graphic with a transparent background appears on white in the PDF, just as it would on a printed page."),
-            ("Can I mix JPG and PNG files in one PDF?", "Use this tool for PNGs and JPG to PDF for JPGs -- each tool accepts one image type at a time to keep the upload validation simple."),
+            ("Can I mix JPG and PNG files in one PDF?", "Yes -- use JPG to PDF, which accepts JPG and PNG images together and combines them in the order you add them. This page accepts PNG files only."),
             ("Can I convert PNG to PDF online for free?", "Yes -- this tool is completely free, with no account or software installation needed. You upload from your browser and the PDF is built on our server."),
         ],
         "related": ["jpg-to-pdf", "pdf-to-png", "merge-pdf"],
-        "seo_title": "PNG to PDF Converter -- Images to PDF | KuickKonvert",
+        "seo_title": "PNG to PDF Converter Online Free | KuickKonvert",
         "meta_description": "Convert PNG images to PDF online for free. Combine multiple PNG files into a single PDF with no sign-up or installation.",
     },
     "pdf-to-jpg": {
+        "h1": "PDF to JPG - PDF to Image Converter",
         "intro": "PDF to JPG turns every page of a PDF into its own JPG image, useful when you need to drop a page into a slide, a website, or a chat message rather than share the whole PDF.",
         "good_to_know": "Pages are rendered at 300 DPI, sharp enough for most printing and on-screen use. A single-page PDF downloads as one JPG; a multi-page PDF downloads as a ZIP file containing one JPG per page. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
         "use_cases": [
@@ -371,8 +381,8 @@ TOOL_CONTENT = {
             ("Is converting PDF to JPG online free?", "Yes -- there's no charge or sign-up; the only limits are the 50MB upload cap and 50 pages per conversion, and there's nothing to install: you upload from your browser and the images are created on our server."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
-        "seo_title": "PDF to JPG Converter -- PDF Pages to JPG | KuickKonvert",
-        "meta_description": "Convert PDF pages to 300 DPI JPG images online for free, with no sign-up. Get one JPG, or a ZIP file for multi-page PDFs.",
+        "seo_title": "PDF to JPG Converter - PDF to Image Free | KuickKonvert",
+        "meta_description": "Convert PDF to JPG images online for free: every page becomes a 300 DPI JPG (one JPG, or a ZIP for multi-page PDFs). No sign-up.",
     },
     "pdf-to-png": {
         "intro": "PDF to PNG turns every page of a PDF into its own PNG image -- a good choice when you need a crisp image of a page with sharp text or line art, such as a diagram or a form.",
@@ -387,11 +397,13 @@ TOOL_CONTENT = {
             ("What do I get for a multi-page PDF?", "A ZIP file containing one PNG image per page."),
         ],
         "related": ["pdf-to-jpg", "png-to-pdf", "compress-pdf"],
-        "seo_title": "PDF to PNG Converter -- PDF Pages to PNG | KuickKonvert",
+        "seo_title": "PDF to PNG Converter Online Free | KuickKonvert",
         "meta_description": "Convert PDF pages to PNG images online for free. Fast, private PDF to PNG conversion with no sign-up.",
     },
     "merge-pdf": {
-        "intro": "Merge PDF combines multiple PDF files into a single document, in the order you add them -- handy for putting together a report from separate sections or combining scanned pages into one file.",
+        "h1": "Merge PDF Files - PDF Combiner",
+        "how_to_heading": "How to combine PDF files",
+        "intro": "Merge PDF combines multiple PDF files into a single document, in the order you add them. It's a free online PDF merger (some call it a PDF joiner) -- handy for putting together a report from separate sections or combining scanned pages into one file.",
         "good_to_know": "Files are combined in the order you add them. You can remove a file from the list before merging if you added the wrong one; there's no drag-to-reorder option, so remove and re-add files in your preferred order if needed.",
         "use_cases": [
             "Combining a cover letter, CV, and references into one PDF for a job application.",
@@ -404,11 +416,12 @@ TOOL_CONTENT = {
             ("Can I merge PDF files without sign-up?", "Yes -- Merge PDF is free with no account or email needed. Add your files, merge them, and download the combined PDF."),
         ],
         "related": ["split-pdf", "compress-pdf", "pdf-to-word"],
-        "seo_title": "Merge PDF Files Online Free | KuickKonvert",
-        "meta_description": "Merge multiple PDF files into one document online for free. Combine files in the order you add them, with no sign-up or installation.",
+        "seo_title": "Merge PDF Online Free - Combine PDF Files | KuickKonvert",
+        "meta_description": "Merge PDF files online for free: combine PDF documents into one file, in the order you add them. A simple PDF merger with no sign-up or installation.",
     },
     "split-pdf": {
-        "intro": "Split PDF breaks every page of a PDF into its own single-page PDF file, delivered as a ZIP -- useful when you only need to send someone one page out of a longer document.",
+        "how_to_heading": "How to split a PDF into separate pages",
+        "intro": "Split PDF is a free online PDF splitter: it breaks every page of a PDF into its own single-page PDF file, delivered as a ZIP -- useful when you only need to send someone one page out of a longer document.",
         "good_to_know": "This splits every page of the PDF into a separate file -- there's currently no option to choose a specific page range. If you only need a few pages, split the whole file and keep just the ones you want.",
         "use_cases": [
             "Pulling a single page out of a long PDF to send on its own.",
@@ -418,13 +431,16 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I choose which pages to split out?", "This splits every page into its own file; if you only need a range, split the whole file and discard the pages you don't need."),
             ("What format do I get the pages in?", "A ZIP file containing one single-page PDF for every page in your original file."),
+            ("Can I extract pages from PDF files?", "Yes -- Split PDF saves every page of your PDF as its own single-page PDF, delivered in one ZIP file. Keep the pages you need; to put several of them back into one document, combine them with Merge PDF. There's no option to pick a page range in one step."),
         ],
         "related": ["merge-pdf", "rotate-pdf", "compress-pdf"],
-        "seo_title": "Split PDF Online Free | KuickKonvert",
+        "seo_title": "Split PDF Online Free - PDF Splitter | KuickKonvert",
         "meta_description": "Split a PDF into separate pages online for free. Download individual PDF pages in a ZIP file with no sign-up.",
     },
     "compress-pdf": {
-        "intro": "Compress PDF reduces a PDF's file size online, for free, while keeping it readable -- useful when a file is too large to email or upload, or you just want a smaller version to store.",
+        "h1": "Compress PDF - Reduce PDF Size",
+        "how_to_heading": "How to reduce PDF file size",
+        "intro": "Compress PDF is a free online PDF compressor: it reduces a PDF's file size while keeping it readable -- useful when you need to resize PDF files for an email or upload limit, or just want a smaller version to store.",
         "good_to_know": "Three compression levels are available: Screen (smallest file -- images reduced to about 72 dpi), Ebook (the balanced default -- about 150 dpi), and Printer (keeps image resolution, so it usually shrinks the file very little). Compression works on embedded images, so a text-only PDF can't get much smaller. If the result wouldn't be smaller than your original, you get your original file back unchanged instead of a bigger one.",
         "use_cases": [
             "Shrinking a scanned document so it fits under an email attachment limit.",
@@ -436,12 +452,15 @@ TOOL_CONTENT = {
             ("Will text quality be affected?", "Text stays sharp at every level -- compression mainly targets embedded images, so an image-heavy PDF will shrink more than a text-only one."),
             ("Can I compress a PDF without losing quality?", "Partly. Text and vector graphics stay sharp at every level, because compression only works on images. To keep images as close to the original as possible, choose \"Best quality, larger file\" (the Printer preset): it keeps image resolution and uses a gentler JPEG setting, but it usually shrinks the file only a little. A noticeably smaller file always means some loss of image detail -- our PDF compression guide shows real test results."),
             ("Can I reduce a PDF's file size online for free?", "Yes -- use Compress PDF without sign-up or payment. Upload your PDF, choose a compression level, and our server returns the smaller file."),
+            ("Can I compress a PDF to 1MB or a few hundred KB?", "There's no exact-size setting, so we can't promise a specific size. For the biggest reduction, choose \"Smallest file (screen quality)\": image-heavy and scanned PDFs usually shrink a lot, while a text-only PDF may already be close to its smallest size. Check the result's size before uploading it to a form with a limit."),
+            ("Is this a PDF resize tool?", "It resizes the file, not the pages. Compress PDF makes the file smaller (fewer KB or MB) by reducing embedded images; the page dimensions -- for example A4 or Letter -- stay exactly the same."),
         ],
         "related": ["merge-pdf", "split-pdf", "pdf-to-jpg"],
-        "seo_title": "Compress PDF Online -- Reduce File Size Free | KuickKonvert",
-        "meta_description": "Compress PDF files online for free and reduce file size while keeping documents readable. No sign-up or installation.",
+        "seo_title": "Compress PDF Online Free - PDF Size Reducer | KuickKonvert",
+        "meta_description": "Free PDF size reducer online: compress PDF files and reduce PDF size while keeping them readable. Choose a compression level -- no sign-up.",
     },
     "rotate-pdf": {
+        "how_to_heading": "How to rotate PDF pages",
         "intro": "Rotate PDF turns every page of a PDF by 90, 180, or 270 degrees -- a quick fix for a document that was scanned sideways or upside down.",
         "good_to_know": "The same rotation is applied to every page in the file. If only some pages of your PDF are rotated the wrong way, split the file first, rotate just the affected pages, then merge them back together.",
         "use_cases": [
@@ -459,6 +478,7 @@ TOOL_CONTENT = {
         "meta_description": "Rotate PDF pages by 90°, 180° or 270° online for free. Simple, fast, private PDF rotation with no installation.",
     },
     "watermark-pdf": {
+        "how_to_heading": "How to add a watermark to a PDF",
         "intro": "Watermark PDF stamps your own text diagonally across every page of a PDF -- a simple way to mark a document as a draft, confidential, or belonging to you before sharing it.",
         "good_to_know": "The watermark is applied as semi-transparent gray text, rotated diagonally across each page, using the text you enter. Its size, color, and position aren't currently configurable -- only the text itself is.",
         "use_cases": [
@@ -475,6 +495,7 @@ TOOL_CONTENT = {
         "meta_description": "Add a text watermark to every page of a PDF online for free. Fast and private, with no sign-up required.",
     },
     "protect-pdf": {
+        "how_to_heading": "How to password protect a PDF",
         "intro": "Protect PDF adds a password to a PDF file, so only someone who has the password can open it -- useful before emailing a document with sensitive information.",
         "good_to_know": "The file is encrypted with a password you choose (at least 4 characters) using 256-bit AES encryption, the standard set by PDF 2.0. Keep the password somewhere safe -- if it's lost, the file can't be opened or recovered by KuickKonvert, since we don't keep a copy of your file or password.",
         "use_cases": [
