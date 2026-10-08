@@ -19,6 +19,16 @@ SITE_URL = "https://kuickkonvert.com"
 HOME_LASTMOD = "2026-10-08"
 TOOLS_LASTMOD = "2026-10-08"
 GUIDES_LINKS_LASTMOD = "2026-10-08"
+# Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
+# titles on the guides list, About, Contact, Privacy and Terms, plus
+# breadcrumb data on the guides list, About and Contact.
+STATIC_LASTMOD = {
+    "guides": "2026-10-08",
+    "about": "2026-10-08",
+    "contact": "2026-10-08",
+    "privacy": "2026-10-08",
+    "terms": "2026-10-08",
+}
 
 # ---- Tool catalogue -------------------------------------------------------
 # Single source of truth for the homepage grid, each tool's page, and the

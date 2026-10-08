@@ -35,7 +35,7 @@ from flask_limiter.util import get_remote_address
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
-    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD,
+    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, STATIC_LASTMOD,
 )
 from converters.utils import job_workspace, safe_name, change_ext
 from converters.isolate import run_isolated, JobFailed
@@ -774,8 +774,10 @@ def sitemap_xml():
     # that drives the homepage grid, so a new tool is picked up automatically.
     # <lastmod> is only included where there is a genuinely accurate date.
     # Google uses <lastmod> only when it is "consistently and verifiably
-    # accurate", so the remaining static pages (privacy, about, contact,
-    # terms, the guides list) are listed without one rather than guessed.
+    # accurate", so a page with no known date is listed without one rather
+    # than guessed.
+    #   * privacy, about, contact, terms and the guides list: STATIC_LASTMOD
+    #     in config.py (since 8 Oct 2026);
     #   * home page and tool pages: HOME_LASTMOD / TOOLS_LASTMOD in config.py
     #     (since 8 Oct 2026), or a tool's own "lastmod" key;
     #   * guides: the latest of the guide's own "updated"/"published" date
@@ -785,9 +787,12 @@ def sitemap_xml():
     # When a page changes significantly, bump the matching date in config.py
     # (for a guide's own text, add/refresh its "updated": "YYYY-MM-DD").
     entries = [
-        (f"{SITE_URL}/", HOME_LASTMOD), (f"{SITE_URL}/privacy", None),
-        (f"{SITE_URL}/about", None), (f"{SITE_URL}/contact", None),
-        (f"{SITE_URL}/terms", None), (f"{SITE_URL}/guides", None),
+        (f"{SITE_URL}/", HOME_LASTMOD),
+        (f"{SITE_URL}/privacy", STATIC_LASTMOD.get("privacy")),
+        (f"{SITE_URL}/about", STATIC_LASTMOD.get("about")),
+        (f"{SITE_URL}/contact", STATIC_LASTMOD.get("contact")),
+        (f"{SITE_URL}/terms", STATIC_LASTMOD.get("terms")),
+        (f"{SITE_URL}/guides", STATIC_LASTMOD.get("guides")),
     ]
     entries += [
         (f"{SITE_URL}/tools/{t['slug']}", t.get("lastmod") or TOOLS_LASTMOD)
