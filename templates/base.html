@@ -145,9 +145,37 @@
       <span class="brand-name">Kuick<strong>Konvert</strong></span>
     </a>
     <nav class="site-nav" id="site-nav">
-      <a href="{{ url_for('index') }}#documents">Documents</a>
-      <a href="{{ url_for('index') }}#images">Images</a>
-      <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+      <div class="nav-item">
+        <a href="{{ url_for('index') }}#documents">Documents</a>
+        <div class="nav-dropdown">
+          <a href="{{ url_for('tool_page', slug='word-to-pdf') }}">Word to PDF</a>
+          <a href="{{ url_for('tool_page', slug='pdf-to-word') }}">PDF to Word</a>
+          <a href="{{ url_for('tool_page', slug='excel-to-pdf') }}">Excel to PDF</a>
+          <a href="{{ url_for('tool_page', slug='pdf-to-excel') }}">PDF to Excel</a>
+          <a href="{{ url_for('tool_page', slug='ppt-to-pdf') }}">PPT to PDF</a>
+          <a href="{{ url_for('tool_page', slug='pdf-to-ppt') }}">PDF to PPT</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('index') }}#images">Images</a>
+        <div class="nav-dropdown">
+          <a href="{{ url_for('tool_page', slug='jpg-to-pdf') }}">JPG to PDF</a>
+          <a href="{{ url_for('tool_page', slug='png-to-pdf') }}">PNG to PDF</a>
+          <a href="{{ url_for('tool_page', slug='pdf-to-jpg') }}">PDF to JPG</a>
+          <a href="{{ url_for('tool_page', slug='pdf-to-png') }}">PDF to PNG</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('index') }}#pdf-tools">PDF Tools</a>
+        <div class="nav-dropdown">
+          <a href="{{ url_for('tool_page', slug='merge-pdf') }}">Merge PDF</a>
+          <a href="{{ url_for('tool_page', slug='split-pdf') }}">Split PDF</a>
+          <a href="{{ url_for('tool_page', slug='compress-pdf') }}">Compress PDF</a>
+          <a href="{{ url_for('tool_page', slug='rotate-pdf') }}">Rotate PDF</a>
+          <a href="{{ url_for('tool_page', slug='watermark-pdf') }}">Watermark PDF</a>
+          <a href="{{ url_for('tool_page', slug='protect-pdf') }}">Protect PDF</a>
+        </div>
+      </div>
       <a href="{{ url_for('index') }}#how-it-works">How it works</a>
       <a href="{{ url_for('index') }}#faq">FAQ</a>
       <a href="{{ url_for('guides_index') }}">Guides</a>
