@@ -347,7 +347,9 @@ def h_pdf_to_ppt(files, form, job_dir):
 
 
 def h_jpg_to_pdf(files, form, job_dir):
-    srcs = _save_uploads(files, job_dir, {"jpg", "jpeg"})
+    # Also accepts PNG (since 8 Oct 2026), so this page can serve "image to
+    # PDF" searches; images_to_pdf() already handles JPG and PNG together.
+    srcs = _save_uploads(files, job_dir, {"jpg", "jpeg", "png"})
     out = os.path.join(job_dir, "converted.pdf")
     images_to_pdf(srcs, out)
     name = "images.pdf" if len(srcs) > 1 else change_ext(os.path.basename(srcs[0]), "pdf")
