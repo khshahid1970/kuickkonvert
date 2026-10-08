@@ -681,6 +681,17 @@ body {
 .tool-info h2 { font-size: 18px; margin: 32px 0 12px; }
 .tool-info h2:first-child { margin-top: 24px; }
 .tool-info p { color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6; }
+/* Links inside page text -- added 2026-10-08 with the guide-to-tool links
+   (keyword plan Phase 2). Brand colour like the "Related tools" links, and
+   underlined so they stand out as links inside a paragraph, not by colour
+   alone. Also styles the "Privacy notice" link on tool pages. */
+.tool-info p a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.tool-info p a:hover { color: var(--color-primary-dark); }
 .how-to-steps {
   margin: 0;
   padding-left: 20px;
