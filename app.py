@@ -25,7 +25,7 @@ import zipfile
 from flask import (
     Flask, render_template, request, send_file, abort, jsonify, url_for, Response, g
 )
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from werkzeug.utils import secure_filename
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -208,6 +208,31 @@ def obfuscated_mailto(email, label=None):
         return "".join(f"&#{ord(ch)};" for ch in s)
 
     return Markup(f'<a href="mailto:{_entities(email)}">{_entities(label)}</a>')
+
+
+# Guide text can link to a tool page with [[tool-slug|link text]] (added
+# 8 Oct 2026, keyword plan Phase 2), e.g. "[[compress-pdf|PDF size
+# reducer]]". Everything else in the text is HTML-escaped exactly as before,
+# and an unknown slug falls back to plain text, so a typo can never produce
+# a broken link or stray markup.
+_TOOL_LINK_RE = re.compile(r"\[\[([a-z0-9-]+)\|([^\]|]+)\]\]")
+
+
+@app.template_filter("tool_links")
+def tool_links(text):
+    parts = []
+    pos = 0
+    for m in _TOOL_LINK_RE.finditer(text or ""):
+        parts.append(escape(text[pos:m.start()]))
+        slug, label = m.group(1), m.group(2)
+        if slug in TOOLS_BY_SLUG:
+            parts.append(Markup('<a href="{}">{}</a>').format(
+                url_for("tool_page", slug=slug), label))
+        else:
+            parts.append(escape(label))
+        pos = m.end()
+    parts.append(escape((text or "")[pos:]))
+    return Markup("").join(parts)
 
 
 @app.context_processor
