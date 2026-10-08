@@ -7,6 +7,19 @@ import os
 # treating them as duplicate content.
 SITE_URL = "https://kuickkonvert.com"
 
+# <lastmod> dates for sitemap.xml -- the date of the last SIGNIFICANT change
+# to each group of pages. Google counts changes to the main content, the
+# structured data or the links on a page as significant (a footer year is
+# not), and only trusts <lastmod> while it stays accurate, so bump the
+# matching date whenever those pages change. A single tool can override
+# TOOLS_LASTMOD with its own "lastmod" key in TOOL_CONTENT below.
+# 8 Oct 2026: new titles/H1s/headings/FAQs on the home page and all 16 tool
+# pages (keyword plan Phase 1), and new links to the tools inside every
+# guide (Phase 2).
+HOME_LASTMOD = "2026-10-08"
+TOOLS_LASTMOD = "2026-10-08"
+GUIDES_LINKS_LASTMOD = "2026-10-08"
+
 # ---- Tool catalogue -------------------------------------------------------
 # Single source of truth for the homepage grid, each tool's page, and the
 # /convert dispatcher in app.py. Add a new converter by adding an entry here
