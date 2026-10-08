@@ -24,7 +24,7 @@
       <span aria-hidden="true">/</span>
       <span aria-current="page">{{ tool.name }}</span>
     </nav>
-    <h1>{{ tool.name }}</h1>
+    <h1>{{ tool.get('h1') or tool.name }}</h1>
     <p class="tool-page-desc">{{ tool.intro }}</p>
 
     <div class="ad-slot ad-slot--tool">
@@ -94,7 +94,7 @@
     {% endif %}
 
     <section class="tool-info">
-      <h2>How to convert {{ tool.name }}</h2>
+      <h2>{{ tool.get('how_to_heading') or ('How to convert ' ~ tool.name) }}</h2>
       <ol class="how-to-steps">
         <li>Select your {{ tool.from_fmt }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
         <li>KuickKonvert converts {{ 'them' if tool.multi else 'it' }} automatically -- there's nothing else to configure{{ ' beyond the options above' if tool.get('fields') else '' }}.</li>
