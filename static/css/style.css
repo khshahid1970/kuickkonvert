@@ -114,6 +114,67 @@ body {
 .site-nav a:not(.nav-cta):hover {
   background: var(--color-accent-tint);
 }
+
+/* Hover dropdowns -- added 2026-10-08. Documents/Images/PDF Tools each wrap
+   their tab link in .nav-item alongside a .nav-dropdown panel listing that
+   category's tools, so a visitor can see (and jump straight to) every tool
+   without leaving the nav. Pure CSS (:hover/:focus-within) -- no JS, no
+   extra HTTP requests, no images or webfonts, so there is no measurable
+   performance cost: the only addition is ~16 small <a> tags (a few hundred
+   bytes of HTML/CSS) that stay invisible and non-interactive (opacity:0 +
+   visibility:hidden + pointer-events:none) until hovered, so they add zero
+   layout weight and cannot cause layout shift (CLS). :focus-within is
+   included so the dropdown is also reachable by keyboard (Tab), not just a
+   mouse. Disabled below 780px (see the existing max-width:780px block
+   further down) since touch devices don't hover and the nav collapses to a
+   vertical list there anyway -- tapping a category tab still jumps to that
+   section as before. */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  min-width: 168px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--color-accent-tint);
+  border: 1px solid var(--color-accent);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+  padding: 8px;
+  margin-top: 6px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 5;
+}
+.nav-item:hover .nav-dropdown,
+.nav-item:focus-within .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.site-nav .nav-dropdown a {
+  background: none;
+  color: var(--color-accent-dark);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.site-nav .nav-dropdown a:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
 .nav-cta {
   position: relative;
   overflow: hidden;
@@ -133,8 +194,22 @@ body {
    tab now that each has a tint-chip background for the highlight to sweep
    across -- see .site-nav a:not(.nav-cta) above. Switched off for anyone
    with prefers-reduced-motion set, same policy as the ad-slot flash
-   effect. Nav tabs get a small nth-child stagger so all seven don't shimmer
-   in perfect unison. */
+   effect. Nav tabs get a small nth-child stagger so they don't shimmer
+   in perfect unison.
+
+   UPDATED 2026-10-08: switched from :nth-of-type to :nth-child, and the
+   first three selectors now reach one level deeper into .nav-item. Reason:
+   Documents/Images/PDF Tools are now each wrapped in a .nav-item div (for
+   the hover-dropdown feature above), so their <a> is no longer a direct
+   child of .site-nav -- :nth-of-type counts position among same-tag
+   siblings under the *immediate* parent, and since each wrapped <a> is now
+   the only <a> inside its own .nav-item, the old selectors would all have
+   resolved to "1st <a>" and collapsed the stagger. :nth-child, counted
+   against .site-nav's direct children (a mix of 3 .nav-item divs then 6
+   plain <a> tags, tag type doesn't matter for :nth-child), preserves the
+   exact same left-to-right stagger order and timing as before -- it also
+   adds a delay for the 8th tab (Contact), which the original 7 rules never
+   covered. */
 @media (prefers-reduced-motion: no-preference) {
   .nav-cta::after,
   .btn-primary::after,
@@ -146,13 +221,14 @@ body {
     background: linear-gradient(115deg, transparent, rgba(255,255,255,0.55), transparent);
     animation: btn-shimmer 2.6s ease-in-out infinite;
   }
-  .site-nav a:not(.nav-cta):nth-of-type(1)::after { animation-delay: 0s; }
-  .site-nav a:not(.nav-cta):nth-of-type(2)::after { animation-delay: 0.3s; }
-  .site-nav a:not(.nav-cta):nth-of-type(3)::after { animation-delay: 0.6s; }
-  .site-nav a:not(.nav-cta):nth-of-type(4)::after { animation-delay: 0.9s; }
-  .site-nav a:not(.nav-cta):nth-of-type(5)::after { animation-delay: 1.2s; }
-  .site-nav a:not(.nav-cta):nth-of-type(6)::after { animation-delay: 1.5s; }
-  .site-nav a:not(.nav-cta):nth-of-type(7)::after { animation-delay: 1.8s; }
+  .site-nav > .nav-item:nth-child(1) > a:not(.nav-cta)::after { animation-delay: 0s; }
+  .site-nav > .nav-item:nth-child(2) > a:not(.nav-cta)::after { animation-delay: 0.3s; }
+  .site-nav > .nav-item:nth-child(3) > a:not(.nav-cta)::after { animation-delay: 0.6s; }
+  .site-nav > a:not(.nav-cta):nth-child(4)::after { animation-delay: 0.9s; }
+  .site-nav > a:not(.nav-cta):nth-child(5)::after { animation-delay: 1.2s; }
+  .site-nav > a:not(.nav-cta):nth-child(6)::after { animation-delay: 1.5s; }
+  .site-nav > a:not(.nav-cta):nth-child(7)::after { animation-delay: 1.8s; }
+  .site-nav > a:not(.nav-cta):nth-child(8)::after { animation-delay: 2.1s; }
 }
 @keyframes btn-shimmer {
   0% { left: -60%; }
@@ -833,6 +909,11 @@ body {
 @media (max-width: 780px) {
   .why-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  /* Hover dropdowns are a desktop-mouse convenience; below this width the
+     nav collapses toward (and at 560px becomes) a vertical tap menu, where
+     hover has no meaning and a popover would just get in the way. Tabs
+     keep working as plain links to their section. */
+  .nav-dropdown { display: none; }
 }
 
 @media (max-width: 640px) {
