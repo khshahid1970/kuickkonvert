@@ -18,12 +18,14 @@ for _var in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",
              "OPENCV_FOR_THREADS_NUM"):
     os.environ.setdefault(_var, "1")
 
+import hashlib
 import re
 import secrets
 import zipfile
 
 from flask import (
-    Flask, render_template, request, send_file, abort, jsonify, url_for, Response, g
+    Flask, render_template, request, send_file, abort, jsonify, url_for, Response, g,
+    redirect, send_from_directory,
 )
 from markupsafe import Markup, escape
 from werkzeug.utils import secure_filename
@@ -51,6 +53,46 @@ app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 
+# --- Static files: one-year browser cache with automatic version tags -----
+# Added 2026-10-08 (phone-speed fix). Every url_for('static', ...) link gets
+# "?v=<first 10 characters of the file's SHA-256>". Those versioned URLs are
+# sent with a one-year cache (see _cache_versioned_static below), so a
+# visitor's phone keeps style.css, the JS files and the icons instead of
+# re-checking them with the server on every page view (that check took
+# ~230 ms per page on 8 Oct 2026). When a file changes, its hash -- and so
+# its URL -- changes too, so visitors get the new file straight away.
+# Requests WITHOUT ?v (old links, hard-coded paths) keep Flask's default
+# "no-cache" revalidation. Conversion downloads are not static files and
+# are never affected.
+_STATIC_VERSIONS = {}
+
+
+def _static_version(filename):
+    if filename not in _STATIC_VERSIONS:
+        try:
+            with open(os.path.join(app.static_folder, filename), "rb") as fh:
+                _STATIC_VERSIONS[filename] = hashlib.sha256(fh.read()).hexdigest()[:10]
+        except OSError:
+            _STATIC_VERSIONS[filename] = ""
+    return _STATIC_VERSIONS[filename]
+
+
+@app.url_defaults
+def _add_static_version(endpoint, values):
+    if endpoint == "static" and "filename" in values and "v" not in values:
+        version = _static_version(values["filename"])
+        if version:
+            values["v"] = version
+
+
+@app.after_request
+def _cache_versioned_static(response):
+    if (request.endpoint == "static" and request.args.get("v")
+            and response.status_code in (200, 304)):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return response
+
+
 # --- Per-request CSP nonce -------------------------------------------------
 # One random, unguessable value generated fresh for every request and used to
 # allow exactly one specific inline <script> block (the Google Analytics
@@ -67,6 +109,30 @@ app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 @app.before_request
 def _set_csp_nonce():
     g.csp_nonce = secrets.token_urlsafe(16)
+
+
+# --- Trailing-slash addresses -> 301 to the real page ----------------------
+# Added 2026-10-08. Pages live at addresses WITHOUT a trailing slash
+# (/tools/word-to-pdf). A link that adds one (/tools/word-to-pdf/) used to
+# get "not found"; now it is sent permanently (301) to the real page, so the
+# visitor lands on it and search engines treat both as one address.
+# Only GET/HEAD (uploads and forms are never redirected), only when the
+# address without the slash is a real route, the query string is kept,
+# and never to "//..." (a browser would read that as another website).
+@app.before_request
+def _redirect_trailing_slash():
+    path = request.path
+    if request.method not in ("GET", "HEAD") or len(path) < 2 or not path.endswith("/"):
+        return None
+    target = path.rstrip("/")
+    if not target or target.startswith("//") or "\\" in target:
+        return None
+    try:
+        app.create_url_adapter(request).match(target, method="GET")
+    except Exception:
+        return None
+    query = request.query_string.decode("utf-8", "replace")
+    return redirect(target + ("?" + query if query else ""), code=301)
 
 
 # --- Security headers -------------------------------------------------------
@@ -632,6 +698,19 @@ def terms():
     return render_template("terms.html", canonical_url=f"{SITE_URL}/terms")
 
 
+# Added 2026-10-08: some browsers and crawlers ask for /favicon.ico directly
+# (it used to return "not found"). Serve the same icon the pages declare.
+@app.route("/favicon.ico")
+@limiter.exempt
+def favicon():
+    response = send_from_directory(
+        os.path.join(app.static_folder, "img"), "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
+    response.headers["Cache-Control"] = "public, max-age=604800"
+    return response
+
+
 @app.route("/robots.txt")
 def robots_txt():
     body = (
@@ -730,7 +809,8 @@ def sitemap_xml():
 
 @app.errorhandler(404)
 def not_found(e):
-    return render_template("404.html"), 404
+    # is_error_page: base.html then leaves out the canonical/og:url tags.
+    return render_template("404.html", is_error_page=True), 404
 
 
 @app.errorhandler(413)
@@ -745,7 +825,7 @@ def rate_limited(e):
 
 @app.errorhandler(500)
 def server_error(e):
-    return render_template("500.html"), 500
+    return render_template("500.html", is_error_page=True), 500
 
 
 if __name__ == "__main__":

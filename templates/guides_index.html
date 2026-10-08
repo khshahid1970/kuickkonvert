@@ -1,6 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Guides -- KuickKonvert{% endblock %}
+{% block title %}PDF & File Conversion Guides | KuickKonvert{% endblock %}
 {% block description %}Plain-English guides to the file formats and conversion options behind KuickKonvert's tools -- what actually changes, and why.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Guides", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <section class="tool-page">
   <div class="wrap wrap-narrow">

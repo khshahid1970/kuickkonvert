@@ -258,7 +258,7 @@ TOOL_CONTENT = {
         "meta_description": "Free online DOC to PDF converter: convert Word files (DOC and DOCX) to PDF with no sign-up or installation. Files are deleted automatically.",
     },
     "pdf-to-word": {
-        "intro": "PDF to Word lets you convert PDF to Word online for free: it turns a PDF's pages into an editable DOCX file (PDF to DOCX), so you can update text you'd otherwise have to retype. It works best on PDFs that already contain real text, rather than a scan of a printed page.",
+        "intro": "This free tool converts PDF to Word online: it turns a PDF's pages into an editable DOCX file (PDF to DOCX), so you can update text you'd otherwise have to retype. It works best on PDFs that already contain real text, rather than a scan of a printed page.",
         "good_to_know": "We use pdf2docx first, with a LibreOffice-based fallback if that doesn't produce a usable result. Bulleted and numbered lists currently convert to plain text lines rather than a live Word list -- you may need to reapply bullet formatting afterward. Complex layouts, tables, and heavily designed pages may need manual adjustment once opened in Word.",
         "use_cases": [
             "Editing text from a PDF you only have as a final, uneditable file.",
@@ -708,7 +708,7 @@ GUIDES = [
     {
         "slug": "pdf-compression-levels-explained",
         "title": "PDF Compression Explained: Screen vs eBook vs Printer (With Real Test Results)",
-        "seo_title": "PDF Compression Levels: Screen vs eBook vs Printer | KuickKonvert",
+        "seo_title": "PDF Compression Levels Explained (Tested) | KuickKonvert",
         "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
         "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
         "published": "2026-09-14",
@@ -812,7 +812,7 @@ GUIDES = [
     {
         "slug": "jpg-vs-png",
         "title": "JPG vs PNG for Documents: Which Format to Use (With Real Test Results)",
-        "seo_title": "JPG vs PNG for Documents and Scans: Which Is Better? | KuickKonvert",
+        "seo_title": "JPG vs PNG for Documents and Scans | KuickKonvert",
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
         "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
@@ -903,8 +903,8 @@ GUIDES = [
     },
     {
         "slug": "merge-pdf-in-the-right-order",
-        "title": "How to Merge PDFs in the Right Order (and Fix the Page Order If It's Wrong)",
-        "seo_title": "How to Merge PDFs in the Right Order | KuickKonvert",
+        "title": "How to Get the Page Order Right When Merging PDFs (and Fix It If It's Wrong)",
+        "seo_title": "How to Get the Page Order Right When Merging | KuickKonvert",
         "meta_description": "How our Merge PDF tool decides page order, what survives a merge in our own tests, and how to fix a merged PDF whose pages came out in the wrong order.",
         "dek": "A merged PDF follows one simple rule: files are joined in the order they appear in your list. Here's how to get that list right first time, what a merge keeps and drops, and how to repair a file that came out wrong.",
         "published": "2026-10-05",
@@ -1048,8 +1048,8 @@ GUIDES = [
     },
     {
         "slug": "excel-to-pdf-fit-on-one-page",
-        "title": "Excel to PDF: How to Make a Spreadsheet Fit on One Page",
-        "seo_title": "Excel to PDF: Fit a Spreadsheet on One Page | KuickKonvert",
+        "title": "How to Make a Spreadsheet Fit on One Page When You Save It as a PDF",
+        "seo_title": "How to Fit a Spreadsheet on One PDF Page | KuickKonvert",
         "meta_description": "Why spreadsheets split across pages in a PDF, what our Excel to PDF tool does automatically, our measured results, and how to keep the text readable.",
         "dek": "Our Excel to PDF tool always fits every column across the page width. The real question is how small the text becomes -- and that is something you can control before you upload.",
         "published": "2026-10-05",
@@ -1118,8 +1118,8 @@ GUIDES = [
     },
     {
         "slug": "pdf-to-excel-table-conversion-results",
-        "title": "PDF to Excel: Why Some Tables Don't Convert Cleanly (With Test Results)",
-        "seo_title": "PDF to Excel: Why Tables Don't Convert Cleanly | KuickKonvert",
+        "title": "Why Some PDF Tables Don't Convert Cleanly to Excel (With Test Results)",
+        "seo_title": "Why PDF Tables Don't Convert Cleanly to Excel | KuickKonvert",
         "meta_description": "Why some PDF tables convert to Excel cleanly and others don't: our tests on ruled, borderless, merged and multi-page tables, and how to fix each one.",
         "dek": "A PDF doesn't actually contain a table -- just text and lines placed on a page. How well a table converts to Excel depends on how clearly those lines mark out the cells. Here's what we found.",
         "published": "2026-10-05",
@@ -1196,8 +1196,8 @@ GUIDES = [
     },
     {
         "slug": "photos-to-one-pdf-jpg-to-pdf-tips",
-        "title": "How to Turn Photos into One PDF for Applications and Forms (JPG to PDF Tips)",
-        "seo_title": "Photos to One PDF: JPG to PDF Tips for Forms | KuickKonvert",
+        "title": "How to Turn Photos into One PDF for Applications and Forms",
+        "seo_title": "How to Put Photos into One PDF for Forms | KuickKonvert",
         "meta_description": "Combine phone photos into one PDF for an application or form: why photo PDFs get huge, why compression may not help, and our tested fix.",
         "dek": "Combining photos into one PDF is easy. Getting a PDF small enough for an upload portal, with sensibly sized pages, takes one extra step before you upload -- here's what our tests showed.",
         "published": "2026-10-05",
@@ -1261,8 +1261,8 @@ GUIDES = [
     },
     {
         "slug": "pdf-to-word-text-vs-scanned",
-        "title": "PDF to Word: Text-Based vs Scanned PDFs, and What to Do With a Scan",
-        "seo_title": "PDF to Word: Text vs Scanned PDFs Explained | KuickKonvert",
+        "title": "Text-Based vs Scanned PDFs: Converting to Word, and What to Do With a Scan",
+        "seo_title": "Text vs Scanned PDFs: Converting to Word | KuickKonvert",
         "meta_description": "Why some PDFs convert to editable Word text and others become a picture: how to spot a scan, our own test results, and a free way to handle scans.",
         "dek": "Whether a PDF converts into editable Word text depends on one thing: whether the PDF contains real text or a picture of text. Here's how to tell in five seconds, and what to do when it's a scan.",
         "published": "2026-10-05",
@@ -1323,8 +1323,8 @@ GUIDES = [
     },
     {
         "slug": "powerpoint-to-pdf-and-back",
-        "title": "PowerPoint to PDF and PDF to PowerPoint: What Carries Over (With Test Results)",
-        "seo_title": "PowerPoint to PDF and PDF to PPT: What Carries Over | KuickKonvert",
+        "title": "PowerPoint and PDF, Both Ways: What Carries Over (With Test Results)",
+        "seo_title": "PowerPoint and PDF: What Carries Over | KuickKonvert",
         "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF -- and why PDF to PowerPoint gives picture slides. Our tests.",
         "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found.",
         "published": "2026-10-05",
@@ -1391,8 +1391,8 @@ GUIDES = [
     },
     {
         "slug": "watermark-pdf-what-it-protects",
-        "title": "Watermarking a PDF: What a Text Watermark Does and Doesn't Protect",
-        "seo_title": "Watermark PDF: What a Text Watermark Protects | KuickKonvert",
+        "title": "What a Text Watermark on a PDF Does and Doesn't Protect",
+        "seo_title": "What a Text Watermark on a PDF Protects | KuickKonvert",
         "meta_description": "What our Watermark PDF tool adds to each page, how much text fits, what a watermark can't stop, and how to combine it with a password. Our own test results.",
         "dek": "A watermark labels every page -- CONFIDENTIAL, DRAFT, COPY -- so nobody can mistake what the document is. It doesn't lock anything. Here's what our tests showed, and how to use one well.",
         "published": "2026-10-05",
@@ -1461,8 +1461,8 @@ GUIDES = [
     },
     {
         "slug": "split-and-rotate-pdf-pages",
-        "title": "Split PDF and Rotate PDF: What Happens Inside the File (With Test Results)",
-        "seo_title": "Split and Rotate PDF Pages: What Changes Inside | KuickKonvert",
+        "title": "What Splitting and Rotating Pages Do Inside a PDF File (With Test Results)",
+        "seo_title": "What Splitting and Rotating Do to a PDF | KuickKonvert",
         "meta_description": "Why split PDF pages can add up to far more than the original, why rotating a PDF loses no quality, and how to rotate or extract just some pages. Our tests.",
         "dek": "Splitting and rotating look like the simplest PDF jobs, but our tests turned up two things worth knowing: split pages can take up many times the space of the original, and rotation never touches your content.",
         "published": "2026-10-05",
@@ -1530,8 +1530,8 @@ GUIDES = [
     },
     {
         "slug": "word-to-pdf-what-carries-over",
-        "title": "Word to PDF: What Carries Over -- Links, Headings, Comments and Photos (With Test Results)",
-        "seo_title": "Word to PDF: What Carries Over (Tested) | KuickKonvert",
+        "title": "What Carries Over from Word to a PDF: Links, Headings, Comments and Photos (With Test Results)",
+        "seo_title": "What Carries Over from Word to a PDF (Tested) | KuickKonvert",
         "meta_description": "Do links, headings, headers, comments and photos survive Word to PDF conversion? Our test results, including how photos are resized, and what to check first.",
         "dek": "A Word document holds more than the words on the page: links, heading structure, comments, full-size photos. We tested which of these make it into the PDF our tool creates.",
         "published": "2026-10-05",

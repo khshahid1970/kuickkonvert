@@ -1,6 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Contact -- KuickKonvert{% endblock %}
+{% block title %}Contact KuickKonvert - Support and Feedback{% endblock %}
 {% block description %}Get in touch with KuickKonvert for general questions, technical support, privacy enquiries, or feedback on our free file conversion tools.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Contact", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <section class="tool-page">
   <div class="wrap wrap-narrow legal">
