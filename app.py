@@ -33,6 +33,7 @@ from flask_limiter.util import get_remote_address
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
+    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD,
 )
 from converters.utils import job_workspace, safe_name, change_ext
 from converters.isolate import run_isolated, JobFailed
@@ -689,21 +690,30 @@ def yandex_verification():
 def sitemap_xml():
     # Static pages plus every tool page, generated from the same TOOLS list
     # that drives the homepage grid, so a new tool is picked up automatically.
-    # <lastmod> is only included where there is a genuinely accurate date:
-    # each guide's own "updated" (or, failing that, "published") date from
-    # config.py. Google uses <lastmod> only when it is "consistently and
-    # verifiably accurate", so pages with no reliable per-page change date
-    # (tools, static pages) are listed without one rather than guessed.
-    # When a guide's content is materially revised, add/refresh an
-    # "updated": "YYYY-MM-DD" key on it in config.py.
+    # <lastmod> is only included where there is a genuinely accurate date.
+    # Google uses <lastmod> only when it is "consistently and verifiably
+    # accurate", so the remaining static pages (privacy, about, contact,
+    # terms, the guides list) are listed without one rather than guessed.
+    #   * home page and tool pages: HOME_LASTMOD / TOOLS_LASTMOD in config.py
+    #     (since 8 Oct 2026), or a tool's own "lastmod" key;
+    #   * guides: the latest of the guide's own "updated"/"published" date
+    #     and GUIDES_LINKS_LASTMOD (the last time links were added to every
+    #     guide -- Google counts new links as a significant change, but they
+    #     don't warrant a visible "Updated" date on the page).
+    # When a page changes significantly, bump the matching date in config.py
+    # (for a guide's own text, add/refresh its "updated": "YYYY-MM-DD").
     entries = [
-        (f"{SITE_URL}/", None), (f"{SITE_URL}/privacy", None),
+        (f"{SITE_URL}/", HOME_LASTMOD), (f"{SITE_URL}/privacy", None),
         (f"{SITE_URL}/about", None), (f"{SITE_URL}/contact", None),
         (f"{SITE_URL}/terms", None), (f"{SITE_URL}/guides", None),
     ]
-    entries += [(f"{SITE_URL}/tools/{t['slug']}", None) for t in TOOLS]
     entries += [
-        (f"{SITE_URL}/guides/{g['slug']}", g.get("updated") or g.get("published"))
+        (f"{SITE_URL}/tools/{t['slug']}", t.get("lastmod") or TOOLS_LASTMOD)
+        for t in TOOLS
+    ]
+    entries += [
+        (f"{SITE_URL}/guides/{g['slug']}",
+         max(d for d in (g.get("updated"), g.get("published"), GUIDES_LINKS_LASTMOD) if d))
         for g in GUIDES
     ]
 
