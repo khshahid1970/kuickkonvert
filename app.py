@@ -171,7 +171,10 @@ def _redirect_trailing_slash():
 # listed on its own: google.com plus the main target markets' domains
 # (Pakistan, India, UK) are included. A missing TLD only drops that one
 # measurement ping silently; it never breaks the site.
-_GOOGLE_TLDS = "https://www.google.com https://www.google.com.pk https://www.google.co.in https://www.google.co.uk"
+# 2026-10-08: subdomain wildcards (*.google.com etc.), as that guide lists for
+# Google Analytics: GA4 also sends hits to analytics.google.com, which the
+# www-only list blocked (console error on every page view).
+_GOOGLE_TLDS = "https://*.google.com https://*.google.com.pk https://*.google.co.in https://*.google.co.uk"
 _CSP_DIRECTIVES = (
     "default-src 'self'; "
     "script-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com 'nonce-{nonce}'; "
