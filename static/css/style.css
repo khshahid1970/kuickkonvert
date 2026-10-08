@@ -78,10 +78,17 @@ body {
 }
 .brand-name strong { font-weight: 700; }
 
+/* Nav width fix -- 2026-10-08. With 9 tabs (incl. Guides) the row needed
+   ~1,003px, but only ~893px fits beside the logo inside the 1,120px .wrap,
+   so the nav stuck out ~110px past the page column and made the whole page
+   scroll sideways on screens 580-1,280px wide. The gap (was 24px) and the
+   tab padding (was 14px / 16px) are tightened so the full row fits from
+   1,120px up; narrower screens use the tap menu -- see the
+   max-width:1119px block near the end of this file. */
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 10px;
   margin-left: auto;
 }
 .site-nav a {
@@ -107,7 +114,7 @@ body {
   position: relative;
   overflow: hidden;
   background: var(--color-primary-tint);
-  padding: 8px 14px;
+  padding: 8px 11px;
   border-radius: 8px;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -180,7 +187,7 @@ body {
   overflow: hidden;
   background: var(--color-primary);
   color: #fff !important;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   font-weight: 600 !important;
 }
@@ -906,13 +913,45 @@ body {
 }
 .footer-bottom a { color: var(--color-text-muted); }
 
+/* Tap menu (hamburger) -- breakpoint raised from 560px to 1119px on
+   2026-10-08 (these rules used to sit in the max-width:560px block below).
+   The full row of tabs only fits from 1,120px up (see "Nav width fix" near
+   the top), so tablets and small laptops now get the tap menu too, instead
+   of a nav that sticks out past the page. Also fixed here: Documents /
+   Images / PDF Tools (wrapped in .nav-item since the hover-dropdown change)
+   are full-width again like the other tabs, and "Start converting" has
+   inner padding again (its text used to touch the button's left edge).
+   Hover dropdowns stay off in the tap menu; the tabs work as plain links. */
+@media (max-width: 1119px) {
+  .nav-toggle { display: inline-flex; }
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    padding: 12px 24px 18px;
+  }
+  .site-nav.nav-open { display: flex; }
+  .nav-dropdown { display: none; }
+  .site-nav a { width: 100%; }
+  .site-nav a:not(.nav-cta) { padding: 10px 14px; margin-bottom: 2px; }
+  .site-nav a.nav-cta { padding: 10px 14px; margin-top: 4px; }
+}
+
 @media (max-width: 780px) {
   .why-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
-  /* Hover dropdowns are a desktop-mouse convenience; below this width the
-     nav collapses toward (and at 560px becomes) a vertical tap menu, where
-     hover has no meaning and a popover would just get in the way. Tabs
-     keep working as plain links to their section. */
+  /* Hover dropdowns are a desktop-mouse convenience. Since 2026-10-08 the
+     nav is already a tap menu below 1,120px (see the max-width:1119px block
+     above), which also hides them; this line is kept as a harmless
+     duplicate. */
   .nav-dropdown { display: none; }
 }
 
@@ -922,25 +961,8 @@ body {
 }
 
 @media (max-width: 560px) {
-  .nav-toggle { display: inline-flex; }
-  .site-nav {
-    display: none;
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-md);
-    padding: 12px 24px 18px;
-  }
-  .site-nav.nav-open { display: flex; }
-  .site-nav a { padding: 8px 0; width: 100%; }
-  .site-nav a:not(.nav-cta) { padding: 10px 14px; margin-bottom: 2px; }
-  .nav-cta { margin-top: 4px; }
+  /* Tap-menu (nav) rules moved to the max-width:1119px block above on
+     2026-10-08. */
   .why-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
 }
