@@ -23,7 +23,7 @@ TOOLS = [
         "slug": "word-to-pdf",
         "name": "Word to PDF",
         "category": "Documents",
-        "description": "Convert DOC and DOCX files to PDF.",
+        "description": "Convert Word to PDF -- DOC to PDF and DOCX to PDF.",
         "accept": ".doc,.docx",
         "multi": False,
         "from_fmt": "DOC",
@@ -33,7 +33,7 @@ TOOLS = [
         "slug": "pdf-to-word",
         "name": "PDF to Word",
         "category": "Documents",
-        "description": "Convert PDF pages into an editable DOCX file. Best results with text-based PDFs.",
+        "description": "Convert PDF to Word: an editable DOCX file. Best results with text-based PDFs.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -43,7 +43,7 @@ TOOLS = [
         "slug": "excel-to-pdf",
         "name": "Excel to PDF",
         "category": "Documents",
-        "description": "Convert XLS and XLSX spreadsheets to PDF.",
+        "description": "Convert Excel to PDF -- XLS and XLSX spreadsheets.",
         "accept": ".xls,.xlsx",
         "multi": False,
         "from_fmt": "XLS",
@@ -53,7 +53,7 @@ TOOLS = [
         "slug": "pdf-to-excel",
         "name": "PDF to Excel",
         "category": "Documents",
-        "description": "Pull tables from a PDF into an editable XLSX file.",
+        "description": "Convert PDF to Excel: pull tables into an editable XLSX file.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -63,7 +63,7 @@ TOOLS = [
         "slug": "ppt-to-pdf",
         "name": "PPT to PDF",
         "category": "Documents",
-        "description": "Convert PPT and PPTX presentations to PDF.",
+        "description": "Convert PPT to PDF -- PPT and PPTX presentations.",
         "accept": ".ppt,.pptx",
         "multi": False,
         "from_fmt": "PPT",
@@ -73,7 +73,7 @@ TOOLS = [
         "slug": "pdf-to-ppt",
         "name": "PDF to PPT",
         "category": "Documents",
-        "description": "Turn each PDF page into a slide in a PPTX presentation.",
+        "description": "Convert PDF to PPT: each page becomes a slide in a PPTX file.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -84,7 +84,7 @@ TOOLS = [
         "slug": "jpg-to-pdf",
         "name": "JPG to PDF",
         "category": "Images",
-        "description": "Combine one or more JPG or PNG images into a single PDF.",
+        "description": "Image to PDF converter: combine JPG or PNG photos into one PDF.",
         "accept": ".jpg,.jpeg,.png",
         "multi": True,
         "from_fmt": "JPG",
@@ -94,7 +94,7 @@ TOOLS = [
         "slug": "png-to-pdf",
         "name": "PNG to PDF",
         "category": "Images",
-        "description": "Combine one or more PNG images into a single PDF.",
+        "description": "Convert PNG to PDF: combine one or more PNG images into a single PDF.",
         "accept": ".png",
         "multi": True,
         "from_fmt": "PNG",
@@ -104,7 +104,7 @@ TOOLS = [
         "slug": "pdf-to-jpg",
         "name": "PDF to JPG",
         "category": "Images",
-        "description": "Turn each PDF page into a JPG image (downloaded as a ZIP for multi-page files).",
+        "description": "PDF to image: turn each page into a JPG (a ZIP for multi-page files).",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -114,7 +114,7 @@ TOOLS = [
         "slug": "pdf-to-png",
         "name": "PDF to PNG",
         "category": "Images",
-        "description": "Turn each PDF page into a PNG image (downloaded as a ZIP for multi-page files).",
+        "description": "Convert PDF to PNG: each page as a sharp PNG image (a ZIP for multi-page files).",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -125,7 +125,7 @@ TOOLS = [
         "slug": "merge-pdf",
         "name": "Merge PDF",
         "category": "PDF Tools",
-        "description": "Combine multiple PDFs into one, in the order you add them.",
+        "description": "Combine PDF files into one, in the order you add them.",
         "accept": ".pdf",
         "multi": True,
         "from_fmt": "PDF",
@@ -135,7 +135,7 @@ TOOLS = [
         "slug": "split-pdf",
         "name": "Split PDF",
         "category": "PDF Tools",
-        "description": "Split every page of a PDF into separate single-page PDFs (downloaded as a ZIP).",
+        "description": "PDF splitter: save every page as its own PDF (downloaded as a ZIP).",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -145,7 +145,7 @@ TOOLS = [
         "slug": "compress-pdf",
         "name": "Compress PDF",
         "category": "PDF Tools",
-        "description": "Reduce a PDF's file size while keeping it readable.",
+        "description": "PDF size reducer: shrink a PDF's file size while keeping it readable.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -168,7 +168,7 @@ TOOLS = [
         "slug": "rotate-pdf",
         "name": "Rotate PDF",
         "category": "PDF Tools",
-        "description": "Rotate every page of a PDF by 90, 180, or 270 degrees.",
+        "description": "Rotate PDF pages: turn every page by 90, 180 or 270 degrees.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -187,7 +187,7 @@ TOOLS = [
         "slug": "watermark-pdf",
         "name": "Watermark PDF",
         "category": "PDF Tools",
-        "description": "Stamp a text watermark diagonally across every page.",
+        "description": "Add a watermark to a PDF: diagonal text on every page.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -200,7 +200,7 @@ TOOLS = [
         "slug": "protect-pdf",
         "name": "Protect PDF",
         "category": "PDF Tools",
-        "description": "Add a password so only people who have it can open the PDF.",
+        "description": "Password protect a PDF so only people with the password can open it.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -619,7 +619,7 @@ GUIDES = [
                 "heading": "Which one should you use?",
                 "paragraphs": [
                     "Use DOCX unless someone specifically needs DOC for an old program. It is Word's default, it is the format other software supports best, and it keeps macros out unless you deliberately choose .docm.",
-                    "If a form or portal asks for \"a Word document\" without saying which, DOCX is the safe choice. If it must not be edited at all, send a PDF instead -- our Word to PDF tool accepts both .doc and .docx. Your upload and the PDF are deleted from our server as soon as your download is ready.",
+                    "If a form or portal asks for \"a Word document\" without saying which, DOCX is the safe choice. If it must not be edited at all, send a PDF instead -- our [[word-to-pdf|DOC to PDF converter]] accepts both .doc and .docx. Your upload and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
@@ -645,7 +645,7 @@ GUIDES = [
             {
                 "heading": "What happens when the exact font isn't available",
                 "paragraphs": [
-                    "Commercial fonts such as Calibri, Cambria, Arial and Times New Roman are licensed by Microsoft and aren't necessarily installed on the server that performs the conversion. Our Office-to-PDF conversions run through LibreOffice, and our server has free, metric-compatible replacements installed for the most common ones: Carlito for Calibri, Caladea for Cambria, and the Liberation fonts for Arial, Times New Roman and Courier New.",
+                    "Commercial fonts such as Calibri, Cambria, Arial and Times New Roman are licensed by Microsoft and aren't necessarily installed on the server that performs the conversion. Our Office-to-PDF conversions -- [[word-to-pdf|Word to PDF]], [[excel-to-pdf|Excel to PDF]] and [[ppt-to-pdf|PPT to PDF]] -- run through LibreOffice, and our server has free, metric-compatible replacements installed for the most common ones: Carlito for Calibri, Caladea for Cambria, and the Liberation fonts for Arial, Times New Roman and Courier New.",
                     "\"Metric-compatible\" means each letter is exactly as wide as in the original font, so line breaks and page counts stay the same. What can still differ slightly is the shape of the letters themselves.",
                     "Any font without such a replacement falls back to a general-purpose font with different letter widths -- and that is when lines rewrap and pages move.",
                 ],
@@ -712,7 +712,7 @@ GUIDES = [
             {
                 "heading": "What happens when you press Compress",
                 "paragraphs": [
-                    "Our Compress PDF tool rewrites your file with Ghostscript, a long-established open-source PDF engine, using one of its three standard presets: /screen, /ebook or /printer. Each preset combines two techniques.",
+                    "Our Compress PDF tool -- a free [[compress-pdf|PDF size reducer]] -- rewrites your file with Ghostscript, a long-established open-source PDF engine, using one of its three standard presets: /screen, /ebook or /printer. Each preset combines two techniques.",
                     "Downsampling lowers the resolution of images that are sharper than the preset needs. Resolution is measured in dots per inch (dpi) -- how many pixels the image uses for each inch of the printed page. Halving the resolution leaves roughly a quarter of the pixels, which is where most of the saving comes from.",
                     "Re-encoding saves photographic images with JPEG compression, which discards fine detail the eye is unlikely to notice in exchange for a much smaller file.",
                     "Text stays as real text at every level, so it remains sharp at any zoom and can still be selected and searched.",
@@ -823,7 +823,7 @@ GUIDES = [
             {
                 "heading": "What we measured on a real document page",
                 "paragraphs": [
-                    "We created a one-page A4 letter -- a heading and six paragraphs of ordinary 11-point text -- and turned it into images with our own PDF to PNG and PDF to JPG tools, which render at 300 dpi (2481 x 3508 pixels).",
+                    "We created a one-page A4 letter -- a heading and six paragraphs of ordinary 11-point text -- and turned it into images with our own [[pdf-to-png|PDF to PNG]] and [[pdf-to-jpg|PDF to JPG]] tools, which render at 300 dpi (2481 x 3508 pixels).",
                     "The PNG was 645 KB. The JPG was 1.1 MB -- about 70% larger -- and it had lost detail: around 65,000 pixels around the letters changed noticeably compared with the exact PNG. Saved as a greyscale PNG, the same page was just 347 KB.",
                     "The reason is simple. A text page is mostly large areas of plain white with sharp black edges. Lossless PNG compression handles plain areas extremely efficiently, while JPG spends a lot of data trying to approximate every sharp edge -- and still doesn't get them exactly right.",
                 ],
@@ -881,7 +881,7 @@ GUIDES = [
                 "paragraphs": [
                     "PDF to PNG renders every page at 300 dpi and saves it losslessly -- the best choice for pages with text, tables or line drawings.",
                     "PDF to JPG renders every page at 300 dpi and saves it as a standard-quality JPG (quality 75). That keeps photo-heavy pages compact, but as our test shows, text-heavy pages are often smaller and sharper as PNG.",
-                    "JPG to PDF places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss.",
+                    "[[jpg-to-pdf|JPG to PDF]] places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss. It also accepts PNG images, so photos and screenshots can go into one PDF.",
                     "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
                     "Every uploaded image and every result is deleted from our server as soon as your download is ready.",
                 ],
@@ -900,7 +900,7 @@ GUIDES = [
             {
                 "heading": "The one rule: list order is page order",
                 "paragraphs": [
-                    "Our Merge PDF tool takes your files from top to bottom of the list shown under the upload box and copies every page of each file, in that order, into one new PDF. Nothing is sorted by name, date or size. If the list reads Cover, Report, Appendix, the merged file starts with every page of Cover, then every page of Report, then every page of Appendix.",
+                    "Our Merge PDF tool, which lets you [[merge-pdf|combine PDF files]] for free, takes your files from top to bottom of the list shown under the upload box and copies every page of each file, in that order, into one new PDF. Nothing is sorted by name, date or size. If the list reads Cover, Report, Appendix, the merged file starts with every page of Cover, then every page of Report, then every page of Appendix.",
                     "Each time you choose or drop more files, they are added to the end of the list. That gives you a simple way to control the order: add your files one at a time, in the order you want them in the finished document.",
                     "If you select several files in one go, they appear in whatever order your browser passes them to the page, which is not always the order you clicked them. Always read the list before you press the button.",
                     "Each file in the list has a Remove button. There is no drag-to-reorder, so if a file is in the wrong place, remove it and the files after it, then add them again in the right order.",
@@ -939,7 +939,7 @@ GUIDES = [
                 "heading": "How to fix a merged PDF with the pages in the wrong order",
                 "paragraphs": [
                     "If whole files are in the wrong order, the quickest fix is to merge again from your original files. Add them one at a time, check the list, then merge.",
-                    "If you no longer have the originals, or need to move individual pages, use Split PDF and then Merge PDF. Split PDF breaks a file into one PDF per page and gives you a ZIP of files named page-001.pdf, page-002.pdf and so on. Unzip it, then merge the pages back together in the order you want, adding them one at a time.",
+                    "If you no longer have the originals, or need to move individual pages, use [[split-pdf|Split PDF]] and then Merge PDF. Split PDF breaks a file into one PDF per page and gives you a ZIP of files named page-001.pdf, page-002.pdf and so on. Unzip it, then merge the pages back together in the order you want, adding them one at a time.",
                     "If just one page is sideways, the same method works. Split the file, run that single page through Rotate PDF, then merge all the pages again. Rotate PDF turns every page of the file you give it, which is why the page has to be on its own first.",
                     "The same split-and-merge method also removes pages: simply leave out the ones you don't need when you merge the pages back together.",
                 ],
@@ -967,7 +967,7 @@ GUIDES = [
             {
                 "heading": "What our Protect PDF tool actually does",
                 "paragraphs": [
-                    "Protect PDF encrypts your file with a password you choose (at least 4 characters), using 256-bit AES encryption -- the method the current PDF standard, PDF 2.0 (ISO 32000-2), specifies for password-protected PDFs. Adobe Acrobat and Reader have supported 256-bit AES since version 9, so the recipient only needs the password and an up-to-date PDF reader.",
+                    "Protect PDF lets you [[protect-pdf|password protect a PDF]] online: it encrypts your file with a password you choose (at least 4 characters), using 256-bit AES encryption -- the method the current PDF standard, PDF 2.0 (ISO 32000-2), specifies for password-protected PDFs. Adobe Acrobat and Reader have supported 256-bit AES since version 9, so the recipient only needs the password and an up-to-date PDF reader.",
                     "Some very old PDF software can't open this type of file. For example, the developers of the iText PDF library note that iText 5 and earlier versions can't read it. If someone can't open your protected file, ask them to update their PDF reader.",
                     "When we checked a protected file with three independent PDF programs (October 2026), opening it without the password failed, and opening it with the password worked normally.",
                     "The password you set is used to open the file. Our tool does not add separate restrictions on printing, copying or editing, so anyone who has the password can do everything with the document that they could with the original.",
@@ -1051,7 +1051,7 @@ GUIDES = [
             {
                 "heading": "What our tool does automatically",
                 "paragraphs": [
-                    "Before converting, our Excel to PDF tool adjusts the page setup of every sheet in your workbook.",
+                    "Before converting, our [[excel-to-pdf|Excel to PDF converter]] adjusts the page setup of every sheet in your workbook.",
                     "Every column is fitted across the page width. The tool sets each sheet to fit one page wide, so no column is ever cut off or pushed onto a separate page. Long sheets are not squeezed vertically; they simply continue onto further pages, top to bottom.",
                     "Column widths are set from your content. Each column is widened to fit its longest entry (with a minimum of 8 characters and a maximum of 60), so entries aren't cut off in the PDF.",
                     "Wide sheets are turned to landscape. If a sheet's columns add up to more than about 80 characters across, the page is set to landscape, which gives noticeably more width and lets the text stay larger.",
@@ -1116,7 +1116,7 @@ GUIDES = [
                 "heading": "Why tables are hard to get out of a PDF",
                 "paragraphs": [
                     "A spreadsheet knows which cell every value is in. A PDF doesn't: it records each piece of text and each line as a drawing instruction at a position on the page. When you look at a PDF table you see rows and columns, but the file only knows that some text sits near some lines.",
-                    "So a PDF to Excel converter has to rebuild the table. Our tool uses an open-source library called pdfplumber to find table structures on each page, mainly from the ruling lines drawn around and between cells, and then writes each table into a worksheet, with the text found above and below it.",
+                    "So a [[pdf-to-excel|PDF to Excel converter]] has to rebuild the table. Our tool uses an open-source library called pdfplumber to find table structures on each page, mainly from the ruling lines drawn around and between cells, and then writes each table into a worksheet, with the text found above and below it.",
                 ],
             },
             {
@@ -1188,12 +1188,13 @@ GUIDES = [
         "meta_description": "Combine phone photos into one PDF for an application or form: why photo PDFs get huge, why compression may not help, and our tested fix.",
         "dek": "Combining photos into one PDF is easy. Getting a PDF small enough for an upload portal, with sensibly sized pages, takes one extra step before you upload -- here's what our tests showed.",
         "published": "2026-10-05",
+        "updated": "2026-10-08",
         "related_tools": ["jpg-to-pdf", "compress-pdf", "merge-pdf"],
         "sections": [
             {
                 "heading": "How our JPG to PDF tool builds the PDF",
                 "paragraphs": [
-                    "Our JPG to PDF tool puts each photo on its own page, in the order of the file list. Files are added to the end of the list each time you choose more, and each one has a Remove button, so the easiest way to get the order right is to add the photos one at a time.",
+                    "Our [[jpg-to-pdf|photo to PDF converter]] puts each photo on its own page, in the order of the file list. Files are added to the end of the list each time you choose more, and each one has a Remove button, so the easiest way to get the order right is to add the photos one at a time.",
                     "Your JPGs are placed into the PDF exactly as uploaded, byte for byte. There is no second round of compression, so no quality is lost -- but it also means the PDF ends up about the same size as all your photos added together. In our test, three images totalling 14,124 KB produced a 14,126 KB PDF.",
                     "Photos taken with the phone held upright are shown upright. Phones often store such photos sideways with a tag telling viewers how to turn them, and our tool follows that tag: our sideways-stored test photo was set to display upright in the PDF.",
                 ],
@@ -1209,7 +1210,7 @@ GUIDES = [
             {
                 "heading": "Why Compress PDF may not shrink a photo PDF",
                 "paragraphs": [
-                    "This surprised us. We combined two realistic phone photos (about 2.7 MB each) into a 5,456 KB PDF and ran it through Compress PDF at all three levels. The file stayed at 5,456 KB every time.",
+                    "This surprised us. We combined two realistic phone photos (about 2.7 MB each) into a 5,456 KB PDF and ran it through [[compress-pdf|Compress PDF]] at all three levels. The file stayed at 5,456 KB every time.",
                     "The reason is the page size. Compression reduces image resolution in dots per inch, and on a 56-inch-wide page a 4032-pixel photo is only 72 dpi -- already below every threshold, so there is nothing for the compressor to reduce. Our Compress PDF tool gives you the original back when it can't make the file smaller.",
                     "When we labelled one of the same photos 300 dpi, compression worked as expected: the 2,726 KB one-photo PDF shrank to 319 KB on eBook and 116 KB on Screen.",
                 ],
@@ -1239,7 +1240,7 @@ GUIDES = [
                     "Read the portal's rules first: maximum file size, whether it wants one PDF or separate files, and whether it asks for a particular page size.",
                     "Photograph documents flat, in good light, with the whole page in frame, and crop away the background before converting.",
                     "Add pages in the order the form asks for -- for example ID front, ID back, then certificates -- adding one photo at a time.",
-                    "Our JPG to PDF tool accepts JPG files. For PNG screenshots, use PNG to PDF, then join the two PDFs with Merge PDF.",
+                    "Our JPG to PDF tool accepts JPG and PNG files, so phone photos and PNG screenshots can go into one PDF in a single step.",
                     "Open the finished PDF and check every page is upright, readable and in order before you submit. Your photos and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
@@ -1273,7 +1274,7 @@ GUIDES = [
             {
                 "heading": "What we measured",
                 "paragraphs": [
-                    "We made a one-page test document -- a heading, four short clauses and a small rent table -- and converted three versions of it with the same code our tool runs (October 2026). Our PDF to Word tool uses an open-source converter called pdf2docx, with LibreOffice as a fallback.",
+                    "We made a one-page test document -- a heading, four short clauses and a small rent table -- and converted three versions of it with the same code our tool runs (October 2026). Our [[pdf-to-word|PDF to Word converter]] is built on pdf2docx, an open-source library, with LibreOffice as a fallback.",
                     "The text-based PDF converted into an editable Word document: 140 words of text and a real Word table, with \"Monthly rent\" and \"PKR 45,000\" in editable cells.",
                     "The scanned PDF became a Word document containing one picture of the page and no text.",
                     "The third version is the one that catches people out. We ran the scan through Tesseract, a free OCR program, which adds an invisible text layer behind the picture so the PDF becomes searchable. That PDF had 818 selectable characters -- yet our tool still produced one picture and no text. The converter did not use the invisible OCR text at all.",
@@ -1319,7 +1320,7 @@ GUIDES = [
             {
                 "heading": "What PowerPoint to PDF does",
                 "paragraphs": [
-                    "Our PPT to PDF tool converts .ppt and .pptx files with LibreOffice and produces one PDF page per slide. The page has the same shape as your slides, so a widescreen 16:9 deck gives widescreen 13.33 x 7.5 inch pages, not A4 or Letter.",
+                    "Our [[ppt-to-pdf|PPT to PDF converter]] turns .ppt and .pptx files into PDF with LibreOffice, one PDF page per slide. The page has the same shape as your slides, so a widescreen 16:9 deck gives widescreen 13.33 x 7.5 inch pages, not A4 or Letter.",
                     "The result is a fixed copy of the deck: it looks the same on any device, and nobody needs PowerPoint to open it -- which is why PDF is the usual way to send slides to a client or attach them to an application.",
                 ],
             },
@@ -1355,7 +1356,7 @@ GUIDES = [
             {
                 "heading": "PDF to PowerPoint: why you get picture slides",
                 "paragraphs": [
-                    "Our PDF to PPT tool makes one slide per PDF page (up to 50 pages at a time), and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
+                    "Our [[pdf-to-ppt|PDF to PPT converter]] makes one slide per PDF page (up to 50 pages at a time), and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
                     "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is a guaranteed, exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
                     "Pictures take more space than text, so expect a bigger file: our 20.5 KB PDF became a 170.5 KB presentation.",
                 ],
@@ -1387,7 +1388,7 @@ GUIDES = [
             {
                 "heading": "What our Watermark PDF tool adds",
                 "paragraphs": [
-                    "The tool stamps the text you type diagonally across the centre of every page, at a 45-degree angle, in bold grey letters that are 35% opaque, so the page underneath stays readable. The letters are sized to the page's shorter side: 49 points on an A4 page and 51 points on US Letter, whether the page is portrait or landscape.",
+                    "The tool lets you [[watermark-pdf|add a watermark to a PDF]] for free: it stamps the text you type diagonally across the centre of every page, at a 45-degree angle, in bold grey letters that are 35% opaque, so the page underneath stays readable. The letters are sized to the page's shorter side: 49 points on an A4 page and 51 points on US Letter, whether the page is portrait or landscape.",
                     "The watermark is placed on top of the page content, not behind it, so it also shows over photos and scanned pages, where a watermark behind the content would be hidden.",
                     "You can type up to 120 characters. Anything longer is cut off at 120.",
                 ],
@@ -1430,7 +1431,7 @@ GUIDES = [
             {
                 "heading": "Watermark and password together: do it in the right order",
                 "paragraphs": [
-                    "If a document needs both a label and protection, watermark it first, then run the watermarked file through Protect PDF. Our tools can't open a password-protected PDF, so if you protect it first, the watermark step will stop with a message that the file is password-protected.",
+                    "If a document needs both a label and protection, watermark it first, then run the watermarked file through [[protect-pdf|Protect PDF]]. Our tools can't open a password-protected PDF, so if you protect it first, the watermark step will stop with a message that the file is password-protected.",
                     "A password stops people without it from opening the file; the watermark stays on every page for the people who do open it.",
                 ],
             },
@@ -1457,7 +1458,7 @@ GUIDES = [
             {
                 "heading": "What Split PDF gives you",
                 "paragraphs": [
-                    "Split PDF turns every page of your file into its own one-page PDF. For a multi-page file you download a ZIP containing page-001.pdf, page-002.pdf and so on, in page order; a one-page PDF simply comes back as a PDF. There is no option to choose a page range -- every page is split.",
+                    "Split PDF, our free [[split-pdf|PDF splitter]], turns every page of your file into its own one-page PDF. For a multi-page file you download a ZIP containing page-001.pdf, page-002.pdf and so on, in page order; a one-page PDF simply comes back as a PDF. There is no option to choose a page range -- every page is split.",
                     "Each page file is a complete, normal PDF: in our test the text on it was still real, selectable text. Like Merge, Split does not copy the document's title from the original's properties into the new files.",
                 ],
             },
@@ -1488,7 +1489,7 @@ GUIDES = [
             {
                 "heading": "What Rotate PDF does -- and why it loses no quality",
                 "paragraphs": [
-                    "Rotate PDF turns every page by 90, 180 or 270 degrees. In the PDF format, page rotation is a setting stored with each page that tells the reader how to display it; the PDF standard defines it as a clockwise turn. So 90 degrees turns pages a quarter turn clockwise, 270 degrees a quarter turn anticlockwise, and 180 degrees turns them upside down.",
+                    "[[rotate-pdf|Rotate PDF]] turns every page by 90, 180 or 270 degrees. In the PDF format, page rotation is a setting stored with each page that tells the reader how to display it; the PDF standard defines it as a clockwise turn. So 90 degrees turns pages a quarter turn clockwise, 270 degrees a quarter turn anticlockwise, and 180 degrees turns them upside down.",
                     "We checked what changes inside the file. After rotating, the content of each page -- the text and drawing instructions -- was byte-for-byte identical to the original; only the rotation setting changed. The text stayed selectable and searchable, and the file size barely moved: 50.3 KB became 49.7 KB, and a 3,214 KB scan stayed at 3,213 KB.",
                     "Rotations add up. Rotating a file by 90 degrees and then rotating the result by 90 degrees again gave a total rotation of 180 degrees, so you can always rotate again if the first choice was wrong.",
                 ],
@@ -1580,7 +1581,7 @@ GUIDES = [
             {
                 "heading": "Checklist before converting",
                 "paragraphs": [
-                    "Use Word's Heading styles if you want bookmarks, use a common font such as Calibri or Arial, remember that comments won't appear, and keep the original photos if anyone needs them at full size. Then open the PDF, check the page count and click a link or two. Our Word to PDF tool accepts both .doc and .docx, and your upload and the PDF are deleted from our server as soon as your download is ready.",
+                    "Use Word's Heading styles if you want bookmarks, use a common font such as Calibri or Arial, remember that comments won't appear, and keep the original photos if anyone needs them at full size. Then open the PDF, check the page count and click a link or two. Our [[word-to-pdf|Word to PDF converter]] accepts both .doc and .docx, and your upload and the PDF are deleted from our server as soon as your download is ready.",
                 ],
             },
         ],
