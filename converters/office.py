@@ -15,6 +15,7 @@ import os
 import subprocess
 
 from converters.isolate import is_out_of_memory
+from converters.utils import subprocess_env
 
 SOFFICE_BIN = os.environ.get("SOFFICE_BIN", "soffice")
 CONVERT_TIMEOUT = int(os.environ.get("CONVERT_TIMEOUT_SECONDS", "120"))
@@ -75,6 +76,7 @@ def _run_soffice(input_path: str, out_dir: str, target_filter: str, infilter: st
             stderr=subprocess.STDOUT,
             timeout=CONVERT_TIMEOUT,
             text=True,
+            env=subprocess_env(out_dir),  # LibreOffice temp files stay in the job folder
         )
     except subprocess.TimeoutExpired as exc:
         raise ConversionError(
@@ -209,8 +211,9 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
     survives the Draw-to-Impress step.
     Given that, each page is rendered to an image (via pdf2image/poppler,
     the same renderer the PDF-to-JPG/PNG tools use) and placed as a single
-    image sized to that page's exact original dimensions, with the overall
-    slide size fixed to the first page's dimensions. This trades away
+    image, with the overall slide size fixed to the first page's displayed
+    size. (Fixed 9 Oct 2026: sizes now follow how each page is DISPLAYED --
+    its crop box and /Rotate -- so a rotated page is no longer stretched.) This trades away
     editable text -- each slide is a picture, not text you can click into
     -- for a guaranteed, visually exact replica of every page, which is a
     more honest result than a broken "editable" file that silently has
@@ -225,9 +228,14 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
         reader = pypdf.PdfReader(input_path)
         check_render_page_limit(len(reader.pages))
 
-        first_box = reader.pages[0].mediabox
-        slide_w = Emu(max(int(float(first_box.width) * 12700), 1))
-        slide_h = Emu(max(int(float(first_box.height) * 12700), 1))
+        # Slide size = the first page as it is displayed: its crop box,
+        # with width and height swapped when the page has /Rotate 90 or 270.
+        first = reader.pages[0]
+        first_w, first_h = float(first.cropbox.width), float(first.cropbox.height)
+        if int(first.get("/Rotate", 0) or 0) % 180 == 90:
+            first_w, first_h = first_h, first_w
+        slide_w = Emu(max(int(first_w * 12700), 1))
+        slide_h = Emu(max(int(first_h * 12700), 1))
 
         prs = Presentation()
         prs.slide_width = slide_w
@@ -237,10 +245,10 @@ def convert_pdf_to_ppt(input_path: str, out_dir: str) -> str:
         # One page at a time (see images.render_pdf_page): rendering every
         # page up front peaked at about 1.4 GB for a 40-page PDF in testing.
         for i in range(len(reader.pages)):
-            img = render_pdf_page(input_path, i + 1, 200)
-            page_box = reader.pages[i].mediabox
-            page_w = max(int(float(page_box.width) * 12700), 1)
-            page_h = max(int(float(page_box.height) * 12700), 1)
+            img = render_pdf_page(input_path, i + 1, 200, use_cropbox=True)
+            # The rendered image shows the page as displayed (use_cropbox=True:
+            # poppler renders the crop box and applies /Rotate), so its proportions are used.
+            page_w, page_h = max(img.width, 1), max(img.height, 1)
 
             # Fit this page's image inside the fixed slide size, preserving
             # its own aspect ratio, in case pages aren't all the same size.

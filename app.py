@@ -36,14 +36,15 @@ from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
     HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, STATIC_LASTMOD,
+    RELEASE_DATE_TEXT,
 )
-from converters.utils import job_workspace, safe_name, change_ext
+from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_temp
 from converters.isolate import run_isolated, JobFailed
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
 )
 from converters.tables import convert_pdf_to_excel
-from converters.images import images_to_pdf, pdf_to_images
+from converters.images import images_to_pdf, pdf_to_images, convert_images
 from converters.pdf_tools import (
     merge_pdfs, split_pdf, rotate_pdf, watermark_pdf, protect_pdf, compress_pdf,
     ensure_pdf_unlocked,
@@ -251,6 +252,52 @@ def _set_security_headers(response):
 # e.g. RATE_LIMIT_STORAGE_URI=redis://<host>:6379 -- no code change needed.
 # Render offers a managed Redis add-on (a new, separate resource/cost on
 # your Render account, not something this code can provision on its own).
+# Leftover temp files from before the 9 Oct 2026 fix, or from a worker that
+# died mid-job, are removed whenever a worker starts (gunicorn replaces each
+# worker after ~200 requests, so this runs regularly). See converters/utils.py.
+sweep_stale_temp()
+
+
+# ---- Proxy header check (added 9 Oct 2026, forensic audit E8) ----------
+# The rate limiter below keys on request.remote_addr. On Render that is
+# probably Render's proxy, i.e. the same for every visitor. Before switching
+# to the visitor's real address (werkzeug ProxyFix), this logs -- once per
+# worker -- HOW the address reaches the app: how many X-Forwarded-For entries
+# there are, which of them are private/public, and which position (if any)
+# equals CF-Connecting-IP. It never logs an IP address itself.
+import ipaddress as _ipaddress
+_proxy_shape_logged = False
+
+
+def _ip_kind(value):
+    try:
+        return "private" if _ipaddress.ip_address(value.strip()).is_private else "public"
+    except ValueError:
+        return "invalid"
+
+
+@app.before_request
+def _log_proxy_shape_once():
+    global _proxy_shape_logged
+    if _proxy_shape_logged:
+        return
+    _proxy_shape_logged = True
+    try:
+        xff = [p.strip() for p in request.headers.get("X-Forwarded-For", "").split(",") if p.strip()]
+        cf = request.headers.get("CF-Connecting-IP", "").strip()
+        cf_pos = next((str(i) for i, p in enumerate(xff) if cf and p == cf), "none")
+        app.logger.warning(
+            "proxy-shape: remote_addr=%s xff=[%s] cf_connecting_ip=%s cf_position=%s "
+            "true_client_ip=%s x_real_ip=%s",
+            _ip_kind(request.remote_addr or ""), ",".join(_ip_kind(p) for p in xff),
+            "yes" if cf else "no", cf_pos,
+            "yes" if request.headers.get("True-Client-IP") else "no",
+            "yes" if request.headers.get("X-Real-IP") else "no",
+        )
+    except Exception:  # diagnostics must never break a request
+        pass
+
+
 limiter = Limiter(
     get_remote_address,
     app=app,
@@ -309,8 +356,11 @@ def tool_links(text):
 def inject_site_url():
     """Makes {{ site_url }} available in every template without passing it
     from each view -- base.html uses it to build a canonical/OG URL fallback
-    for any page (e.g. the 404 handler) that doesn't explicitly pass one."""
-    return {"site_url": SITE_URL}
+    for any page (e.g. the 404 handler) that doesn't explicitly pass one.
+    Also: release_date_text (Privacy "Last updated" / Terms "Effective
+    date", from config.RELEASE_DATE) and tool_count (About page)."""
+    return {"site_url": SITE_URL, "release_date_text": RELEASE_DATE_TEXT,
+            "tool_count": len(TOOLS)}
 
 
 @app.context_processor
@@ -536,6 +586,64 @@ def h_protect_pdf(files, form, job_dir):
     return out, change_ext(os.path.basename(src), "pdf"), "application/pdf"
 
 
+# ---- Image to image (added 9 Oct 2026) ---------------------------------
+# HEIC / WEBP / PNG to JPG and JPG to PNG. Up to 20 images per conversion;
+# one image downloads as itself, several come back in one ZIP. Inside the
+# ZIP every image keeps the visitor's own file name (made unique if two are
+# the same). converters/images.py does the actual work and enforces the
+# size limits (65 MP per image, 150 MB of output per conversion).
+MAX_IMAGES_PER_CONVERSION = 20
+
+
+def _image_to_image(files, job_dir, accepted_exts, out_format, same_exts, same_label):
+    picked = [f for f in files if f and f.filename]
+    if len(picked) > MAX_IMAGES_PER_CONVERSION:
+        raise ConversionError(
+            f"You can convert up to {MAX_IMAGES_PER_CONVERSION} images at a time -- "
+            f"you added {len(picked)}. Please remove some and try again."
+        )
+    for f in picked:
+        if _ext_ok(f.filename, same_exts):
+            raise ConversionError(
+                f"'{f.filename}' is already a {same_label} file, so it doesn't need converting."
+            )
+    srcs = _save_uploads(picked, job_dir, accepted_exts)
+    ext = "jpg" if out_format == "JPEG" else "png"
+    names, seen = [], set()
+    for f in picked:
+        stem = _display_stem(f.filename)
+        name, i = f"{stem}.{ext}", 1
+        while name.lower() in seen:
+            name, i = f"{stem} ({i}).{ext}", i + 1
+        seen.add(name.lower())
+        names.append(name)
+    out_dir = os.path.join(job_dir, "converted")
+    os.makedirs(out_dir, exist_ok=True)
+    outs = convert_images(srcs, out_dir, out_format, names)
+    mimetype = "image/jpeg" if ext == "jpg" else "image/png"
+    if len(outs) == 1:
+        return outs[0], change_ext(os.path.basename(srcs[0]), ext), mimetype
+    zpath = os.path.join(job_dir, f"{ext}-images.zip")
+    _zip_files(outs, zpath)
+    return zpath, f"{ext}-images.zip", "application/zip"
+
+
+def h_heic_to_jpg(files, form, job_dir):
+    return _image_to_image(files, job_dir, {"heic", "heif"}, "JPEG", {"jpg", "jpeg"}, "JPG")
+
+
+def h_webp_to_jpg(files, form, job_dir):
+    return _image_to_image(files, job_dir, {"webp"}, "JPEG", {"jpg", "jpeg"}, "JPG")
+
+
+def h_png_to_jpg(files, form, job_dir):
+    return _image_to_image(files, job_dir, {"png"}, "JPEG", {"jpg", "jpeg"}, "JPG")
+
+
+def h_jpg_to_png(files, form, job_dir):
+    return _image_to_image(files, job_dir, {"jpg", "jpeg"}, "PNG", {"png"}, "PNG")
+
+
 HANDLERS = {
     "word-to-pdf": h_word_to_pdf,
     "excel-to-pdf": h_excel_to_pdf,
@@ -547,6 +655,10 @@ HANDLERS = {
     "png-to-pdf": h_png_to_pdf,
     "pdf-to-jpg": h_pdf_to_jpg,
     "pdf-to-png": h_pdf_to_png,
+    "heic-to-jpg": h_heic_to_jpg,
+    "webp-to-jpg": h_webp_to_jpg,
+    "png-to-jpg": h_png_to_jpg,
+    "jpg-to-png": h_jpg_to_png,
     "merge-pdf": h_merge_pdf,
     "split-pdf": h_split_pdf,
     "compress-pdf": h_compress_pdf,

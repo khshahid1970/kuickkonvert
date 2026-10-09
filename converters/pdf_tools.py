@@ -9,6 +9,7 @@ from pypdf import PdfReader, PdfWriter
 from pypdf.errors import PdfReadError
 
 from .office import ConversionError
+from .utils import subprocess_env
 
 GS_BIN = os.environ.get("GS_BIN", "gs")
 
@@ -203,6 +204,7 @@ def compress_pdf(input_path: str, out_path: str, level: str = "ebook") -> str:
             "-sDEVICE=pdfwrite",
             "-dCompatibilityLevel=1.4",
             f"-dPDFSETTINGS=/{level}",
+            "-dAutoRotatePages=/None",  # keep every page's orientation (9 Oct 2026)
             "-dNOPAUSE",
             "-dQUIET",
             "-dBATCH",
@@ -211,7 +213,8 @@ def compress_pdf(input_path: str, out_path: str, level: str = "ebook") -> str:
         ]
         try:
             result = subprocess.run(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=120, text=True
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=120, text=True,
+                env=subprocess_env(os.path.dirname(os.path.abspath(out_path))),  # gs temp files in the job folder
             )
         except subprocess.TimeoutExpired as exc:
             raise ConversionError("Compression took too long for this file.") from exc

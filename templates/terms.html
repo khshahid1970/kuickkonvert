@@ -22,13 +22,13 @@
       <span aria-current="page">Terms of Service</span>
     </nav>
     <h1>Terms of Service</h1>
-    <p><em>Draft prepared for legal review -- not yet reviewed by a lawyer. This is not legal advice, and it should not be treated as final until Shahid Iqbal has had it checked against applicable law before publishing it as binding.</em></p>
+    <p><em>Effective date: {{ release_date_text }}.</em></p>
 
     <h2>1. Who these terms are between</h2>
     <p>These Terms of Service ("Terms") govern your use of KuickKonvert (the "Service"), available at kuickkonvert.com, operated by Shahid Iqbal ("we", "us", "our"). By uploading a file or otherwise using the Service, you agree to these Terms. If you do not agree, do not use the Service.</p>
 
     <h2>2. What the Service is</h2>
-    <p>KuickKonvert provides free, browser-based file conversion tools (for example, converting between Word, Excel, PowerPoint, PDF, and common image formats, plus PDF utilities such as merging, splitting, compressing, rotating, watermarking, and password-protecting). The Service does not require an account and does not permanently store uploaded files -- see the <a href="{{ url_for('privacy') }}">Privacy notice</a> for how files are handled.</p>
+    <p>KuickKonvert provides free online file conversion tools that you use in your web browser, with the conversion itself done on our server (for example, converting between Word, Excel, PowerPoint, PDF, and common image formats, plus PDF utilities such as merging, splitting, compressing, rotating, watermarking, and password-protecting). The Service does not require an account and does not permanently store uploaded files -- see the <a href="{{ url_for('privacy') }}">Privacy notice</a> for how files are handled.</p>
 
     <h2>3. Your responsibility for what you upload</h2>
     <p>You are solely responsible for the files you upload and for having the legal right to upload and convert them. You agree not to use the Service to process files that:</p>
@@ -55,7 +55,7 @@
     <p>We may modify, suspend, or discontinue any part of the Service at any time. We may update these Terms from time to time; continued use of the Service after an update constitutes acceptance of the revised Terms. Material changes will be reflected by updating this page.</p>
 
     <h2>9. Governing law</h2>
-    <p>These Terms are governed by the laws of Pakistan, without regard to conflict-of-law principles, except where a user's local mandatory consumer-protection law provides otherwise. As with the Privacy notice, this section should be confirmed with legal counsel before the Terms are treated as final, particularly for visitors outside Pakistan.</p>
+    <p>These Terms are governed by the laws of Pakistan, without regard to conflict-of-law principles, except where a user's local mandatory consumer-protection law provides otherwise.</p>
 
     <h2>10. Contact</h2>
     <p>Questions about these Terms can be sent to {{ obfuscated_mailto('info@kuickkonvert.com') }}, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>

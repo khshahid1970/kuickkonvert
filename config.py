@@ -1,4 +1,5 @@
 import os
+from datetime import date as _date
 
 # Canonical site origin (no trailing slash). Used to build absolute canonical
 # URLs, Open Graph/Twitter URLs, and the sitemap -- always the primary custom
@@ -19,18 +20,29 @@ SITE_URL = "https://kuickkonvert.com"
 # 9 Oct 2026: home page only -- "file converter" wording added to the hero
 # line and the Why KuickKonvert intro (title and H1 unchanged). Tool pages
 # did not change, so TOOLS_LASTMOD stays on 8 Oct.
-HOME_LASTMOD = "2026-10-09"
-TOOLS_LASTMOD = "2026-10-08"
+# RELEASE_DATE = the day the "forensic audit fixes + image tools" release goes
+# live. It dates every page whose own content changes in that release:
+#   * home page (4 new tool cards, FAQ wording), all tool pages (new "How to"
+#     steps; 4 new tools; corrected FAQs), the JPG vs PNG guide (new links),
+#   * About, Privacy and Terms (corrected/finalised text; the Privacy "Last
+#     updated" and Terms "Effective date" lines show RELEASE_DATE_TEXT).
+# Other pages only gain the 4 new links in the site menu, which isn't a change
+# to their own content, so they keep their dates.
+# Change this ONE date if the release moves to another day.
+RELEASE_DATE = "2026-10-10"
+RELEASE_DATE_TEXT = _date.fromisoformat(RELEASE_DATE).strftime("%-d %B %Y")
+HOME_LASTMOD = RELEASE_DATE
+TOOLS_LASTMOD = RELEASE_DATE
 GUIDES_LINKS_LASTMOD = "2026-10-08"
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
 STATIC_LASTMOD = {
     "guides": "2026-10-08",
-    "about": "2026-10-08",
+    "about": RELEASE_DATE,
     "contact": "2026-10-08",
-    "privacy": "2026-10-08",
-    "terms": "2026-10-08",
+    "privacy": RELEASE_DATE,
+    "terms": RELEASE_DATE,
 }
 
 # ---- Tool catalogue -------------------------------------------------------
@@ -128,6 +140,7 @@ TOOLS = [
     },
     {
         "slug": "pdf-to-jpg",
+        "zip_output": True,
         "name": "PDF to JPG",
         "category": "Images",
         "description": "PDF to image: turn each page into a JPG (a ZIP for multi-page files).",
@@ -138,12 +151,58 @@ TOOLS = [
     },
     {
         "slug": "pdf-to-png",
+        "zip_output": True,
         "name": "PDF to PNG",
         "category": "Images",
         "description": "Convert PDF to PNG: each page as a sharp PNG image (a ZIP for multi-page files).",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
+        "to_fmt": "PNG",
+    },
+    # Image to image (added 9 Oct 2026) -- converters/images.py convert_images()
+    {
+        "slug": "heic-to-jpg",
+        "zip_output": True,
+        "name": "HEIC to JPG",
+        "category": "Images",
+        "description": "Convert iPhone HEIC photos to JPG so they open on any device.",
+        "accept": ".heic,.heif",
+        "multi": True,
+        "from_fmt": "HEIC",
+        "to_fmt": "JPG",
+    },
+    {
+        "slug": "webp-to-jpg",
+        "zip_output": True,
+        "name": "WEBP to JPG",
+        "category": "Images",
+        "description": "Convert WEBP images saved from websites into standard JPG files.",
+        "accept": ".webp",
+        "multi": True,
+        "from_fmt": "WEBP",
+        "to_fmt": "JPG",
+    },
+    {
+        "slug": "png-to-jpg",
+        "zip_output": True,
+        "name": "PNG to JPG",
+        "category": "Images",
+        "description": "Change PNG images to JPG -- transparent areas turn white.",
+        "accept": ".png",
+        "multi": True,
+        "from_fmt": "PNG",
+        "to_fmt": "JPG",
+    },
+    {
+        "slug": "jpg-to-png",
+        "zip_output": True,
+        "name": "JPG to PNG",
+        "category": "Images",
+        "description": "Convert JPG photos to PNG for sites and apps that ask for PNG.",
+        "accept": ".jpg,.jpeg",
+        "multi": True,
+        "from_fmt": "JPG",
         "to_fmt": "PNG",
     },
     # -- PDF tools --
@@ -159,6 +218,7 @@ TOOLS = [
     },
     {
         "slug": "split-pdf",
+        "zip_output": True,
         "name": "Split PDF",
         "category": "PDF Tools",
         "description": "PDF splitter: save every page as its own PDF (downloaded as a ZIP).",
@@ -256,14 +316,14 @@ TOOLS_BY_SLUG = {t["slug"]: t for t in TOOLS}
 TOOL_CONTENT = {
     "word-to-pdf": {
         "intro": "Word to PDF is a free online converter that turns MS Word files into PDF -- DOC to PDF or DOCX to PDF -- so your document looks the same on every device. It's the simplest way to share a Word document with someone you can't be sure has Microsoft Word installed, or to lock in a finished document's layout before sending it.",
-        "good_to_know": "Converting to PDF preserves your document's current layout, so it won't shift when opened elsewhere. If your file uses a font we don't have installed, we substitute a metrically-compatible alternative (for example Carlito in place of Calibri) -- line breaks stay the same, though exact letterforms may differ slightly.",
+        "good_to_know": "Converting to PDF preserves your document's current layout, so it won't shift when opened elsewhere. If your file uses a font we don't have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts (for example Carlito in place of Calibri), so line breaks stay the same; other fonts -- including Aptos, Word's newer default -- are replaced by fonts with different letter widths, so text can rewrap and the page count can change.",
         "use_cases": [
             "Sending a document to someone you're not sure has Word installed.",
             "Submitting a CV, invoice, or contract in a format the recipient can't accidentally edit.",
             "Archiving a finished document in a format that won't change if you update Word later.",
         ],
         "faq": [
-            ("Will my formatting change?", "Page layout, fonts, and images are preserved as closely as possible. The one exception is font substitution (see \"Good to know\" above) if your document uses a font we don't have."),
+            ("Will my formatting change?", "Page layout, fonts, and images are preserved as closely as possible. The main exception is font substitution (see \"Good to know\" above): fonts other than Calibri, Cambria, Arial, Times New Roman and Courier New can make text rewrap."),
             ("Can I convert a password-protected Word file?", "No -- remove the password in Word first (File → Info → Protect Document), then convert."),
         ],
         "related": ["pdf-to-word", "excel-to-pdf", "ppt-to-pdf"],
@@ -298,9 +358,9 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("Will my columns get cut off?", "Columns are automatically resized to fit, and very wide sheets switch to landscape orientation automatically to keep everything on the page."),
-            ("Are my formulas or macros preserved?", "The PDF shows the calculated values currently in your sheet -- formulas and macros themselves aren't carried into the PDF, since PDF is a fixed, non-editable format."),
+            ("Are my formulas or macros preserved?", "The PDF shows your sheet's values as recalculated by our converter -- formulas and macros themselves aren't carried into the PDF, since PDF is a fixed, non-editable format. Very new Excel functions (such as XLOOKUP) may not be recognised by the converter and can show an error, so check the PDF if your sheet uses them."),
             ("Can I convert Excel to PDF without Excel installed?", "Yes -- you upload the file from your browser and the conversion runs on our server, so you can convert an XLS or XLSX file to PDF even on a device that doesn't have Excel installed."),
-            ("Is this free, and is there a file size limit?", "It's free with no sign-up. The only limit is a 50MB file size cap, which covers the vast majority of spreadsheets."),
+            ("Is this free, and is there a file size limit?", "It's free with no sign-up. Uploads can be up to 50MB, which covers the vast majority of spreadsheets, and fair-use limits apply to how many conversions can run per minute."),
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
         "seo_title": "Excel to PDF Converter - XLS & XLSX to PDF | KuickKonvert",
@@ -317,7 +377,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Will colors and cell formatting carry over?", "No -- only the data and its column layout are extracted; visual styling isn't preserved."),
             ("What if my PDF isn't a clear table?", "The tool works best on genuinely tabular content. Text outside a detected table is still included alongside it, but results are less structured for free-form pages."),
-            ("Is this PDF to Excel converter really free?", "Yes -- no sign-up, subscription, or watermark on the output file. The only limit is the 50MB upload cap."),
+            ("Is this PDF to Excel converter really free?", "Yes -- no sign-up, subscription, or watermark on the output file. Uploads can be up to 50MB, and fair-use limits apply to how many conversions can run per minute."),
         ],
         "related": ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
         "seo_title": "PDF to Excel Converter Online Free | KuickKonvert",
@@ -325,7 +385,7 @@ TOOL_CONTENT = {
     },
     "ppt-to-pdf": {
         "intro": "PPT to PDF converts PowerPoint presentations to PDF online for free -- PPT and PPTX to PDF -- so slides display exactly as designed on any device, without needing PowerPoint installed.",
-        "good_to_know": "Slide layout, images, and text positioning are preserved. As with other Office conversions, a font we don't have installed is substituted with a metrically-compatible alternative, which can very slightly affect line spacing on text-heavy slides.",
+        "good_to_know": "Slide layout, images, and text positioning are preserved. As with other Office conversions, a font we don't have installed is substituted: Calibri, Cambria, Arial, Times New Roman and Courier New get metric-compatible replacements, while other fonts (such as Aptos) are replaced by fonts with different letter widths, which can make text rewrap on text-heavy slides.",
         "use_cases": [
             "Sending a deck to someone without PowerPoint.",
             "Sharing slides that can't be accidentally edited before a meeting.",
@@ -333,15 +393,15 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("Will animations or transitions be included?", "No -- PDF is a static format, so each slide converts to a single fixed page; animations and transitions don't carry over."),
-            ("Will my fonts look exactly the same?", "If your presentation uses a font we don't have, a metrically-compatible substitute is used, which keeps layout intact but may look slightly different from the original."),
+            ("Will my fonts look exactly the same?", "Not always. If your presentation uses a font we don't have, a substitute is used: for Calibri, Cambria, Arial, Times New Roman and Courier New it has the same letter widths, so the layout stays intact; other fonts can make text rewrap or look different."),
         ],
         "related": ["pdf-to-ppt", "word-to-pdf", "compress-pdf"],
         "seo_title": "PPT to PDF Converter - PowerPoint to PDF Free | KuickKonvert",
         "meta_description": "Convert PPT and PPTX presentations to PDF online for free. Fast, simple, private -- no sign-up or software required.",
     },
     "pdf-to-ppt": {
-        "intro": "PDF to PPT turns each page of a PDF into a slide in a PowerPoint file, preserving the exact visual layout of the original document.",
-        "good_to_know": "Each PDF page becomes a full-slide image on its own slide, so the layout is reproduced exactly -- but the text on those slides isn't editable, since it's an image rather than live PowerPoint text. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
+        "intro": "PDF to PPT turns each page of a PDF into a slide in a PowerPoint file, keeping each page exactly as it looks in the PDF.",
+        "good_to_know": "Each PDF page becomes a full-slide image on its own slide, so its layout is reproduced exactly -- but the text on those slides isn't editable, since it's an image rather than live PowerPoint text. The slides take the size of the PDF's first page; a page with a different size or orientation is scaled to fit, keeping its proportions. Up to 50 pages can be converted at a time; for a longer PDF, split it with Split PDF and convert it in parts.",
         "use_cases": [
             "Turning a PDF report into slides for a presentation without redesigning it.",
             "Getting PDF content into a format you can present directly from PowerPoint.",
@@ -349,7 +409,7 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("Can I edit the text after converting?", "No -- each PDF page becomes a static image on its own slide, so layout is preserved exactly but the text itself isn't editable."),
-            ("Will the slide size match my PDF's page size?", "Yes, each slide is sized to match the corresponding PDF page."),
+            ("Will the slide size match my PDF's page size?", "The slides take the size of the PDF's first page. If other pages have a different size or orientation, each is scaled to fit its slide and centred, keeping its proportions."),
         ],
         "related": ["ppt-to-pdf", "pdf-to-word", "pdf-to-jpg"],
         "seo_title": "PDF to PPT Converter - PDF to PowerPoint Free | KuickKonvert",
@@ -404,7 +464,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What resolution are the images?", "Pages are rendered at 300 DPI, which is sharp enough for most printing and screen use."),
             ("What do I get for a multi-page PDF?", "A ZIP file containing one JPG image per page."),
-            ("Is converting PDF to JPG online free?", "Yes -- there's no charge or sign-up; the only limits are the 50MB upload cap and 50 pages per conversion, and there's nothing to install: you upload from your browser and the images are created on our server."),
+            ("Is converting PDF to JPG online free?", "Yes -- there's no charge or sign-up, and nothing to install: you upload from your browser and the images are created on our server. The limits are the 50MB upload cap, 50 pages per conversion, and fair-use limits on how many conversions can run per minute."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter - PDF to Image Free | KuickKonvert",
@@ -425,6 +485,94 @@ TOOL_CONTENT = {
         "related": ["pdf-to-jpg", "png-to-pdf", "compress-pdf"],
         "seo_title": "PDF to PNG Converter Online Free | KuickKonvert",
         "meta_description": "Convert PDF pages to PNG images online for free. Fast, private PDF to PNG conversion with no sign-up.",
+    },
+    # ---- Image to image (added 9 Oct 2026). Claims match convert_images() in
+    # converters/images.py: quality 90 JPG / lossless PNG, full size, turned
+    # upright, transparency on white, first frame / main image only, colour
+    # profile kept, ONLY date taken + camera make/model kept (GPS removed),
+    # up to 20 images and 65 MP each, 150 MB of output per conversion.
+    "heic-to-jpg": {
+        "h1": "HEIC to JPG Converter - iPhone Photos to JPG",
+        "intro": "HEIC to JPG converts the HEIC photos taken by iPhones and iPads into ordinary JPG files that open on any computer, phone or website. Convert one photo or up to 20 at a time -- several photos come back together in one ZIP file.",
+        "good_to_know": "Each photo is saved as a high-quality JPG (quality 90) at full size, turned the right way up, with its colour profile kept so colours look the same. The JPG is usually larger than the HEIC file -- HEIC stores photos more compactly, which is why iPhones use it. Location (GPS) details are removed from the JPG; the date and time taken and the camera make and model are kept. If a HEIC file holds several images, such as a burst, the main image is converted, and a Live Photo becomes a still photo. Photos up to 65 megapixels are supported.",
+        "use_cases": [
+            "Opening iPhone photos on a Windows PC or an older computer that can't display HEIC files.",
+            "Uploading photos to a website, online form or job portal that only accepts JPG.",
+            "Sending pictures to friends, family or colleagues whose devices don't open HEIC.",
+        ],
+        "faq": [
+            ("What is a HEIC file?", "HEIC is the photo format iPhones and iPads use by default (since iOS 11). It's a type of HEIF image that stores photos in less space than JPG, but many Windows PCs, older phones and websites can't open it -- converting to JPG solves that."),
+            ("Can I convert HEIC to JPG on Windows without installing anything?", "Yes -- open this page in your browser, add your HEIC photos and download the JPGs. Nothing is installed on your PC and there's no sign-up."),
+            ("How many photos can I convert at once?", "Up to 20 photos at a time, with a combined upload of up to 50 MB. One photo downloads as a JPG; several download together in one ZIP file."),
+            ("Is the photo's location removed?", "Yes. GPS location details are removed from the JPG, so you can share it without revealing where it was taken. The date and time taken and the camera make and model are kept."),
+            ("Will the JPG look the same as the HEIC photo?", "Yes on screen: it's saved at quality 90 and full size, with the photo's colour profile kept. Two differences: the JPG file is usually larger, and the extra HDR brightness some newer iPhone photos have isn't carried into the JPG."),
+        ],
+        "related": ["jpg-to-pdf", "webp-to-jpg", "png-to-jpg"],
+        "seo_title": "HEIC to JPG Converter - iPhone Photos to JPG | KuickKonvert",
+        "meta_description": "Convert HEIC to JPG online for free: turn iPhone photos into JPG files that open anywhere. Up to 20 at once, location data removed. No sign-up.",
+        "lastmod": RELEASE_DATE,
+    },
+    "webp-to-jpg": {
+        "h1": "WEBP to JPG Converter - Web Images to JPG",
+        "intro": "WEBP to JPG turns WEBP images -- the format many websites now use for their pictures -- into ordinary JPG files that open in any photo viewer or editor and upload anywhere. Convert one image or up to 20 at a time.",
+        "good_to_know": "Images are saved as high-quality JPGs (quality 90) at full size. JPG has no transparency, so transparent areas become white, and an animated WEBP is saved as a still JPG of its first frame. The JPG can be larger than the WEBP, because WEBP compresses images more tightly. Location (GPS) details are removed if the image has any; the date taken and the camera make and model are kept.",
+        "use_cases": [
+            "Opening or editing a picture saved from a website as .webp in software that doesn't support WEBP.",
+            "Uploading an image to a form, marketplace or print service that only accepts JPG.",
+            "Putting a web image into a document or presentation made with an older version of Office.",
+        ],
+        "faq": [
+            ("What is a WEBP file?", "WEBP is an image format created by Google for the web. It makes pictures smaller so pages load faster, which is why images saved from many websites arrive as .webp -- but some programs, upload forms and older devices still can't open it."),
+            ("What happens to animated WEBP files?", "Only the first frame is converted, as a still JPG -- the JPG format can't hold animation."),
+            ("What happens to transparent areas?", "They become white, because JPG doesn't support transparency."),
+            ("How many images can I convert at once?", "Up to 20 at a time, with a combined upload of up to 50 MB. Several images download together in one ZIP file."),
+            ("Do I need to install anything?", "No -- it works in your browser on Windows, Mac, Android or iPhone. Upload your WEBP images, convert them and download the JPGs. There's no sign-up."),
+        ],
+        "related": ["png-to-jpg", "jpg-to-pdf", "heic-to-jpg"],
+        "seo_title": "WEBP to JPG Converter Online Free | KuickKonvert",
+        "meta_description": "Convert WEBP to JPG online for free: turn images saved from websites into standard JPG files. Up to 20 at once, no sign-up or install.",
+        "lastmod": RELEASE_DATE,
+    },
+    "png-to-jpg": {
+        "h1": "PNG to JPG - Change PNG Images to JPG",
+        "intro": "PNG to JPG changes PNG images into JPG files -- the most widely accepted image format, and usually a much smaller file when the picture is a photo. Convert one PNG or up to 20 at a time.",
+        "good_to_know": "Each image is saved as a high-quality JPG (quality 90) at full size. JPG has no transparency, so transparent areas -- for example around a logo -- become white. Photos usually shrink a lot as JPG, but screenshots, logos and pages of text can come out larger and slightly less sharp, because JPG is designed for photos. 16-bit PNGs are converted to standard 8-bit JPGs. Location (GPS) details are removed if the PNG has any.",
+        "use_cases": [
+            "Making a photo saved as PNG small enough to email or upload.",
+            "Uploading an image to a form or website that only accepts JPG.",
+            "Turning PNG photos or screenshots into JPGs for an online album or print order that asks for JPG.",
+        ],
+        "faq": [
+            ("Will my PNG get smaller as a JPG?", "Usually, if it's a photo -- JPG is built for photos and can make them several times smaller. Screenshots, logos and text pages may not shrink and can even grow, because JPG struggles with sharp edges. We don't promise a particular file size."),
+            ("What happens to a transparent background?", "It becomes white, because JPG doesn't support transparency. Keep the PNG if you need the see-through background."),
+            ("Is there any quality loss?", "Very little on photos: images are saved at quality 90, where the difference is hard to see. Sharp text and thin lines can look slightly softer, as with any JPG."),
+            ("How many PNG files can I convert at once?", "Up to 20 at a time, with a combined upload of up to 50 MB. Several images download together in one ZIP file."),
+            ("Can I change PNG to JPG on my phone?", "Yes -- open this page in your phone's browser, choose your PNG images and download the JPGs. There's no app to install and no sign-up."),
+        ],
+        "related": ["jpg-to-png", "png-to-pdf", "webp-to-jpg"],
+        "seo_title": "PNG to JPG Converter Online Free | KuickKonvert",
+        "meta_description": "Change PNG to JPG online for free, up to 20 images at once. Photos usually get much smaller; transparent areas turn white. No sign-up.",
+        "lastmod": RELEASE_DATE,
+    },
+    "jpg-to-png": {
+        "h1": "JPG to PNG Converter - Save JPG as PNG",
+        "intro": "JPG to PNG converts JPG (JPEG) photos into PNG files -- for when a website, app or form asks for PNG, or when you plan to edit an image several times. Convert one JPG or up to 20 at a time.",
+        "good_to_know": "The PNG is saved losslessly, so it won't lose more detail when you edit and save it again. Converting can't bring back detail the JPG already lost, and it doesn't make the background transparent -- the image looks exactly as before. Expect a bigger file: a photo saved as PNG is often several times larger than the JPG, so a very large batch may need to be converted in smaller groups. Photos are turned the right way up, and location (GPS) details are removed; the date taken and the camera make and model are kept.",
+        "use_cases": [
+            "Uploading an image to a website, app or form that only accepts PNG.",
+            "Editing a picture several times without the extra loss JPG adds every time it's saved.",
+            "Adding a photo to a design project or tool that works with PNG files.",
+        ],
+        "faq": [
+            ("Does converting JPG to PNG improve quality?", "No. The PNG keeps exactly what's in your JPG, but it can't restore detail the JPG compression already removed. The benefit is that the image won't lose any more quality when you edit and save it again."),
+            ("Will the background become transparent?", "No -- a JPG has no transparency, so the PNG keeps the same solid background. Removing a background needs a separate editing tool."),
+            ("Why is the PNG so much bigger?", "PNG is lossless, and photos are full of fine detail that lossless compression can't shrink much -- so a PNG of a photo is often several times the size of the JPG. Screenshots and simple graphics grow far less."),
+            ("How many images can I convert at once?", "Up to 20 at a time, with a combined upload of up to 50 MB. Because PNG copies of photos are large, a big batch can go over the 150 MB download limit -- if that happens, convert fewer images at a time."),
+        ],
+        "related": ["png-to-jpg", "png-to-pdf", "pdf-to-png"],
+        "seo_title": "JPG to PNG Converter Online Free | KuickKonvert",
+        "meta_description": "Convert JPG to PNG online for free, up to 20 images at once. Lossless PNG copies for sites and apps that require PNG. No sign-up or install.",
+        "lastmod": RELEASE_DATE,
     },
     "merge-pdf": {
         "h1": "Merge PDF Files - PDF Combiner",
@@ -506,7 +654,7 @@ TOOL_CONTENT = {
     "watermark-pdf": {
         "how_to_heading": "How to add a watermark to a PDF",
         "intro": "Watermark PDF stamps your own text diagonally across every page of a PDF -- a simple way to mark a document as a draft, confidential, or belonging to you before sharing it.",
-        "good_to_know": "The watermark is applied as semi-transparent gray text, rotated diagonally across each page, using the text you enter. Its size, color, and position aren't currently configurable -- only the text itself is.",
+        "good_to_know": "The watermark is applied as semi-transparent gray text, rotated diagonally across each page, using the text you enter. Its size, color, and position aren't currently configurable -- only the text itself is. The watermark font covers Latin letters, numbers and common symbols; letters from scripts such as Urdu, Arabic or Hindi aren't supported yet.",
         "use_cases": [
             "Marking a document \"CONFIDENTIAL\" or \"DRAFT\" before sending it for review.",
             "Adding your name or company across a document to discourage unauthorized reuse.",
@@ -532,7 +680,7 @@ TOOL_CONTENT = {
         "faq": [
             ("What encryption does this use?", "256-bit AES encryption, applied with the password you choose. This is the method the current PDF standard (PDF 2.0) specifies for password-protected PDFs, and Adobe Acrobat and Reader have supported it since version 9."),
             ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
-            ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up, subscription, or hidden limits beyond the 50MB file size cap."),
+            ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up or subscription. The limits are a 50MB upload cap and fair-use limits on how many conversions can run per minute."),
             ("Do I need to install anything?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
@@ -554,11 +702,14 @@ FORMAT_BADGE_CLASS = {
     "PDF": "badge-pdf",
     "JPG": "badge-jpg",
     "PNG": "badge-png",
+    "HEIC": "badge-heic",
+    "WEBP": "badge-webp",
 }
 
 MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH_MB", "50")) * 1024 * 1024
 ALLOWED_EXTENSIONS = {
-    "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "jpg", "jpeg", "png"
+    "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "jpg", "jpeg", "png",
+    "heic", "heif", "webp",
 }
 
 # ---- Guides -----------------------------------------------------------
@@ -829,8 +980,8 @@ GUIDES = [
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
         "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
-        "updated": "2026-10-02",
-        "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"],
+        "updated": RELEASE_DATE,  # links to PNG to JPG / JPG to PNG added
+        "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png", "png-to-jpg", "jpg-to-png"],
         "sections": [
             {
                 "heading": "The one difference that matters: lossy vs lossless",
@@ -884,7 +1035,7 @@ GUIDES = [
                     "PNG for scanned text documents, screenshots, forms, charts, diagrams, and anything you'll need to read or zoom into later.",
                     "PNG for logos and graphics that need a transparent background.",
                     "JPG for photographs -- including a photo of a receipt or a whiteboard, where the camera image itself is already full of fine texture.",
-                    "Already have a JPG? Converting it to PNG won't bring back the detail JPG discarded; it only makes the file bigger. Keep JPGs as JPGs.",
+                    "Already have a JPG? Converting it to PNG won't bring back the detail JPG discarded; it only makes the file bigger. Keep JPGs as JPGs -- unless a website or app insists on PNG, in which case [[jpg-to-png|JPG to PNG]] makes a lossless copy without adding any further loss.",
                     "Editing an image several times? Work in PNG. Every time a JPG is edited and saved again, it is compressed again and loses a little more detail.",
                 ],
                 "table": {
@@ -909,6 +1060,8 @@ GUIDES = [
                     "PDF to JPG renders every page at 300 dpi and saves it as a standard-quality JPG (quality 75). That keeps photo-heavy pages compact, but as our test shows, text-heavy pages are often smaller and sharper as PNG.",
                     "[[jpg-to-pdf|JPG to PDF]] places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss. It also accepts PNG images, so photos and screenshots can go into one PDF.",
                     "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
+                    "[[png-to-jpg|PNG to JPG]] saves each image as a quality-90 JPG -- the right move for photos stored as PNG. Transparent areas become white, and screenshots or text pages may not get any smaller.",
+                    "JPG to PNG saves a lossless copy of each JPG for sites and apps that require PNG. It can't restore detail the JPG already lost, and the file gets bigger.",
                     "Every uploaded image and every result is deleted from our server as soon as your download is ready.",
                 ],
             },

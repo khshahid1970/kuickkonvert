@@ -22,42 +22,57 @@
       <span aria-current="page">Privacy Notice</span>
     </nav>
     <h1>Privacy Notice</h1>
-    <p><em>This notice explains how KuickKonvert handles your files and data. It is not formal legal advice -- see the governing law note below.</em></p>
-    <p><em>Last updated: 28 September 2026.</em></p>
+    <p><em>This notice explains how KuickKonvert handles your files and data.</em></p>
+    <p><em>Last updated: {{ release_date_text }}.</em></p>
 
     <h2>What we do with your files</h2>
-    <p>Files you upload to KuickKonvert are used only to perform the conversion you requested. Each file is processed in a temporary, isolated workspace and is automatically and permanently deleted as soon as your converted file is returned to you, or if the conversion fails. We do not review, copy, back up, or retain your files.</p>
+    <p>Files you upload to KuickKonvert are used only to perform the conversion you requested. Each upload is processed in its own temporary, isolated workspace on our server -- including any working files the converter creates along the way -- and that workspace is automatically and permanently deleted as soon as your converted file is returned to you, or if the conversion fails. If a server process stops unexpectedly in the middle of a conversion, any workspace it leaves behind is removed automatically by a later clean-up. We do not review, copy, back up, or retain your files.</p>
 
     <h2>What we don't do</h2>
     <p>We do not store your files after conversion. We do not use uploaded file contents to train any model. We do not sell or share file contents with third parties.</p>
 
-    <h2>Basic technical logs</h2>
-    <p>Our servers may keep standard operational logs (timestamps, error codes, approximate file size) to diagnose failures and prevent abuse. These logs do not include file contents.</p>
+    <h2>Technical logs and IP addresses</h2>
+    <p>Like any website, our server and our hosting provider see your IP address and basic request details -- such as the page or tool requested, the time and the response code -- in order to deliver pages and protect the service; our hosting providers keep their own logs under their own policies. We use IP addresses to apply fair-use limits on how many pages and conversions can be requested per minute, per hour and per day; these counters are held in memory for no longer than 24 hours. Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one.</p>
 
     <h2>Where your files are processed</h2>
-    <p>KuickKonvert runs on servers operated by our hosting provider, Render, in its Singapore (Southeast Asia) region. When you upload a file, it is sent over an encrypted (HTTPS) connection to that server, converted there, and deleted as described above. If you are outside Singapore, this means your file is briefly processed in another country.</p>
+    <p>KuickKonvert runs on servers operated by our hosting provider, Render, in its Singapore (Southeast Asia) region, and traffic reaches those servers through Cloudflare's network. When you upload a file, it is sent over an encrypted (HTTPS) connection to that server, converted there, and deleted as described above. If you are outside Singapore, this means your file is briefly processed in another country.</p>
 
     <h2>Your responsibility</h2>
     <p>Please do not upload files containing information you are not authorised to share (e.g. third-party confidential data) unless you have the right to process it this way.</p>
 
-    <h2>Advertising and cookies</h2>
-    <p>KuickKonvert may display third-party advertisements (for example, through Google AdSense) to help cover hosting costs, keeping every conversion tool free to use. If ads are shown, Google and its advertising partners may set cookies or use similar technologies in your browser to serve and measure ads, including personalized ads based on your visits to this and other sites. You can review or adjust your ad personalization settings at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>, and you can also control cookies generally through your browser's settings. We do not control the cookies set by third-party ad providers directly.</p>
+    <h2>Cookies</h2>
+    <p>KuickKonvert itself does not set any cookies. The Google tag on our pages (see Analytics and Google Ads below) can set these cookies in your browser, where allowed:</p>
+    <ul class="why-list">
+      <li><strong>_ga</strong> and <strong>_ga_K0VJLC113K</strong> -- Google Analytics, to tell visits apart and keep track of a visit (kept for up to 2 years).</li>
+      <li><strong>_gcl_au</strong>, and <strong>_gcl_aw</strong> if you arrive by clicking one of our ads -- Google Ads, to link a completed conversion on our site to a click on one of our ads (kept for 90 days).</li>
+    </ul>
+    <p>You can delete or block cookies in your browser's settings; the converters keep working without them.</p>
 
     <h2>Analytics</h2>
-    <p>We use Google Analytics to understand how visitors use the site in aggregate -- for example which pages are visited, the type of device and browser, and the approximate country. Google Analytics uses cookies to do this. It never receives the contents of your files.</p>
+    <p>We use Google Analytics 4 to understand how visitors use the site in aggregate -- for example which pages are visited, the type of device and browser, and the approximate country. The Google tag loads on every page, a few seconds after the page opens or as soon as you first scroll, tap or press a key. When a conversion finishes, we also send Google Analytics an event naming the tool that was used (for example "pdf-to-word"). Google Analytics never receives your files, their names or their contents.</p>
+    <p>Google processes this data under its own policies -- see <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses information from sites or apps that use our services</a>. You can opt out of Google Analytics on all websites with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>.</p>
 
-    <h2>Google Ads measurement</h2>
-    <p>We advertise KuickKonvert through Google Ads. When you arrive from one of our ads and complete a conversion, the site tells Google Ads that a conversion happened, so we can see whether our advertising is useful. Google may use cookies or similar technologies for this. This measurement never includes your files, their names or their contents. Outside the EEA, the UK and Switzerland it is on by default; you can block it with your browser's cookie or tracking settings, and manage Google's ad settings at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>.</p>
+    <h2>Google Ads</h2>
+    <p>We advertise KuickKonvert through Google Ads, and the Google tag on every page includes our Google Ads tag. Each time a conversion finishes, the site sends Google Ads a conversion signal; Google counts it toward our advertising only if you reached the site by clicking one of our ads. We may also use Google's advertising features, such as remarketing, which lets Google show our ads to people who have visited this site while they browse other websites, using cookies. None of this ever includes your files, their names or their contents. You can turn off personalized ads from Google at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>, and from many other advertising companies at <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener">aboutads.info/choices</a>.</p>
+
+    <h2>Advertising on this site</h2>
+    <p>KuickKonvert may display third-party advertisements (for example, through Google AdSense) to help cover hosting costs, keeping every conversion tool free to use. If ads are shown, Google and its advertising partners may set and read cookies, use web beacons and receive your IP address to serve and measure ads, including personalized ads based on your visits to this and other sites. You can review or adjust your ad personalization settings at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>, and you can also control cookies generally through your browser's settings. We do not control the cookies set by third-party ad providers directly.</p>
 
     <h2>Visitors in the EEA, UK and Switzerland</h2>
-    <p>For visitors from these regions, advertising and analytics cookies are switched off by default: Google only receives limited, cookieless measurement signals, and no ad or analytics cookies are set unless you give consent through a consent message.</p>
-    <p>Before personalized ads are shown to visitors from the European Economic Area, the United Kingdom or Switzerland, we will ask for your consent through a consent message, and you can decline. If you are in one of these regions, data protection law such as the GDPR gives you rights over your personal data, including the right to access it and to ask for it to be deleted. Because we do not store your files, there is normally nothing of that kind to delete; for any other request, contact us using the details below.</p>
+    <p>For visitors from these regions, Google's advertising and analytics cookies are switched off by default, and Google only receives limited, cookieless measurement signals. We do not currently show a consent message, so these cookies stay off. Before personalized ads are shown to visitors from these regions, we will ask for your consent through a consent message, and you will be able to decline.</p>
+    <p>If you are in one of these regions, data protection law such as the GDPR gives you rights over your personal data, including the rights to access it, to ask for it to be deleted and to object to its use, and the right to complain to your local data protection authority. Because we do not store your files or run user accounts, we normally hold no personal data about you beyond the short-lived records described above; for data held by Google, use the Google links in this notice. For any other request, contact us using the details below.</p>
+
+    <h2>Third-party content</h2>
+    <p>Our page footer shows a "Listed on LaunchNest" badge image loaded from launchnest.io. As with any image loaded from another website, LaunchNest receives your IP address and basic browser information when the image loads. Our links to social networks and directories are plain links -- nothing is loaded from those sites unless you click them.</p>
+
+    <h2>Children</h2>
+    <p>KuickKonvert is a general-audience tool and is not directed at children. We do not knowingly collect personal data from children.</p>
 
     <h2>Contact</h2>
     <p>Shahid Iqbal &middot; {{ obfuscated_mailto('info@kuickkonvert.com') }}</p>
 
-    <h2>Governing law note</h2>
-    <p>Pakistan's Personal Data Protection Bill was still progressing through the legislative process as of our last check and is not yet fully in force as enacted law. This notice does not constitute legal advice; confirm current status with legal counsel for your own compliance needs.</p>
+    <h2>Data-protection law</h2>
+    <p>Pakistan's Personal Data Protection Bill had not been enacted as of our last check. If data-protection law that applies to KuickKonvert changes, we will update this notice.</p>
 
     <h2>Terms of use</h2>
     <p>Use of this site is also governed by our <a href="{{ url_for('terms') }}">Terms of Service</a>.</p>

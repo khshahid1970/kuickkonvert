@@ -427,6 +427,10 @@ body {
 .badge-pdf { background: #e2231a; }
 .badge-jpg { background: #8e44ad; }
 .badge-png { background: #128378; }
+/* Added 9 Oct 2026 with the HEIC and WEBP image tools. Both clear the WCAG AA
+   4.5:1 text-contrast minimum against the white badge text (7.56:1, 5.43:1). */
+.badge-heic { background: #4b5563; }
+.badge-webp { background: #9a5b00; }
 
 .tool-card-name { font-weight: 600; font-size: 15px; }
 .tool-card-desc { font-size: 13px; color: var(--color-text-muted); }

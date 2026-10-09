@@ -95,10 +95,12 @@
 
     <section class="tool-info">
       <h2>{{ tool.get('how_to_heading') or ('How to convert ' ~ tool.name) }}</h2>
+      {% set fmts = accepted_formats %}
+      {% set out_fmt = {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'}.get(tool.to_fmt, tool.to_fmt) %}
       <ol class="how-to-steps">
-        <li>Select your {{ tool.from_fmt }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
-        <li>KuickKonvert converts {{ 'them' if tool.multi else 'it' }} automatically -- there's nothing else to configure{{ ' beyond the options above' if tool.get('fields') else '' }}.</li>
-        <li>Your {{ tool.to_fmt }} file downloads straight away. The original is deleted from our servers as soon as the conversion finishes.</li>
+        <li>Select your {{ (fmts[:-1]|join(', ') ~ ' or ' ~ fmts[-1]) if fmts|length > 1 else fmts[0] }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
+        <li>Press Convert{{ ' (after changing the options above, if you want to)' if tool.get('fields') else '' }}. The conversion runs on our server and usually takes a few seconds.</li>
+        <li>Your {{ out_fmt }} file{{ ' (or one ZIP file holding several)' if tool.get('zip_output') else '' }} downloads straight away. The original is deleted from our servers as soon as the conversion finishes.</li>
       </ol>
 
       <h2>Supported formats</h2>

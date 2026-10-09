@@ -23,7 +23,7 @@
       "name": "Do you store my files?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails)."
+        "text": "No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails). See our Privacy notice for details."
       }
     },
     {
@@ -31,7 +31,7 @@
       "name": "What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool."
+        "text": "DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have."
       }
     },
     {
@@ -39,7 +39,7 @@
       "name": "Why does my file's layout sometimes shift slightly after conversion?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Two common reasons: first, if your original file uses a font we don't have installed, we substitute a metrically-compatible alternative -- close, but not always pixel-identical, so lines can reflow slightly. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping."
+        "text": "Two common reasons. First, fonts: if your file uses a font we don't have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts with the same letter widths, so line breaks stay the same; other fonts -- including Aptos, Word's newer default -- are replaced by fonts with different widths, so text can rewrap. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes."
       }
     },
     {
@@ -47,7 +47,7 @@
       "name": "Is there a file size limit?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes -- up to 50MB per file by default, which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. If a very large PDF fails to upload, try our Compress PDF tool first to shrink it."
+        "text": "Yes -- up to 50MB per upload (all files together), which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. Bigger files can't be uploaded; for a very large PDF, save a smaller copy from the program that created it and convert that instead."
       }
     },
     {
@@ -159,7 +159,7 @@
     -->
     <div class="ad-slot-house">
       <span class="ad-slot-house-line ad-slot-house-line--main">Deleted the moment your download is ready.</span>
-      <span class="ad-slot-house-line ad-slot-house-line--sub">Each file is processed in its own temporary workspace &mdash; nothing is kept.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--sub">Each upload is processed in its own temporary workspace &mdash; nothing is kept.</span>
     </div>
   </div>
 </div>
@@ -239,7 +239,7 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         </span>
         <h3>Fast conversions</h3>
-        <p>Most files convert in seconds -- no waiting in a queue.</p>
+        <p>Most files convert in a few seconds.</p>
       </div>
       <div class="why-card">
         <span class="why-card-icon">
@@ -253,7 +253,7 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </span>
         <h3>Completely free</h3>
-        <p>Every tool on KuickKonvert is free to use, with no subscriptions -- just a 50MB per-file limit to keep conversions fast.</p>
+        <p>Every tool on KuickKonvert is free to use, with no subscriptions -- just a 50MB limit per upload to keep conversions fast.</p>
       </div>
     </div>
   </div>
@@ -286,15 +286,15 @@
       </details>
       <details class="faq-item">
         <summary>What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?</summary>
-        <p>DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based "Office Open XML" formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have.</p>
+        <p>DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have.</p>
       </details>
       <details class="faq-item">
         <summary>Why does my file's layout sometimes shift slightly after conversion?</summary>
-        <p>Two common reasons: first, if your original file uses a font we don't have installed, we substitute a metrically-compatible alternative -- close, but not always pixel-identical, so lines can reflow slightly. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes.</p>
+        <p>Two common reasons. First, fonts: if your file uses a font we don't have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts with the same letter widths, so line breaks stay the same; other fonts -- including Aptos, Word's newer default -- are replaced by fonts with different widths, so text can rewrap. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes.</p>
       </details>
       <details class="faq-item">
         <summary>Is there a file size limit?</summary>
-        <p>Yes -- up to 50MB per file by default, which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. If a very large PDF fails to upload, try our Compress PDF tool first to shrink it.</p>
+        <p>Yes -- up to 50MB per upload (all files together), which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. Bigger files can't be uploaded; for a very large PDF, save a smaller copy from the program that created it and convert that instead.</p>
       </details>
       <details class="faq-item">
         <summary>Do I need to install anything or create an account?</summary>
