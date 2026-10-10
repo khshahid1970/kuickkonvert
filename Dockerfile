@@ -36,6 +36,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN mkdir -p tmp
 
+# Run as a non-root user (review hardening, 10 Oct 2026). LibreOffice,
+# Ghostscript and the app write only inside /app/tmp -- each conversion runs in
+# its own job folder there, with the LibreOffice profile (-env:UserInstallation)
+# and TMPDIR pointed into that folder -- so the app needs no write access to
+# $HOME or anywhere else in the image. Verified: LibreOffice converts a .docx to
+# PDF cleanly as a non-root user with exactly this layout. Port is 8080 (>1024),
+# so no privileged bind is needed.
+RUN useradd --create-home --uid 10001 appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
 ENV PORT=8080
 EXPOSE 8080
 

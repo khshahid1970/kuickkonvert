@@ -53,6 +53,28 @@ from converters.pdf_tools import (
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
+# --- Proxy awareness (added 2026-10-10, Round 1 finding F4 / closes E8) -----
+# KuickKonvert runs behind Cloudflare -> Render's proxy -> gunicorn. Without
+# this, Werkzeug sees Render's internal proxy address as request.remote_addr
+# (always private, the same for every visitor) and the request scheme as
+# http. Two problems followed:
+#   1. The fair-use rate limiter, keyed on remote_addr, became ONE shared
+#      counter for all visitors (confirmed by the production "proxy-shape"
+#      log: remote_addr=private, cf_connecting_ip=yes). A busy minute could
+#      429 everyone, including Googlebot.
+#   2. A redirect built from the request scheme (e.g. collapsing the double
+#      slash in /tools//word-to-pdf) returned an http:// Location, which
+#      Cloudflare then had to upgrade -- an extra hop.
+# ProxyFix trusts the Cloudflare+Render hops so request.scheme is https and
+# request.remote_addr is the visitor. x_for=2 matches the two forwarding hops
+# seen in the proxy-shape log (XFF = [client, edge]); the LIMITER itself does
+# not rely on this -- it keys on CF-Connecting-IP (see _client_ip_key), which
+# Cloudflare sets to the true client and strips if a client tries to spoof it.
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1)
+app.config["PREFERRED_URL_SCHEME"] = "https"
+
 
 # --- Static files: one-year browser cache with automatic version tags -----
 # Added 2026-10-08 (phone-speed fix). Every url_for('static', ...) link gets
@@ -197,14 +219,15 @@ _CSP_DIRECTIVES = (
 def _set_security_headers(response):
     is_https = request.is_secure or request.headers.get("X-Forwarded-Proto", "") == "https"
     if is_https:
-        # max-age is 6 months (15768000s). includeSubDomains and preload are
-        # intentionally still left off, per the original reasoning: preload
-        # is effectively permanent once submitted (removal takes months
-        # across browser vendors) and is a deliberate later decision, and
-        # includeSubDomains would also force HTTPS on any future subdomain
+        # max-age is 1 year (31536000s), raised from 6 months on 10 Oct 2026
+        # (review item N4/F33). includeSubDomains and preload are intentionally
+        # still left off, per the original reasoning: preload is effectively
+        # permanent once submitted (removal takes months across browser
+        # vendors) and is a deliberate later decision, and includeSubDomains
+        # would also force HTTPS on any future subdomain
         # (e.g. mail.kuickkonvert.com) whether or not it's ready for it.
         # Revisit once there's a firm reason to lock either in.
-        response.headers.setdefault("Strict-Transport-Security", "max-age=15768000")
+        response.headers.setdefault("Strict-Transport-Security", "max-age=31536000")
 
     response.headers.setdefault(
         "Content-Security-Policy",
@@ -227,6 +250,26 @@ def _set_security_headers(response):
         "magnetometer=(), gyroscope=(), interest-cohort=()",
     )
     return response
+
+
+# --- Consent / CMP region detection (added 10 Oct 2026) --------------------
+# PMax targets the EEA/UK/CH, so visitors from those countries are shown a
+# consent banner before any ad/analytics cookies load -- and before the
+# third-party LaunchNest badge, which would otherwise expose their IP (review
+# finding F17). Cloudflare sets CF-IPCountry on every request; we expose a
+# boolean to the templates so the banner and the tag/badge gating render only
+# for those regions. Everywhere else behaviour is unchanged.
+_CONSENT_REGIONS = frozenset({
+    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+    "SI", "ES", "SE", "IS", "LI", "NO", "GB", "CH",
+})
+
+
+@app.context_processor
+def _inject_consent_required():
+    country = (request.headers.get("CF-IPCountry") or "").upper()
+    return {"consent_required": country in _CONSENT_REGIONS}
 
 # --- Rate limiting / abuse protection -------------------------------------
 # Anonymous, no-login uploads are an obvious target for scripted abuse (mass
@@ -298,8 +341,24 @@ def _log_proxy_shape_once():
         pass
 
 
+def _client_ip_key():
+    """Per-visitor key for the fair-use limiter (Round 1 finding F4).
+
+    Prefers Cloudflare's CF-Connecting-IP header: Cloudflare overwrites it
+    with the real connecting IP and discards any client-supplied value, so it
+    cannot be spoofed to evade or poison another visitor's limit. Behind our
+    Cloudflare -> Render chain this gives a reliable per-visitor counter
+    instead of the single shared bucket we had when keying on the proxy
+    address. Falls back to the (now ProxyFix-corrected) remote address when
+    the header is absent -- e.g. a direct hit on the *.onrender.com host,
+    which is not the canonical domain.
+    """
+    cf = request.headers.get("CF-Connecting-IP", "").strip()
+    return cf or get_remote_address()
+
+
 limiter = Limiter(
-    get_remote_address,
+    _client_ip_key,
     app=app,
     default_limits=["120 per minute", "2000 per day"],
     storage_uri=os.environ.get("RATE_LIMIT_STORAGE_URI", "memory://"),
@@ -738,6 +797,32 @@ def guide_page(slug):
 import threading as _threading
 _CONVERT_SLOTS = _threading.BoundedSemaphore(int(os.environ.get("CONVERT_SLOTS", "1")))
 
+# F27 (review, 10 Oct 2026): sweep stale temp folders on a time interval too,
+# not only at worker start-up, so a folder left behind by a worker that died
+# mid-job is cleared without waiting for the next restart. Throttled per worker
+# and fully best-effort: called at the start of each conversion, swallows any
+# error, and never blocks the request (non-blocking lock).
+import time as _time
+_TEMP_SWEEP_SECONDS = int(os.environ.get("TEMP_SWEEP_SECONDS", "1800"))
+_last_sweep_ts = _time.monotonic()
+_sweep_lock = _threading.Lock()
+
+
+def _maybe_sweep_temp():
+    global _last_sweep_ts
+    if _time.monotonic() - _last_sweep_ts < _TEMP_SWEEP_SECONDS:
+        return
+    if not _sweep_lock.acquire(blocking=False):
+        return
+    try:
+        if _time.monotonic() - _last_sweep_ts >= _TEMP_SWEEP_SECONDS:
+            sweep_stale_temp()
+            _last_sweep_ts = _time.monotonic()
+    except Exception:
+        app.logger.debug("periodic temp sweep skipped", exc_info=True)
+    finally:
+        _sweep_lock.release()
+
 
 @app.route("/convert/<slug>", methods=["POST"])
 @limiter.limit("10 per minute; 100 per hour")
@@ -746,6 +831,8 @@ def convert(slug):
     handler = HANDLERS.get(slug)
     if not tool or not handler:
         abort(404)
+
+    _maybe_sweep_temp()
 
     files = request.files.getlist("file")
     if not tool.get("multi") and len(files) > 1:

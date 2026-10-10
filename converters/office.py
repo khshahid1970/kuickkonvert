@@ -12,7 +12,9 @@ import glob
 import io
 import logging
 import os
+import re
 import subprocess
+import zipfile
 
 from converters.isolate import is_out_of_memory
 from converters.utils import subprocess_env
@@ -43,6 +45,145 @@ _SINGLE_PAGE_SHEETS_FILTER = (
 
 class ConversionError(Exception):
     pass
+
+
+# --- Office SSRF hardening (added 2026-10-10, Round 1 finding F5) -----------
+# A Word/Excel/PowerPoint file can carry "external" relationships -- linked
+# images, linked workbooks, attached templates -- whose target is a URL. When
+# LibreOffice opens such a file it tries to FETCH those targets, which turns an
+# anonymous upload into a server-side request to an attacker-chosen host (SSRF).
+# Before converting any OOXML file we remove every external relationship, so
+# LibreOffice has nothing remote to fetch. OOXML files are zip archives whose
+# relationships live in "*.rels" parts as <Relationship ... TargetMode=
+# "External" .../> elements; we delete exactly those self-closing elements and
+# leave everything else byte-for-byte, so document content (text, tables,
+# shapes, charts, embedded images) is untouched.
+_EXTERNAL_REL_RE = re.compile(rb'<Relationship\b[^>]*\bTargetMode="External"[^>]*/>')
+
+
+def strip_external_links(path: str) -> None:
+    """Remove external (remote) relationships from an OOXML file, in place.
+
+    No-op for legacy binary .doc/.xls/.ppt (not zip archives) and for any file
+    that has no external relationships. Never raises -- if the file can't be
+    rewritten for any reason it is left unchanged and conversion proceeds.
+    """
+    if not zipfile.is_zipfile(path):
+        return  # legacy binary Office format -- see the limitation note in the audit
+    try:
+        with zipfile.ZipFile(path) as zin:
+            names = zin.namelist()
+            blobs = {n: zin.read(n) for n in names}
+    except Exception:
+        return
+
+    changed = False
+    for name in list(blobs):
+        if name.endswith(".rels") and b'TargetMode="External"' in blobs[name]:
+            new = _EXTERNAL_REL_RE.sub(b"", blobs[name])
+            if new != blobs[name]:
+                blobs[name] = new
+                changed = True
+    if not changed:
+        return
+
+    tmp = path + ".nolinks"
+    try:
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+            for name in names:  # keep the original part order
+                zout.writestr(name, blobs[name])
+        os.replace(tmp, path)
+    except Exception:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+
+
+# --- Preserve shapes in Excel to PDF (added 2026-10-10, Round 1 finding F3) -
+# _widen_columns_to_fit() below opens the workbook with openpyxl and saves it
+# again to apply "fit to page width". openpyxl does not model drawing shapes
+# (text boxes, arrows, callouts, form controls), so saving silently DROPS them
+# -- an invoice's "APPROVED" text box, say, vanishes from the PDF. To avoid
+# that, convert_office_to_pdf() checks for drawings first: a workbook WITHOUT
+# drawings keeps the proven openpyxl path unchanged; a workbook WITH drawings
+# skips openpyxl entirely and gets fit-to-page applied by a minimal, direct
+# edit of the sheet XML that leaves the drawings untouched.
+_FIT_SHEET_WIDE_COLS = 8  # more columns than this -> landscape, to shrink less
+
+
+def _xlsx_has_drawings(xlsx_path: str) -> bool:
+    try:
+        with zipfile.ZipFile(xlsx_path) as z:
+            for n in z.namelist():
+                if n.startswith("xl/drawings/") and n.endswith(".xml"):
+                    return True
+                if n.startswith("xl/ctrlProps/") or n.startswith("xl/activeX/"):
+                    return True
+            # A sheet that references a drawing / legacy drawing / OLE object.
+            for n in z.namelist():
+                if re.match(r"xl/worksheets/sheet\d+\.xml$", n):
+                    head = z.read(n)
+                    if (b"<drawing " in head or b"<legacyDrawing" in head
+                            or b"<oleObject" in head or b"<control " in head):
+                        return True
+    except Exception:
+        return False
+    return False
+
+
+def _edit_sheet_fit_to_page(xml: bytes) -> bytes:
+    """Return the worksheet XML with fit-to-page-width turned on, editing only
+    the page-setup elements and leaving drawings and data untouched."""
+    # Decide orientation from the column span in <dimension ref="A1:H23"/>.
+    landscape = False
+    m = re.search(rb'<dimension ref="[A-Z]+\d+:([A-Z]+)\d+"', xml)
+    if m:
+        col = m.group(1).decode()
+        n = 0
+        for ch in col:
+            n = n * 26 + (ord(ch) - 64)
+        landscape = n > _FIT_SHEET_WIDE_COLS
+    orient = b"landscape" if landscape else b"portrait"
+
+    # 1) <pageSetUpPr fitToPage="1"/> inside <sheetPr>.
+    if b"<pageSetUpPr" in xml:
+        xml = re.sub(rb"<pageSetUpPr\b[^>]*/>", b'<pageSetUpPr fitToPage="1"/>', xml, count=1)
+    elif b"<sheetPr" in xml:
+        xml = re.sub(rb"(</sheetPr>)", rb'<pageSetUpPr fitToPage="1"/>\1', xml, count=1)
+        # If <sheetPr> was self-closing (<sheetPr/>), the above didn't match.
+        if b'<pageSetUpPr fitToPage="1"/>' not in xml:
+            xml = re.sub(rb"<sheetPr\b([^>]*)/>",
+                         rb'<sheetPr\1><pageSetUpPr fitToPage="1"/></sheetPr>', xml, count=1)
+    else:
+        xml = re.sub(rb"(<worksheet\b[^>]*>)",
+                     rb'\1<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>', xml, count=1)
+
+    # 2) <pageSetup fitToWidth="1" fitToHeight="0" orientation=.../>.
+    setup = b'<pageSetup fitToWidth="1" fitToHeight="0" orientation="' + orient + b'"/>'
+    if b"<pageSetup" in xml:
+        xml = re.sub(rb"<pageSetup\b[^>]*/>", setup, xml, count=1)
+    elif b"<pageMargins" in xml:
+        xml = re.sub(rb"(<pageMargins\b[^>]*/>)", rb"\1" + setup, xml, count=1)
+    else:
+        xml = re.sub(rb"(</worksheet>)", setup + rb"\1", xml, count=1)
+    return xml
+
+
+def _apply_fit_to_page_preserving_drawings(xlsx_path: str) -> None:
+    """Turn on fit-to-page-width for every sheet by editing the sheet XML in
+    place, without going through openpyxl (so drawings survive)."""
+    with zipfile.ZipFile(xlsx_path) as z:
+        names = z.namelist()
+        blobs = {n: z.read(n) for n in names}
+    for n in names:
+        if re.match(r"xl/worksheets/sheet\d+\.xml$", n):
+            blobs[n] = _edit_sheet_fit_to_page(blobs[n])
+    tmp = xlsx_path + ".fit"
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+        for n in names:
+            zout.writestr(n, blobs[n])
+    os.replace(tmp, xlsx_path)
 
 
 def _run_soffice(input_path: str, out_dir: str, target_filter: str, infilter: str = None):
@@ -142,6 +283,12 @@ def _widen_columns_to_fit(xlsx_path: str) -> None:
 
 def convert_office_to_pdf(input_path: str, out_dir: str) -> str:
     ext = os.path.splitext(input_path)[1].lower().lstrip(".")
+
+    # F5 (SSRF): remove external linked resources before LibreOffice opens the
+    # file, so it cannot fetch remote images/templates/workbooks. No-op for
+    # legacy binary formats (see the audit's limitation note).
+    strip_external_links(input_path)
+
     if ext not in SPREADSHEET_EXTS:
         return _run_soffice(input_path, out_dir, "pdf")
 
@@ -149,8 +296,16 @@ def convert_office_to_pdf(input_path: str, out_dir: str) -> str:
     if ext == "xls":
         xlsx_path = _run_soffice(input_path, out_dir, "xlsx:Calc MS Excel 2007 XML")
 
+    # F3: a workbook with drawing shapes must NOT be re-saved by openpyxl
+    # (it drops shapes). Apply fit-to-page by editing the sheet XML instead,
+    # which leaves the drawings intact. Workbooks without drawings keep the
+    # original, proven openpyxl path. Either way, if the optimisation fails we
+    # still convert -- all cell content and shapes are preserved regardless.
     try:
-        _widen_columns_to_fit(xlsx_path)
+        if _xlsx_has_drawings(xlsx_path):
+            _apply_fit_to_page_preserving_drawings(xlsx_path)
+        else:
+            _widen_columns_to_fit(xlsx_path)
     except Exception:
         pass
 

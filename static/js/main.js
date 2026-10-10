@@ -39,6 +39,34 @@
     }[c]));
   }
 
+  // --- Google Analytics 4 funnel (added 10 Oct 2026, review item C8) --------
+  // Sends only the tool slug and, for a failure, an error *category* -- never a
+  // filename, file contents, error text or e-mail. Guarded so it stays harmless
+  // if gtag is absent or blocked by the visitor. The Google Ads "conversion"
+  // event below is deliberately left exactly as it was (fired after download),
+  // so Ads bidding is not disturbed.
+  function ga4(name, params) {
+    if (typeof window.gtag !== "function") return;
+    const payload = { send_to: "G-K0VJLC113K", tool: slug };
+    if (params) Object.assign(payload, params);
+    window.gtag("event", name, payload);
+  }
+
+  function errorTypeFromStatus(status, message) {
+    if (status === 413) return "too_large";
+    if (status === 429) return "rate_limited";
+    if (status === 503) return "busy";
+    if (status === 415) return "unsupported";
+    if (status === 400) {
+      const m = (message || "").toLowerCase();
+      if (m.indexOf("valid pdf") !== -1 || m.indexOf("damaged") !== -1 ||
+          m.indexOf("could not read") !== -1 || m.indexOf("couldn't read") !== -1) return "damaged";
+      if (m.indexOf("unsupported") !== -1 || m.indexOf("not supported") !== -1) return "unsupported";
+      return "other";
+    }
+    return "other";
+  }
+
   function addFiles(fileListLike) {
     const incoming = Array.from(fileListLike);
     if (!multi) {
@@ -47,6 +75,7 @@
       selectedFiles = selectedFiles.concat(incoming);
     }
     renderFileList();
+    if (incoming.length > 0) ga4("file_selected");
   }
 
   input.addEventListener("change", () => addFiles(input.files));
@@ -112,6 +141,7 @@
 
     convertBtn.disabled = true;
     setStatus('<span class="spinner"></span>Converting&hellip;');
+    ga4("conversion_started");
 
     const fd = new FormData();
     selectedFiles.forEach((f) => fd.append("file", f));
@@ -130,6 +160,7 @@
           const data = await resp.json();
           if (data && data.error) message = data.error;
         } catch (_) {}
+        ga4("conversion_failed", { error_type: errorTypeFromStatus(resp.status, message) });
         setStatus(escapeHtml(message), "error");
         convertBtn.disabled = false;
         return;
@@ -169,6 +200,7 @@
       const nextSteps = document.getElementById("next-steps");
       if (nextSteps) nextSteps.hidden = false;
     } catch (err) {
+      ga4("conversion_failed", { error_type: "other" });
       setStatus("Network error. Please check your connection and try again.", "error");
     } finally {
       convertBtn.disabled = false;

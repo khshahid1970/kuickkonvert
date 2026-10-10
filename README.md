@@ -55,6 +55,10 @@ Uploaded files are used only to perform the requested conversion and are never s
 
 Found a bug or want a new tool? Open an issue here, or use the [contact page](https://kuickkonvert.com/contact).
 
-## Copyright
+## Licence
 
-© 2026 Shahid Iqbal. All rights reserved. The source code is published for transparency; no licence is granted to copy, modify or redistribute it.
+© 2026 Shahid Iqbal. KuickKonvert is free software: you can use, study, share and modify it under the terms of the **GNU Affero General Public License, version 3 (AGPL-3.0)**, as published by the Free Software Foundation. See the [`LICENSE`](LICENSE) file for the full text.
+
+The complete, corresponding source code for the version running at **[kuickkonvert.com](https://kuickkonvert.com)** is available at **https://github.com/khshahid1970/kuickkonvert**, as required by section 13 of the AGPL.
+
+KuickKonvert uses **PyMuPDF** (via `pdf2docx`), which is distributed under the AGPL-3.0; licensing KuickKonvert under the AGPL-3.0 keeps the project compliant with that dependency.

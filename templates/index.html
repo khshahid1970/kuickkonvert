@@ -1,72 +1,11 @@
 {% extends "base.html" %}
 {% block title %}PDF Converter & PDF Maker Online Free | KuickKonvert{% endblock %}
 {% block description %}Free PDF converter and PDF maker: convert PDF, Word, Excel, PowerPoint and images to and from PDF online. No sign-up; files are deleted automatically.{% endblock %}
-{% block structured_data %}
-<!-- FAQPage structured data -- mirrors the real FAQ content in the #faq
-     section below verbatim, so it can never drift out of sync with what a
-     visitor actually sees on the page. -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Is KuickKonvert's PDF converter free?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per conversion. There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do you store my files?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails). See our Privacy notice for details."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why does my file's layout sometimes shift slightly after conversion?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Two common reasons. First, fonts: if your file uses a font we don't have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts with the same letter widths, so line breaks stay the same; other fonts -- including Aptos, Word's newer default -- are replaced by fonts with different widths, so text can rewrap. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is there a file size limit?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes -- up to 50MB per upload (all files together), which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. Bigger files can't be uploaded; for a very large PDF, save a smaller copy from the program that created it and convert that instead."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do I need to install anything or create an account?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. You use KuickKonvert directly from your browser -- no software installation, plugins, browser extensions, or sign-up required. It works the same way on desktop, tablet, or mobile, in any modern browser."
-      }
-    }
-  ]
-}
-</script>
-{% endblock %}
 {% block content %}
 {% set tool_count = by_category.values()|map('length')|sum %}
 <div class="hero-rail-zone">
   <div class="ad-slot ad-slot--rail ad-slot--rail-left">
-    <!-- Vertical rail ad slot. Shown only on wide desktop viewports (see the
+    {# Vertical rail ad slot. Shown only on wide desktop viewports (see the
          min-width media query in style.css) -- there is no room for a side
          rail once the browser window narrows, so it is hidden entirely
          below that breakpoint rather than shrunk or stacked. Stretches to
@@ -75,7 +14,7 @@
          Showing a house message (KuickKonvert's own positioning) rather
          than "Advertisement" while no real AdSense ad is live yet -- see
          the .ad-slot-house comment in style.css for exactly how to swap
-         this back to a real ad + aria-label="Advertisement" once approved. -->
+         this back to a real ad + aria-label="Advertisement" once approved. #}
     <div class="ad-slot-house">
       <span class="ad-slot-house-line">{{ tool_count }} tools.</span>
       <span class="ad-slot-house-line">Documents.</span>
@@ -94,12 +33,12 @@
 
   <div class="wrap">
     <div class="ad-slot ad-slot--banner ad-slot--top">
-      <!-- Top-of-page ad slot, above the headline and below the header/nav
+      {# Top-of-page ad slot, above the headline and below the header/nav
            bar. Kept as its own bordered card so it is never mistaken for
            part of the nav above it.
            House message shown while no real AdSense ad is live -- see the
            .ad-slot-house comment in style.css before swapping this for a
-           real <ins class="adsbygoogle"> unit once approved. -->
+           real <ins class="adsbygoogle"> unit once approved. #}
       <div class="ad-slot-house">
         <span class="ad-slot-house-line ad-slot-house-line--main">{{ tool_count }} tools for Word, Excel, PowerPoint, images &amp; PDF.</span>
         <span class="ad-slot-house-line ad-slot-house-line--sub">Convert, merge, split, compress, rotate, watermark and password-protect.</span>
@@ -143,7 +82,7 @@
 
 <div class="wrap">
   <div class="ad-slot ad-slot--banner">
-    <!-- Reserved ad space. Deliberately placed here -- well below the hero
+    {# Reserved ad space. Deliberately placed here -- well below the hero
          and well above any Upload/Convert/Download control -- so an ad can
          never be mistaken for site navigation or a download link (a real
          AdSense policy risk on a tool site like this one).
@@ -156,14 +95,14 @@
          rail, and tool-page ad slots), e.g.:
          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    -->
+    #}
     <div class="ad-slot-house">
       <span class="ad-slot-house-line ad-slot-house-line--main">Deleted the moment your download is ready.</span>
       <span class="ad-slot-house-line ad-slot-house-line--sub">Each upload is processed in its own temporary workspace &mdash; nothing is kept.</span>
     </div>
   </div>
 </div>
-</div><!-- /.hero-rail-zone -->
+</div>{# /.hero-rail-zone #}
 
 <section class="how-it-works" id="how-it-works">
   <div class="wrap">
@@ -278,7 +217,7 @@
     <div class="faq-list">
       <details class="faq-item">
         <summary>Is KuickKonvert's PDF converter free?</summary>
-        <p>Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per conversion. There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free.</p>
+        <p>Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per upload (all files together). There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free.</p>
       </details>
       <details class="faq-item">
         <summary>Do you store my files?</summary>

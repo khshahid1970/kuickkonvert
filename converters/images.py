@@ -38,6 +38,82 @@ def _to_8bit(im):
     return im.convert("RGB")
 
 
+# F11 (review S-04, 10 Oct 2026): reject PostScript/EPS (and PDF) files in the
+# image tools. Pillow would otherwise sniff an EPS and hand it to Ghostscript;
+# these tools accept real raster images only, so a file whose magic bytes say
+# PostScript/EPS/PDF is refused before anything opens it.
+_PS_EPS_PDF_SIGNATURES = (
+    b"%!PS",              # PostScript / EPS (ASCII)
+    b"\xc5\xd0\xd3\xc6",  # DOS EPS binary header
+    b"%PDF",              # PDF -- not a raster image for these tools
+)
+
+
+def _reject_non_raster(path: str, label: str = None) -> None:
+    label = label or ("'" + os.path.splitext(os.path.basename(path))[0] + "'")
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(4)
+    except OSError:
+        return
+    for sig in _PS_EPS_PDF_SIGNATURES:
+        if head.startswith(sig):
+            raise ConversionError(
+                f"{label} is a PostScript/EPS or PDF file, not an image this tool can "
+                "convert. Please upload a JPG, PNG, WEBP or HEIC image."
+            )
+
+
+# F7 (review A-03, 10 Oct 2026): strip location/metadata from a JPEG embedded in
+# a PDF, losslessly. JPEG metadata lives in APPn/COM marker segments; we drop
+# APP1 (Exif, incl. GPS, and XMP) and APP13 (IPTC) and COM, and keep APP0 (JFIF)
+# and APP2 (ICC colour profile) and the compressed image data untouched -- so
+# GPS and other EXIF are removed without re-encoding the picture.
+_JPEG_DROP_MARKERS = frozenset((0xE1, 0xED, 0xFE))  # APP1 (Exif/XMP), APP13 (IPTC), COM
+
+
+def _strip_jpeg_metadata(data: bytes) -> bytes:
+    if len(data) < 2 or data[0] != 0xFF or data[1] != 0xD8:
+        return data  # not a JPEG; leave unchanged
+    out = bytearray(data[0:2])  # SOI
+    i, n = 2, len(data)
+    while i + 1 < n:
+        if data[i] != 0xFF:
+            out.extend(data[i:])
+            return bytes(out)
+        marker = data[i + 1]
+        if marker == 0xDA:  # Start of Scan: copy the rest (entropy data) verbatim
+            out.extend(data[i:])
+            return bytes(out)
+        if marker in (0xD8, 0xD9) or 0xD0 <= marker <= 0xD7 or marker == 0x01:
+            out.extend(data[i:i + 2]); i += 2; continue  # standalone, no length
+        if i + 3 >= n:
+            out.extend(data[i:]); return bytes(out)
+        seg_len = (data[i + 2] << 8) | data[i + 3]
+        if marker not in _JPEG_DROP_MARKERS:
+            out.extend(data[i:i + 2 + seg_len])
+        i += 2 + seg_len
+    return bytes(out)
+
+
+def _cmyk_to_srgb(im, icc_bytes):
+    """F9 (review A-06, 10 Oct 2026): colour-managed CMYK -> sRGB. Uses the
+    image's embedded CMYK profile when present (the common case, e.g. FOGRA39 /
+    US Web Coated SWOP); falls back to Pillow's plain conversion only when there
+    is no usable profile. A plain CMYK->RGB convert produces the 'neon' colour
+    shift the audit measured (dE 54-63)."""
+    if icc_bytes:
+        try:
+            from PIL import ImageCms
+            import io as _io
+            src = ImageCms.ImageCmsProfile(_io.BytesIO(icc_bytes))
+            dst = ImageCms.createProfile("sRGB")
+            return ImageCms.profileToProfile(im, src, dst, outputMode="RGB")
+        except Exception:
+            pass
+    return im.convert("RGB")
+
+
 def images_to_pdf(image_paths: list, out_path: str) -> str:
     """Combine one or more JPG/PNG images into a single PDF, in order.
 
@@ -56,6 +132,7 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
     try:
         normalized = []
         for p in image_paths:
+            _reject_non_raster(p)
             with Image.open(p) as im:
                 has_alpha = im.mode in ("RGBA", "LA") or (
                     im.mode == "P" and "transparency" in im.info
@@ -66,7 +143,16 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
                     flat.save(fixed, "PNG")
                     normalized.append(fixed)
                 elif im.mode in ("RGB", "L", "1", "CMYK"):
-                    normalized.append(p)
+                    if (im.format or "").upper() == "JPEG":
+                        # F7: embed the JPEG with GPS/EXIF/XMP stripped, losslessly.
+                        with open(p, "rb") as _fh:
+                            _clean = _strip_jpeg_metadata(_fh.read())
+                        _clean_path = p + ".nometa.jpg"
+                        with open(_clean_path, "wb") as _fh:
+                            _fh.write(_clean)
+                        normalized.append(_clean_path)
+                    else:
+                        normalized.append(p)
                 else:
                     fixed = p + ".rgb.png"
                     _to_8bit(im).save(fixed, "PNG")
@@ -151,7 +237,9 @@ def pdf_to_images(input_path: str, out_dir: str, fmt: str = "png", dpi: int = 30
     ext = "jpg" if pil_fmt == "JPEG" else "png"
     for i in range(1, n_pages + 1):
         try:
-            page = render_pdf_page(input_path, i, dpi)
+            # F6: honour the page's crop box (what a PDF viewer shows) so
+            # cropped-out content does not reappear in the rendered image.
+            page = render_pdf_page(input_path, i, dpi, use_cropbox=True)
         except ConversionError:
             raise
         except Exception as exc:
@@ -263,6 +351,7 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
         label = "'" + os.path.splitext(name)[0] + "'"
         out_path = os.path.join(out_dir, name)
         try:
+            _reject_non_raster(src, label)
             with Image.open(src) as im:
                 w, h = im.size
                 if w * h > max_pixels:
@@ -270,10 +359,12 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
                         f"{label} is {w * h / 1e6:.0f} megapixels. This tool converts images "
                         f"up to {MAX_IMAGE_MEGAPIXELS} megapixels -- please use a smaller image."
                     )
-                im.seek(0)  # first frame of an animated WEBP / main image of a HEIC
+                # F8: do NOT seek(0). pi_heif opens a multi-image HEIC on its
+                # PRIMARY image, which is not always frame 0, so seeking to 0
+                # could pick the wrong picture. Image.open already starts on the
+                # first frame of an animated WEBP, so no seek is needed there.
                 exif = _kept_exif(im)
                 icc = im.info.get("icc_profile")
-                src_mode = im.mode
                 if im.getexif().get(0x0112, 1) not in (1, None):
                     img = ImageOps.exif_transpose(im)  # turn it the right way up
                 else:
@@ -281,10 +372,13 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
                     img.load()
                 if _has_transparency(img):
                     img = _flatten_on_white(img)
+                elif img.mode == "CMYK":
+                    img = _cmyk_to_srgb(img, icc)  # F9: colour-managed, not naive
+                    icc = None                     # output is sRGB now
                 else:
-                    img = _to_8bit(img)  # RGB or L; CMYK, palette and 16-bit converted
+                    img = _to_8bit(img)  # RGB or L; palette and 16-bit converted
                 wanted_space = "GRAY" if img.mode == "L" else "RGB "
-                if src_mode == "CMYK" or _icc_space(icc) != wanted_space:
+                if _icc_space(icc) != wanted_space:
                     icc = None  # profile doesn't match the colours being saved
                 img.info = {}  # nothing from the source carries over unless listed below
                 params = {}

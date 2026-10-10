@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Terms of Service | KuickKonvert{% endblock %}
-{% block description %}Terms of Service for KuickKonvert's free online file conversion tools, covering acceptable use, your responsibilities, and liability limits.{% endblock %}
+{% block description %}Terms of Service for KuickKonvert's free online file conversion tools: your responsibilities, file ownership, warranties, liability limits, notice-and-takedown, and governing law.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -25,13 +25,16 @@
     <p><em>Effective date: {{ release_date_text }}.</em></p>
 
     <h2>1. Who these terms are between</h2>
-    <p>These Terms of Service ("Terms") govern your use of KuickKonvert (the "Service"), available at kuickkonvert.com, operated by Shahid Iqbal ("we", "us", "our"). By uploading a file or otherwise using the Service, you agree to these Terms. If you do not agree, do not use the Service.</p>
+    <p>These Terms of Service ("Terms") govern your use of KuickKonvert (the "Service"), available at kuickkonvert.com, operated by Shahid Iqbal ("we", "us", "our"). By uploading a file, clicking Convert, or otherwise using the Service, you agree to these Terms and to our <a href="{{ url_for('privacy') }}">Privacy notice</a>. If you do not agree, do not use the Service.</p>
 
     <h2>2. What the Service is</h2>
     <p>KuickKonvert provides free online file conversion tools that you use in your web browser, with the conversion itself done on our server (for example, converting between Word, Excel, PowerPoint, PDF, and common image formats, plus PDF utilities such as merging, splitting, compressing, rotating, watermarking, and password-protecting). The Service does not require an account and does not permanently store uploaded files -- see the <a href="{{ url_for('privacy') }}">Privacy notice</a> for how files are handled.</p>
 
-    <h2>3. Your responsibility for what you upload</h2>
-    <p>You are solely responsible for the files you upload and for having the legal right to upload and convert them. You agree not to use the Service to process files that:</p>
+    <h2>3. Your files: your ownership, and the licence you give us</h2>
+    <p>You keep all rights in the files you upload and in the converted files we return to you. We claim no ownership of your content. You grant us only a limited, non-exclusive, temporary licence to store and process your uploaded file, and any working copies, solely to perform the conversion you requested and to return the result to you. That licence ends, and the files and working copies are deleted, as soon as the conversion finishes or fails, as described in our <a href="{{ url_for('privacy') }}">Privacy notice</a>. We do not use your files for any other purpose.</p>
+
+    <h2>4. Your responsibility for what you upload</h2>
+    <p>You are solely responsible for the files you upload and for having the legal right to upload and convert them. You represent and warrant that, for every file you upload, you own it or have all rights, licences and permissions needed to upload and convert it, and that doing so infringes no third party's intellectual-property, privacy, confidentiality or other rights and breaks no law. You agree not to use the Service to process files that:</p>
     <ul class="why-list">
       <li>you do not have the legal right to copy, convert, or otherwise process (including copyrighted material used without permission, or another person's confidential or personal data uploaded without authorisation);</li>
       <li>contain malware, or are uploaded with the intent to test, probe, or attack the Service or its infrastructure;</li>
@@ -39,26 +42,38 @@
     </ul>
     <p>We do not review file contents before conversion. If we become aware that the Service is being used unlawfully, we may refuse, suspend, or terminate access without notice.</p>
 
-    <h2>4. Acceptable use</h2>
+    <h2>5. Acceptable use</h2>
     <p>You agree not to: attempt to bypass the Service's file-size or rate limits through automated or scripted abuse; attempt to disrupt, overload, or gain unauthorised access to the Service or the servers it runs on; or use the Service to build a competing product by systematically scraping or reverse-engineering it.</p>
 
-    <h2>5. No warranty</h2>
+    <h2>6. Your indemnity</h2>
+    <p>To the extent permitted by applicable law, you agree to indemnify and hold harmless Shahid Iqbal, as operator of the Service, against any third-party claim, demand, loss, liability or cost (including reasonable legal fees) that arises out of a file you uploaded, or out of your use of the Service in breach of these Terms.</p>
+
+    <h2>7. Notice and takedown</h2>
+    <p>If you believe that a file processed through the Service infringes your rights or is otherwise unlawful, please contact us at {{ obfuscated_mailto('info@kuickkonvert.com') }} with enough detail to identify the content and the rights concerned. We will review valid notices and take appropriate action, which may include removing access to the content and restricting users who repeatedly misuse the Service.</p>
+
+    <h2>8. No warranty</h2>
     <p>The Service is provided "as is" and "as available", without warranties of any kind, whether express or implied, including (to the extent permitted by law) implied warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee that conversions will be error-free, that output files will be perfectly identical in formatting to the source file, or that the Service will be available without interruption.</p>
 
-    <h2>6. Limitation of liability</h2>
-    <p>To the maximum extent permitted by applicable law, we are not liable for any indirect, incidental, special, or consequential damages arising from your use of, or inability to use, the Service, including loss of data, loss of a file, or business interruption -- even if advised of the possibility of such damages. Nothing in these Terms is intended to exclude liability that cannot be excluded under applicable law.</p>
+    <h2>9. Check your converted files before relying on them</h2>
+    <p>You are responsible for checking every converted file before you rely on it. Automated conversion can change formatting, layout, fonts, calculated values, or other content, and can occasionally omit elements of the original. Do not rely on a converted file for any commercial, legal, tax, financial, medical or other important purpose without first opening it and confirming that it is complete and correct against the original. The Service is a convenience tool and is not a substitute for professional verification.</p>
 
-    <h2>7. Advertising</h2>
+    <h2>10. Limitation of liability</h2>
+    <p>To the maximum extent permitted by applicable law, we are not liable for any indirect, incidental, special, or consequential damages arising from your use of, or inability to use, the Service, including loss of data, loss of a file, or business interruption -- even if advised of the possibility of such damages. To the maximum extent permitted by applicable law, our total aggregate liability to you for any and all claims arising out of or relating to the Service or these Terms shall not exceed the amount you paid us to use the Service -- which, because the Service is free, is zero. Nothing in these Terms excludes or limits any liability that cannot be excluded or limited under applicable law, including, where applicable, liability for death or personal injury caused by negligence, or for fraud.</p>
+
+    <h2>11. Advertising</h2>
     <p>The Service may display third-party advertising (for example through Google AdSense) to help cover hosting costs. See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for how advertising cookies are handled.</p>
 
-    <h2>8. Changes to the Service or these Terms</h2>
+    <h2>12. Changes to the Service or these Terms</h2>
     <p>We may modify, suspend, or discontinue any part of the Service at any time. We may update these Terms from time to time; continued use of the Service after an update constitutes acceptance of the revised Terms. Material changes will be reflected by updating this page.</p>
 
-    <h2>9. Governing law</h2>
+    <h2>13. Governing law</h2>
     <p>These Terms are governed by the laws of Pakistan, without regard to conflict-of-law principles, except where a user's local mandatory consumer-protection law provides otherwise.</p>
 
-    <h2>10. Contact</h2>
-    <p>Questions about these Terms can be sent to {{ obfuscated_mailto('info@kuickkonvert.com') }}, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+    <h2>14. Dispute resolution: informal resolution first, then forum</h2>
+    <p>Informal resolution. Before starting any formal proceeding, you agree to contact us at {{ obfuscated_mailto('info@kuickkonvert.com') }} with a brief description of the dispute, and to allow us 30 days to try to resolve it informally. Forum. Subject to any mandatory right you have under your local consumer-protection law to bring proceedings in your own country, the courts of Islamabad, Pakistan shall have exclusive jurisdiction over any dispute arising out of or relating to the Service or these Terms.</p>
+
+    <h2>15. Contact</h2>
+    <p>Questions about these Terms, and notices under section 7, can be sent to {{ obfuscated_mailto('info@kuickkonvert.com') }}, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
   </div>
 </section>
 {% endblock %}

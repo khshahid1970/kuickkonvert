@@ -1219,6 +1219,7 @@ GUIDES = [
         "meta_description": "Why spreadsheets split across pages in a PDF, what our Excel to PDF tool does automatically, our measured results, and how to keep the text readable.",
         "dek": "Our Excel to PDF tool always fits every column across the page width. The real question is how small the text becomes -- and that is something you can control before you upload.",
         "published": "2026-10-05",
+        "updated": "2026-10-10",
         "related_tools": ["excel-to-pdf"],
         "sections": [
             {
@@ -1272,6 +1273,13 @@ GUIDES = [
                 "paragraphs": [
                     "Fitting the width never squeezes rows onto one page, so a long list still runs to several pages. In our 300-row test the column headings only appeared on page 1, which makes pages 2 to 10 hard to follow.",
                     "The fix is a print title. In Excel, choose Page Layout > Print Titles and set Rows to repeat at top to your heading row (for example $1:$1), then save. With that set, our tool repeated the headings at the top of every one of the 10 pages.",
+                ],
+            },
+            {
+                "heading": "Formulas in the PDF",
+                "paragraphs": [
+                    "A PDF shows values, not formulas. When we convert, your spreadsheet's formulas are recalculated and the PDF shows the resulting numbers -- not the =SUM() or =VLOOKUP() behind them -- exactly as a printout would.",
+                    "One thing worth a check: a very new spreadsheet function (for example XLOOKUP or the newer dynamic-array functions) can occasionally come through as an error in the PDF, because the conversion engine recalculates the sheet and may not support the very latest functions. If your sheet relies on recent functions, open the PDF and confirm the totals match your spreadsheet. If a cell shows an error, either paste those results as values before converting, or save the sheet as a PDF from Excel itself and upload that.",
                 ],
             },
             {
@@ -1367,7 +1375,7 @@ GUIDES = [
         "meta_description": "Combine phone photos into one PDF for an application or form: why photo PDFs get huge, why compression may not help, and our tested fix.",
         "dek": "Combining photos into one PDF is easy. Getting a PDF small enough for an upload portal, with sensibly sized pages, takes one extra step before you upload -- here's what our tests showed.",
         "published": "2026-10-05",
-        "updated": "2026-10-08",
+        "updated": "2026-10-10",
         "related_tools": ["jpg-to-pdf", "compress-pdf", "merge-pdf"],
         "sections": [
             {
@@ -1376,6 +1384,13 @@ GUIDES = [
                     "Our [[jpg-to-pdf|photo to PDF converter]] puts each photo on its own page, in the order of the file list. Files are added to the end of the list each time you choose more, and each one has a Remove button, so the easiest way to get the order right is to add the photos one at a time.",
                     "Your JPGs are placed into the PDF exactly as uploaded, byte for byte. There is no second round of compression, so no quality is lost -- but it also means the PDF ends up about the same size as all your photos added together. In our test, three images totalling 14,124 KB produced a 14,126 KB PDF.",
                     "Photos taken with the phone held upright are shown upright. Phones often store such photos sideways with a tag telling viewers how to turn them, and our tool follows that tag: our sideways-stored test photo was set to display upright in the PDF.",
+                ],
+            },
+            {
+                "heading": "iPhone and web photos, and a note on location data",
+                "paragraphs": [
+                    "The JPG to PDF tool takes JPG and PNG images. iPhone photos are often saved as HEIC, and pictures saved from a website are often WEBP; neither goes straight in. Convert them to JPG first with our [[heic-to-jpg|HEIC to JPG converter]] or [[webp-to-jpg|WEBP to JPG converter]] (up to 20 at a time), then combine the JPGs into one PDF.",
+                    "A note on location data. As it builds the PDF, our JPG to PDF tool now removes the hidden EXIF data -- including any GPS location -- from each JPEG, without changing the picture itself, so the place a photo was taken is not carried into the PDF. If you start from a HEIC or WEBP photo, our image converters also keep only the date taken and the camera make and model and drop GPS, so either route keeps your location private.",
                 ],
             },
             {
@@ -1494,6 +1509,7 @@ GUIDES = [
         "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF -- and why PDF to PowerPoint gives picture slides. Our tests.",
         "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found.",
         "published": "2026-10-05",
+        "updated": "2026-10-10",
         "related_tools": ["ppt-to-pdf", "pdf-to-ppt"],
         "sections": [
             {
@@ -1536,6 +1552,7 @@ GUIDES = [
                 "heading": "PDF to PowerPoint: why you get picture slides",
                 "paragraphs": [
                     "Our [[pdf-to-ppt|PDF to PPT converter]] makes one slide per PDF page (up to 50 pages at a time), and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
+                    "The slide size follows your PDF's first page as it appears on screen -- its crop box and any rotation -- so the slides match what you see in a PDF reader. If later pages are a different size, each is fitted onto the slide with its proportions kept, so nothing is stretched (improved 10 October 2026).",
                     "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is a guaranteed, exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
                     "Pictures take more space than text, so expect a bigger file: our 20.5 KB PDF became a 170.5 KB presentation.",
                 ],
@@ -1761,6 +1778,172 @@ GUIDES = [
                 "heading": "Checklist before converting",
                 "paragraphs": [
                     "Use Word's Heading styles if you want bookmarks, use a common font such as Calibri or Arial, remember that comments won't appear, and keep the original photos if anyone needs them at full size. Then open the PDF, check the page count and click a link or two. Our [[word-to-pdf|Word to PDF converter]] accepts both .doc and .docx, and your upload and the PDF are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "what-is-a-heic-file",
+        "title": "What Is a HEIC File, and How Do You Open iPhone Photos Everywhere?",
+        "seo_title": "What Is a HEIC File? Open iPhone Photos | KuickKonvert",
+        "meta_description": "HEIC is the format iPhones use for photos. Why it won't open on some PCs, forms and Android phones, how to switch it off, and how to convert HEIC to JPG.",
+        "dek": "If your iPhone photos arrive as .HEIC and won't open on a Windows PC, an Android phone or an upload form, here is what the format is, why Apple uses it, and the simplest ways to view or convert it.",
+        "published": "2026-10-10",
+        "related_tools": ["heic-to-jpg", "jpg-to-pdf"],
+        "sections": [
+            {
+                "heading": "What a HEIC file actually is",
+                "paragraphs": [
+                    "HEIC is the file name Apple uses for HEIF, a modern image container, with the picture inside compressed using HEVC (also called H.265). Apple made it the iPhone's default photo format in 2017 with iOS 11. Its main advantage is size: it stores a photo in roughly half the space of a JPEG at a similar quality, which is why your phone's storage lasts longer.",
+                    "A HEIC file can also hold more than a plain photo -- a depth map for portrait shots, the extra frames of a Live Photo, or several images in one file. That flexibility is useful on the phone but is part of why other devices struggle with it.",
+                ],
+            },
+            {
+                "heading": "Why it won't open everywhere",
+                "paragraphs": [
+                    "HEIC is efficient but not as widely supported as JPEG, which almost everything has understood for decades. Older versions of Windows and Android, many website upload forms, and some older photo apps simply don't read .heic files.",
+                    "On Windows 10 and 11 you can add support by installing Microsoft's free HEIF Image Extensions from the Microsoft Store, after which Photos will open HEIC files. But an upload form that only accepts JPG or PNG will still reject a .heic file no matter what your own PC can open -- which is when you need to convert.",
+                ],
+            },
+            {
+                "heading": "Switch it off on the iPhone, or convert on transfer",
+                "paragraphs": [
+                    "If you would rather your iPhone take JPEGs from now on, open Settings, tap Camera, then Formats, and choose Most Compatible (the High Efficiency option is the one that saves HEIC). New photos will be JPEG; photos you already took stay HEIC.",
+                    "Apple can also convert automatically when you move photos off the phone: under Settings > Photos, the Transfer to Mac or PC setting offers Automatic, which hands over JPEGs to a Windows PC instead of HEIC. These are Apple's own settings and may move slightly between iOS versions.",
+                ],
+            },
+            {
+                "heading": "Converting the HEIC photos you already have",
+                "paragraphs": [
+                    "For photos already saved as HEIC, our [[heic-to-jpg|HEIC to JPG converter]] turns them into ordinary JPGs in the browser, up to 20 at a time and up to 65 megapixels each. From our own tests in October 2026, running the same code the tool uses: the converted JPG keeps the date the photo was taken and the camera make and model, and drops GPS location and other hidden data; a photo stored sideways is turned the right way up; and for a HEIC that holds several images, the tool uses the main (primary) image Apple marked, not whichever frame happens to be first.",
+                    "If you need those photos as a single document afterwards -- for a form or an application -- convert them to JPG and then use our [[jpg-to-pdf|JPG to PDF converter]].",
+                ],
+            },
+            {
+                "heading": "Will the JPG be bigger than the HEIC?",
+                "paragraphs": [
+                    "Usually, yes. Because HEVC compression is newer and more efficient than JPEG, the same picture saved as JPEG takes more space -- in our October 2026 tests the JPG came out larger than the HEIC every time. That is normal and the picture quality is kept; it simply reflects the older format. If file size matters for an upload, resize the photo before converting, and see our guide on turning photos into one PDF for how to keep a photo PDF small.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "location-data-in-photos",
+        "title": "Can a Photo Show Where It Was Taken? Location Data, and How to Remove It",
+        "seo_title": "Location Data in Photos: Remove It Before Sharing | KuickKonvert",
+        "meta_description": "Phone photos can carry the GPS spot where they were taken. How to check, how to stop your phone adding it, and how our converters strip it -- tested October 2026.",
+        "dek": "Many phone photos quietly record the exact place they were taken. Here is what that hidden data is, how to see it, and how to remove it before you share a picture or upload it to a form.",
+        "published": "2026-10-10",
+        "related_tools": ["heic-to-jpg", "webp-to-jpg", "png-to-jpg", "jpg-to-pdf"],
+        "sections": [
+            {
+                "heading": "The hidden data inside a photo",
+                "paragraphs": [
+                    "Most cameras and phones write extra information into every photo, called EXIF metadata. It can include the date and time, the camera or phone make and model, the settings used, and -- if location is switched on -- the GPS coordinates of exactly where the photo was taken, often accurate to a few metres.",
+                    "Not every image has it. A screenshot, or a picture you saved from a website, usually carries no location. But a photo straight from a phone camera very often does, and it travels with the file when you send or upload it.",
+                ],
+            },
+            {
+                "heading": "How to see what a photo is carrying",
+                "paragraphs": [
+                    "On Windows, right-click the photo, choose Properties, and open the Details tab -- any GPS latitude and longitude appear there. On a Mac, open it in Preview and choose Tools > Show Inspector, then the information tab. On the phone itself, the photo's info or details view will show a map if the photo is geotagged.",
+                ],
+            },
+            {
+                "heading": "Stop your phone adding location in the first place",
+                "paragraphs": [
+                    "On an iPhone, open Settings > Privacy & Security > Location Services, tap Camera, and set it to Never. On most Android phones, open the Camera app's settings and turn off the location or geotagging option. New photos then carry no GPS; photos you already took are unchanged.",
+                ],
+            },
+            {
+                "heading": "How our tools remove it (tested October 2026)",
+                "paragraphs": [
+                    "Our image converters -- [[heic-to-jpg|HEIC to JPG]], [[webp-to-jpg|WEBP to JPG]], [[png-to-jpg|PNG to JPG]] and JPG to PNG -- keep only the date taken and the camera make and model, and drop GPS location and other hidden data. We confirmed this in our own tests: a photo carrying GPS came out of the converter with the location gone and only the harmless date and camera fields left.",
+                    "Our [[jpg-to-pdf|JPG to PDF converter]] now does the same thing as it builds the PDF: it removes the hidden EXIF data, including any GPS location, from each JPEG without changing the picture itself, so the place a photo was taken is not carried into the PDF either. (One aside: taking a screenshot of a photo also drops the original location data, which is why screenshots are safe to share.)",
+                ],
+            },
+            {
+                "heading": "A simple routine before sharing",
+                "paragraphs": [
+                    "If you are about to post a photo publicly or send it to someone you don't know well, run it through one of our converters first (or, if you are making a document, let JPG to PDF strip it), then check the file's Properties to confirm no GPS remains. Your upload and the converted file are deleted from our server as soon as your download is ready.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "what-is-a-webp-image",
+        "title": "What Is a WEBP Image, and Why Won't It Open Everywhere?",
+        "seo_title": "What Is a WEBP Image? Convert WEBP to JPG | KuickKonvert",
+        "meta_description": "WEBP is Google's web image format. Why pictures saved from websites are often .webp, what it does well, and how to convert WEBP to JPG -- tested October 2026.",
+        "dek": "Saved a picture from a website and got a .webp file that won't open in your photo app or upload to a form? Here is what WEBP is, why sites use it, and how to convert it.",
+        "published": "2026-10-10",
+        "related_tools": ["webp-to-jpg", "jpg-to-pdf"],
+        "sections": [
+            {
+                "heading": "What WEBP is",
+                "paragraphs": [
+                    "WEBP (pronounced 'weppy', file extension .webp) is an image format developed by Google specifically for the web, first released in 2010. It can compress pictures either with some quality loss (like JPEG) or losslessly (like PNG), and it also supports transparency and animation. At a similar quality it is usually smaller than JPEG or PNG, which saves bandwidth -- the reason so many websites now serve their images as WEBP.",
+                ],
+            },
+            {
+                "heading": "Why you keep running into it, and why it won't open",
+                "paragraphs": [
+                    "When a modern browser visits a site, it is often served WEBP to make the page load faster. If you then right-click and Save image as, you get a .webp file. That is fine for the web, but older photo viewers, some office and design apps, and many upload forms don't accept WEBP, so the file you saved won't open or won't upload.",
+                    "Converting it to JPG solves this: JPG is understood by essentially every program and every upload form.",
+                ],
+            },
+            {
+                "heading": "Converting WEBP to JPG",
+                "paragraphs": [
+                    "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs in your browser, up to 20 at a time. From our tests in October 2026: a still WEBP becomes an ordinary JPG; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
+                ],
+            },
+            {
+                "heading": "Will the JPG be larger?",
+                "paragraphs": [
+                    "Often, yes -- because WEBP is more efficient than JPEG, the same picture as a JPG can be bigger. In our tests a 93 KB web graphic became a 451 KB JPG, while a detailed photographic image stayed about the same size (around 1 MB either way). The quality is kept; the size simply reflects the older format. If you then need the images as one document, use our [[jpg-to-pdf|JPG to PDF converter]].",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "submitting-coursework-as-a-pdf",
+        "title": "Submitting Coursework as a PDF: A Checklist That Portals Accept",
+        "seo_title": "Submit Coursework as One PDF: A Checklist | KuickKonvert",
+        "meta_description": "Turn an assignment into one PDF a submission portal will accept: convert Word, add scanned or photographed pages, combine them in order, and keep it under the limit.",
+        "dek": "Most university and college portals want a single PDF, under a size limit, that opens cleanly. Here is a tested, step-by-step way to get there from a Word file, scanned pages, or phone photos.",
+        "published": "2026-10-10",
+        "related_tools": ["word-to-pdf", "merge-pdf", "compress-pdf", "jpg-to-pdf", "heic-to-jpg"],
+        "sections": [
+            {
+                "heading": "Start from the right source file",
+                "paragraphs": [
+                    "If your work is in Word, convert it with our [[word-to-pdf|Word to PDF converter]] (it takes both .doc and .docx). The PDF keeps your text as real, selectable text, and Heading styles become bookmarks. One thing to watch is fonts: common fonts such as Calibri and Arial keep your layout and page breaks, while some newer fonts -- including Aptos, Microsoft 365's newer default -- can make text rewrap. If the layout matters, see our guide on why a PDF's layout sometimes shifts, and check the PDF before you submit.",
+                ],
+            },
+            {
+                "heading": "Handwritten or photographed pages",
+                "paragraphs": [
+                    "For handwritten answers or a page you can only photograph, take a clear, well-lit picture of each page. If the photos are iPhone HEIC files or web WEBP files, convert them to JPG first (our [[heic-to-jpg|HEIC to JPG]] tool handles iPhone photos), then combine them with our [[jpg-to-pdf|JPG to PDF converter]], adding them one at a time so the page order is right.",
+                    "Photo PDFs can come out very large, because each page is a full-resolution picture. If yours is too big, resize the photos before converting -- our guide on turning photos into one PDF shows how and why Compress PDF alone often can't shrink them.",
+                ],
+            },
+            {
+                "heading": "Combine everything into one PDF",
+                "paragraphs": [
+                    "If your submission is in pieces -- a cover sheet, the main document, an appendix of photos -- put them in the required order and join them with our [[merge-pdf|Merge PDF tool]]. Adding files one at a time is the simplest way to control the order.",
+                ],
+            },
+            {
+                "heading": "Get under the size limit",
+                "paragraphs": [
+                    "If the portal has a maximum file size, try our [[compress-pdf|Compress PDF tool]]. It helps most when the PDF contains scanned pages or photos; a text-only PDF is already small and may not shrink further, and our tool simply returns the original unchanged if it can't make it smaller. For a photo-heavy PDF, resizing the photos before you build the PDF is the more reliable fix. We don't promise an exact final size -- that depends on your file.",
+                ],
+            },
+            {
+                "heading": "Final checks before you submit",
+                "paragraphs": [
+                    "Make sure it is one PDF, that it opens cleanly, that the pages are in the right order and readable, and that it is under the portal's size limit. Open the finished file and scroll through it once. Everything you upload and every file we return is deleted from our server as soon as your download is ready.",
                 ],
             },
         ],

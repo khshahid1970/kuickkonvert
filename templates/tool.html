@@ -28,13 +28,13 @@
     <p class="tool-page-desc">{{ tool.intro }}</p>
 
     <div class="ad-slot ad-slot--tool">
-      <!-- Deliberately placed above the form, clearly separated from the
+      {# Deliberately placed above the form, clearly separated from the
            dropzone, Convert button, and any download result -- never
            adjacent to a functional control on this page.
            House message shown while no real AdSense ad is live -- see the
            .ad-slot-house comment in style.css, and the matching comment in
            index.html, for exactly how to swap this for a real ad once
-           approved. -->
+           approved. #}
       <div class="ad-slot-house">
         <span class="ad-slot-house-line ad-slot-house-line--main">Word, Excel, PowerPoint, images &amp; PDF &mdash; all in one place.</span>
       </div>
@@ -49,8 +49,8 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </span>
         <p class="dropzone-hint">Drag &amp; drop {{ 'files' if tool.multi else 'a file' }} here, or</p>
-        <label class="btn btn-secondary" for="file-input" id="file-input-label" tabindex="0">Choose {{ 'files' if tool.multi else 'file' }}</label>
-        <input type="file" id="file-input" name="file" accept="{{ tool.accept }}" {% if tool.multi %}multiple{% endif %} hidden>
+        <label class="btn btn-secondary" for="file-input" id="file-input-label" role="button" tabindex="0">Choose {{ 'files' if tool.multi else 'file' }}</label>
+        <input type="file" id="file-input" name="file" accept="{{ tool.accept }}" {% if tool.multi %}multiple{% endif %} aria-label="Choose {{ 'files' if tool.multi else 'file' }}" hidden>
       </div>
 
       <ul id="file-list" class="file-list"></ul>
@@ -78,11 +78,12 @@
 
       <button type="submit" class="btn btn-primary" id="convert-btn" disabled>Convert</button>
       <div id="status" class="status" role="status" aria-live="polite"></div>
+      <p class="convert-consent">This free tool is provided "as is". By clicking Convert you accept our <a href="{{ url_for('terms') }}">Terms of Service</a> and <a href="{{ url_for('privacy') }}">Privacy notice</a>. Always check your converted file against the original before you rely on it.</p>
     </form>
 
     {% if related_tools %}
-    <!-- Revealed by static/js/main.js only after a successful conversion,
-         so the suggestions never compete with the Convert button. -->
+    {# Revealed by static/js/main.js only after a successful conversion,
+         so the suggestions never compete with the Convert button. #}
     <div id="next-steps" class="next-steps" hidden>
       <p class="next-steps-title">You might also need:</p>
       <ul class="next-steps-list">

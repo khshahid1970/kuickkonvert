@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Google tag (gtag.js) -- Google Analytics 4, property created 2026-08-29.
+{# Google tag (gtag.js) -- Google Analytics 4, property created 2026-08-29.
      Loaded on the visitor's first tap, scroll or key press, or 3 seconds
      after the page has loaded, whichever comes first (changed 2026-10-08;
      before that it loaded at the window 'load' event). On phones the ~144 KiB
@@ -15,17 +15,21 @@
      after a download, long after the tag has loaded). gtag()/dataLayer are defined immediately so any
      gtag() call elsewhere still queues safely; the GA4 library drains the
      queue once it arrives (this queuing behaviour is documented by Google
-     for gtag.js). -->
-<!-- Google Ads conversion tracking (AW-18473004328), added 2026-09-28. It
+     for gtag.js). #}
+{# Google Ads conversion tracking (AW-18473004328), added 2026-09-28. It
      shares the single gtag.js loader below (Google documents one loader with
      one 'config' line per destination). The conversion itself is sent from
      static/js/main.js only after a file has actually downloaded.
      Consent Mode v2: for visitors in the EEA, UK and Switzerland every
      storage type defaults to 'denied' (no ad or analytics cookies; Google
-     receives only cookieless pings) because this site has no consent banner
-     yet. Everywhere else the defaults stay 'granted'. When a certified
-     consent banner is added (planned with AdSense), it will call
-     gtag('consent', 'update', ...) for visitors who agree. -->
+     receives only cookieless pings). Those visitors (consent_required, set
+     from Cloudflare's CF-IPCountry) are shown a consent banner: Accept calls
+     gtag('consent','update',...) to 'granted' and loads the tag + the
+     LaunchNest badge; Reject keeps 'denied' (cookieless pings only, no badge).
+     Until a choice is made, neither the tag nor the badge loads for them.
+     Everywhere else the defaults stay 'granted' and no banner is shown. For
+     AdSense ad serving in the EEA, a Google-certified CMP will be enabled in
+     AdSense before those ads go live. #}
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -46,6 +50,7 @@
   gtag('config', 'G-K0VJLC113K');
   gtag('config', 'AW-18473004328');
   (function () {
+    var CONSENT_REQUIRED = {{ 'true' if consent_required else 'false' }};
     var loaded = false;
     function loadGoogleTag() {
       if (loaded) return;
@@ -55,10 +60,45 @@
       s.src = 'https://www.googletagmanager.com/gtag/js?id=G-K0VJLC113K';
       document.head.appendChild(s);
     }
-    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) {
-      window.addEventListener(ev, loadGoogleTag, { once: true, passive: true });
-    });
-    window.addEventListener('load', function () { setTimeout(loadGoogleTag, 3000); });
+    function registerLazyLoad() {
+      ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) {
+        window.addEventListener(ev, loadGoogleTag, { once: true, passive: true });
+      });
+      window.addEventListener('load', function () { setTimeout(loadGoogleTag, 3000); });
+    }
+    function grantConsent() {
+      gtag('consent', 'update', {
+        'ad_storage': 'granted', 'ad_user_data': 'granted',
+        'ad_personalization': 'granted', 'analytics_storage': 'granted'
+      });
+    }
+    function loadBadge() {
+      var el = document.getElementById('launchnest-badge');
+      if (el && el.dataset && el.dataset.src && !el.getAttribute('src')) {
+        el.setAttribute('src', el.dataset.src);
+      }
+    }
+    function hideBanner() {
+      var b = document.getElementById('consent-banner');
+      if (b) b.hidden = true;
+    }
+    var stored = null;
+    try { stored = localStorage.getItem('kk_consent'); } catch (e) {}
+    // Exposed for the banner buttons (wired at the end of <body>).
+    window.__kkConsent = {
+      accept: function () { try { localStorage.setItem('kk_consent', 'granted'); } catch (e) {} grantConsent(); loadGoogleTag(); loadBadge(); hideBanner(); },
+      reject: function () { try { localStorage.setItem('kk_consent', 'denied'); } catch (e) {} loadGoogleTag(); hideBanner(); }
+    };
+    if (!CONSENT_REQUIRED) {
+      // Outside the EEA/UK/CH: granted by default -- lazy-load the tag + badge as before.
+      registerLazyLoad();
+      loadBadge();
+    } else if (stored === 'granted') {
+      grantConsent(); registerLazyLoad(); loadBadge();
+    } else if (stored === 'denied') {
+      registerLazyLoad();  // cookieless Consent Mode pings only; no badge
+    }
+    // else (consent required, no stored choice): wait for the banner; load nothing.
   })();
 </script>
 
@@ -71,9 +111,9 @@
 <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
 
-<!-- Open Graph / Twitter Card -- used when a link to this page is shared on
+{# Open Graph / Twitter Card -- used when a link to this page is shared on
      WhatsApp, Slack, LinkedIn, Facebook, X, etc. Reuses the page's own
-     title/description blocks so the preview always matches the page. -->
+     title/description blocks so the preview always matches the page. #}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KuickKonvert">
 {% if not is_error_page %}<meta property="og:url" content="{{ canonical_url|default(site_url ~ request.path) }}">{% endif %}
@@ -85,8 +125,8 @@
 <meta name="twitter:description" content="{{ self.description() }}">
 <meta name="twitter:image" content="{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}">
 
-<!-- Sitewide structured data. Page-specific structured data (e.g. a tool
-     page's breadcrumbs) is added via the structured_data block below. -->
+{# Sitewide structured data. Page-specific structured data (e.g. a tool
+     page's breadcrumbs) is added via the structured_data block below. #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -115,7 +155,7 @@
 </script>
 {% block structured_data %}{% endblock %}
 
-<!-- Google AdSense site connection -- publisher ID pub-2468332370767807,
+{# Google AdSense site connection -- publisher ID pub-2468332370767807,
      account created 2026-08-29, currently under Google's review.
 
      CHANGED 2026-08-31: switched from the JS <script> connector to Google's
@@ -146,12 +186,21 @@
      those <ins> units, each with its real, final size reserved in CSS
      before it goes live, and re-test PageSpeed again before treating that
      as done. A matching /ads.txt is served at the domain root via the
-     /ads.txt route in app.py -- unaffected by this change. -->
+     /ads.txt route in app.py -- unaffected by this change. #}
 <meta name="google-adsense-account" content="ca-pub-2468332370767807">
-<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script> -->
-<!-- ^ restore this <script> line (removing this comment wrapper) instead of the meta tag above when placing real ad units after approval. -->
+{# <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script> #}
+{# ^ restore this <script> line (removing this comment wrapper) instead of the meta tag above when placing real ad units after approval. #}
 </head>
 <body>
+{% if consent_required %}
+<div id="consent-banner" class="consent-banner" role="dialog" aria-label="Cookie consent" aria-live="polite">
+  <p class="consent-text">We use cookies to measure traffic and to measure and personalise ads. Accept to allow them, or reject to use only essential, cookieless measurement. See our <a href="{{ url_for('privacy') }}">Privacy notice</a>.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-secondary" id="consent-reject">Reject</button>
+    <button type="button" class="btn btn-primary" id="consent-accept">Accept</button>
+  </div>
+</div>
+{% endif %}
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="{{ url_for('index') }}">
@@ -229,13 +278,13 @@
           <a href="https://peerlist.io/kuickkonvert/project/kuick-konvert" target="_blank" rel="noopener">Peerlist</a> &middot;
           <a href="https://www.nxgntools.com/tools/shahid-iqbal" target="_blank" rel="noopener">NxGn Tools</a>
         </p>
-        <!-- LaunchNest badge: required for the free LaunchNest listing. Keep the
+        {# LaunchNest badge: required for the free LaunchNest listing. Keep the
              link exactly as LaunchNest's embed code (no rel="nofollow") or
              their verification fails. launchnest.io is allowed in img-src in
-             app.py's Content-Security-Policy so the image isn't blocked. -->
+             app.py's Content-Security-Policy so the image isn't blocked. #}
         <p class="footer-badges">
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">
-            <img src="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
+            <img id="launchnest-badge" {% if consent_required %}data-src{% else %}src{% endif %}="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
           </a>
         </p>
       </div>
@@ -260,12 +309,13 @@
           <li><a href="{{ url_for('privacy') }}">Privacy notice</a></li>
           <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
           <li><a href="{{ url_for('contact') }}">Contact us</a></li>
+          <li><a href="https://github.com/khshahid1970/kuickkonvert" target="_blank" rel="noopener">Source code (AGPL)</a></li>
         </ul>
       </div>
-      <!-- Follow us: official KuickKonvert accounts + email (added 7 Oct 2026).
+      {# Follow us: official KuickKonvert accounts + email (added 7 Oct 2026).
            Icons: Font Awesome Free 6.7.2 (fontawesome.com), CC BY 4.0 -- inline SVG,
            so no external request and no Content-Security-Policy change is needed.
-           Handles checked 7 Oct 2026 while signed in to each account. -->
+           Handles checked 7 Oct 2026 while signed in to each account. #}
       <div class="footer-col footer-social">
         <h3>Follow us</h3>
         <ul class="social-list">
@@ -283,12 +333,23 @@
       <a href="{{ url_for('privacy') }}">Privacy notice</a>
       <a href="{{ url_for('terms') }}">Terms</a>
     </div>
-    <!-- Trademark notice: makes clear KuickKonvert is independent of the
+    {# Trademark notice: makes clear KuickKonvert is independent of the
          brands whose file formats it converts (added 30 Sept 2026 for
-         Google Ads brand-clarity review). -->
+         Google Ads brand-clarity review). #}
     <p class="footer-credit">Microsoft, Word, Excel and PowerPoint are trademarks of the Microsoft group of companies. KuickKonvert is an independent service and is not affiliated with, endorsed or sponsored by Microsoft.</p>
   </div>
 </footer>
 <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+{% if consent_required %}
+<script nonce="{{ csp_nonce }}">
+  (function () {
+    var a = document.getElementById('consent-accept');
+    var r = document.getElementById('consent-reject');
+    if (a) a.addEventListener('click', function () { if (window.__kkConsent) window.__kkConsent.accept(); });
+    if (r) r.addEventListener('click', function () { if (window.__kkConsent) window.__kkConsent.reject(); });
+    try { if (localStorage.getItem('kk_consent')) { var b = document.getElementById('consent-banner'); if (b) b.hidden = true; } } catch (e) {}
+  })();
+</script>
+{% endif %}
 </body>
 </html>
