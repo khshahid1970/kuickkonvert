@@ -114,12 +114,42 @@ def _cmyk_to_srgb(im, icc_bytes):
     return im.convert("RGB")
 
 
+# Added 11 Oct 2026: keep sideways-stored phone photos upright in JPG to PDF.
+# Phones often store a portrait photo sideways plus an EXIF "Orientation"
+# flag. img2pdf turns such a page upright with /Rotate -- but it reads that
+# flag from the EXIF block, which F7 (_strip_jpeg_metadata) now removes for
+# privacy, so the photo came out sideways. We read the flag from the ORIGINAL
+# upload here and set the same /Rotate ourselves after img2pdf has run (the
+# picture data itself is untouched). Mirrored orientations (2, 4, 5, 7) are
+# left as they are, as img2pdf itself cannot express them with /Rotate.
+_EXIF_ROTATE = {3: 180, 6: 90, 8: 270}
+
+
+def _page_rotation(im) -> int:
+    try:
+        return _EXIF_ROTATE.get(im.getexif().get(0x0112), 0)
+    except Exception:
+        return 0
+
+
+def _apply_page_rotations(pdf_path: str, rotations: list) -> None:
+    import pikepdf
+    with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
+        for page, deg in zip(pdf.pages, rotations):
+            if deg:
+                page.obj["/Rotate"] = deg
+        pdf.save(pdf_path)
+
+
 def images_to_pdf(image_paths: list, out_path: str) -> str:
     """Combine one or more JPG/PNG images into a single PDF, in order.
 
-    img2pdf embeds JPEG files byte-for-byte and PNG data losslessly, so the
-    original upload is passed straight through whenever img2pdf supports its
-    colour mode (RGB, greyscale, black-and-white, CMYK). Only images img2pdf
+    img2pdf embeds JPEG data without re-encoding it and PNG data losslessly,
+    so the picture in the original upload is passed straight through whenever
+    img2pdf supports its colour mode (RGB, greyscale, black-and-white, CMYK).
+    A JPEG's metadata segments (EXIF incl. GPS, XMP, IPTC, comments) are
+    removed first (F7, _strip_jpeg_metadata); its compressed image data is
+    copied unchanged. Only images img2pdf
     can't embed as-is are rewritten first -- and always as lossless PNG:
 
     * transparent images (RGBA / LA / palette with transparency) are placed
@@ -131,9 +161,12 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
     """
     try:
         normalized = []
+        rotations = []  # page /Rotate for each image (see below)
         for p in image_paths:
             _reject_non_raster(p)
             with Image.open(p) as im:
+                # JPEG only: the case _strip_jpeg_metadata affects.
+                rotations.append(_page_rotation(im) if (im.format or "").upper() == "JPEG" else 0)
                 has_alpha = im.mode in ("RGBA", "LA") or (
                     im.mode == "P" and "transparency" in im.info
                 )
@@ -160,6 +193,8 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
 
         with open(out_path, "wb") as f:
             f.write(img2pdf.convert(normalized))
+        if any(rotations):
+            _apply_page_rotations(out_path, rotations)
         return out_path
     except UnidentifiedImageError as exc:
         raise ConversionError("One of the uploaded files is not a valid image.") from exc

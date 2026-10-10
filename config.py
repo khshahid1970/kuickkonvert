@@ -31,6 +31,24 @@ SITE_URL = "https://kuickkonvert.com"
 # Change this ONE date if the release moves to another day.
 RELEASE_DATE = "2026-10-10"
 RELEASE_DATE_TEXT = _date.fromisoformat(RELEASE_DATE).strftime("%-d %B %Y")
+# FIX_RELEASE_DATE = the day the follow-up fix release goes live (consent
+# banner v2 + "Cookie settings", test results in 4 guides, JPG to PDF
+# orientation fix + wording, JSON-LD and meta fixes, /healthz). The Privacy
+# notice is deliberately NOT part of it (wording on hold), so its "Last
+# updated" line and sitemap date stay on RELEASE_DATE.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) before you
+# commit, if it is not 11 Oct 2026. <<<
+# It dates ONLY the pages whose own content changes in that release:
+#   * the 4 guides given test results (what-is-a-heic-file,
+#     location-data-in-photos, what-is-a-webp-image,
+#     submitting-coursework-as-a-pdf) and the 2 guides whose JPG to PDF
+#     wording was corrected (jpg-vs-png, photos-to-one-pdf-jpg-to-pdf-tips):
+#     their "Updated" line, Article dateModified and sitemap <lastmod>;
+#   * the JPG to PDF tool page (its own "lastmod" key): wording corrected and
+#     sideways phone photos kept upright again.
+# RELEASE_DATE above is deliberately NOT moved: it also dates the Terms
+# "Effective date" and every tool page, which this release doesn't change.
+FIX_RELEASE_DATE = "2026-10-11"
 HOME_LASTMOD = RELEASE_DATE
 TOOLS_LASTMOD = RELEASE_DATE
 GUIDES_LINKS_LASTMOD = "2026-10-08"
@@ -44,6 +62,60 @@ STATIC_LASTMOD = {
     "privacy": RELEASE_DATE,
     "terms": RELEASE_DATE,
 }
+
+# ---- Consent (EEA / UK / Switzerland visitors only) ------------------------
+# Used by templates/base.html and static/js/consent.js for visitors whose
+# Cloudflare CF-IPCountry is in app.py's _CONSENT_REGIONS. Visitors elsewhere
+# get exactly the same pages as before this was added.
+#
+# CONSENT_VERSION: stored in each visitor's consent record (localStorage key
+# "kk_consent"). Change it (e.g. "2026-11-02.1") whenever the banner text,
+# the purposes or the list of tools covered changes materially: every
+# visitor whose record has a different version is asked again.
+CONSENT_VERSION = "2026-10-11.1"
+# CONSENT_MAX_AGE_DAYS: a stored choice older than this is ignored and the
+# banner is shown again. 365 is a common choice, NOT a legal requirement --
+# ADVISER DECISION (some regulators suggest re-asking sooner, e.g. after
+# 6-13 months).
+CONSENT_MAX_AGE_DAYS = 365
+# CONSENT_MODE_TYPE:
+#   "basic" (SHIPPED DEFAULT for the 11 Oct 2026 release -- owner rule: no
+#      published claim about limited/cookieless data transmission until it
+#      has been verified with the real Google tag). Strict PER CATEGORY:
+#      the Analytics tag (G-K0VJLC113K) is configured only with Analytics
+#      consent, the Google Ads tag (AW-18473004328) only with Advertising
+#      consent, and static/js/main.js sends GA4 events only with Analytics
+#      consent and the Ads conversion only with Advertising consent. With
+#      both refused, nothing at all is requested from Google.
+#   "advanced": after ANY choice both tags are configured and the library
+#      loads; refused categories stay 'denied' and Google Consent Mode
+#      governs what is still sent (cookieless pings). Kept for later; its
+#      banner sentence makes a claim that must first be verified with the
+#      real tag (evidence/REAL-TAG-TEST-PLAN.md, optional section).
+# Before any choice the tag is never loaded, in either mode.
+CONSENT_MODE_TYPE = "basic"
+# ADS_DATA_REDACTION: gtag('set', 'ads_data_redaction', true) on consent-region
+# pages. Per Google's documentation, when ad_storage is 'denied' ad click
+# identifiers in Google Ads / Floodlight network requests are redacted and
+# requests go through a cookieless domain; it has no effect when ad_storage
+# is 'granted'. url_passthrough is deliberately NOT enabled.
+ADS_DATA_REDACTION = True
+# LAUNCHNEST_CONSENT_REGIONS: what consent-region visitors see in place of the
+# LaunchNest badge image (an image from launchnest.io, which receives the
+# visitor's IP address when it loads):
+#   "text_link"   (default): a plain text link "Listed on LaunchNest" with the
+#                 same href -- no request to launchnest.io, whatever the choice;
+#   "advertising": the badge image, loaded only with Advertising consent.
+# Visitors outside the consent regions always get the image, as before.
+LAUNCHNEST_CONSENT_REGIONS = "text_link"
+
+# Fail safe: an unknown value falls back to the more private option.
+if CONSENT_MODE_TYPE not in ("advanced", "basic"):
+    CONSENT_MODE_TYPE = "basic"
+if LAUNCHNEST_CONSENT_REGIONS not in ("text_link", "advertising"):
+    LAUNCHNEST_CONSENT_REGIONS = "text_link"
+if not isinstance(CONSENT_MAX_AGE_DAYS, int) or CONSENT_MAX_AGE_DAYS < 1:
+    CONSENT_MAX_AGE_DAYS = 365
 
 # ---- Tool catalogue -------------------------------------------------------
 # Single source of truth for the homepage grid, each tool's page, and the
@@ -418,7 +490,7 @@ TOOL_CONTENT = {
     "jpg-to-pdf": {
         "h1": "JPG to PDF Converter - Photo to PDF",
         "intro": "Convert images to PDF online for free: turn a single JPG photo into a PDF, or merge JPG to PDF to combine several photos into one file. It's a quick way to turn pictures of documents, receipts, or whiteboards into one shareable PDF -- and PNG images work too.",
-        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want. Your JPG files are placed into the PDF exactly as uploaded -- they aren't re-compressed, so there's no extra quality loss. PNG files are embedded losslessly, and any transparent areas are placed on a white background.",
+        "good_to_know": "Images are combined into the PDF in the order you add them. You can remove a file from the list before converting if you added the wrong one, but there's no reorder option -- if you need a different order, remove all the files and re-add them in the order you want. The photo data in your JPG files goes into the PDF without being re-compressed, so there's no extra quality loss; only hidden details such as the location a photo was taken are removed. PNG files are embedded losslessly, and any transparent areas are placed on a white background.",
         "use_cases": [
             "Combining several photographed pages of a document into one PDF to email.",
             "Turning receipt photos into a single PDF for an expense claim.",
@@ -434,6 +506,10 @@ TOOL_CONTENT = {
         "related": ["png-to-pdf", "pdf-to-jpg", "merge-pdf"],
         "seo_title": "JPG to PDF - Image to PDF Converter Free | KuickKonvert",
         "meta_description": "Free image to PDF converter: convert JPG or PNG photos and pictures to PDF online, or combine several images into one PDF. No sign-up.",
+        # Own date (fix release): "Good to know" wording corrected and sideways
+        # phone photos now kept upright. Only this tool page changes, so
+        # TOOLS_LASTMOD (shared by every tool page) is left alone.
+        "lastmod": FIX_RELEASE_DATE,
     },
     "png-to-pdf": {
         "intro": "PNG to PDF combines one or more PNG images into a single PDF file, keeping the sharp edges and transparency-free areas PNG is known for.",
@@ -980,7 +1056,7 @@ GUIDES = [
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
         "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
         "published": "2026-09-14",
-        "updated": RELEASE_DATE,  # links to PNG to JPG / JPG to PNG added
+        "updated": FIX_RELEASE_DATE,  # JPG to PDF wording: no re-compression, metadata removed (was RELEASE_DATE: links to PNG to JPG / JPG to PNG added)
         "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png", "png-to-jpg", "jpg-to-png"],
         "sections": [
             {
@@ -1058,7 +1134,7 @@ GUIDES = [
                 "paragraphs": [
                     "PDF to PNG renders every page at 300 dpi and saves it losslessly -- the best choice for pages with text, tables or line drawings.",
                     "PDF to JPG renders every page at 300 dpi and saves it as a standard-quality JPG (quality 75). That keeps photo-heavy pages compact, but as our test shows, text-heavy pages are often smaller and sharper as PNG.",
-                    "[[jpg-to-pdf|JPG to PDF]] places your JPG files into the PDF exactly as uploaded -- byte for byte -- so there's no second round of compression and no extra quality loss. It also accepts PNG images, so photos and screenshots can go into one PDF.",
+                    "[[jpg-to-pdf|JPG to PDF]] copies the compressed photo data from your JPG files into the PDF without re-compressing it, so there's no second round of compression and no extra quality loss -- only hidden metadata such as the location is removed. It also accepts PNG images, so photos and screenshots can go into one PDF.",
                     "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
                     "[[png-to-jpg|PNG to JPG]] saves each image as a quality-90 JPG -- the right move for photos stored as PNG. Transparent areas become white, and screenshots or text pages may not get any smaller.",
                     "JPG to PNG saves a lossless copy of each JPG for sites and apps that require PNG. It can't restore detail the JPG already lost, and the file gets bigger.",
@@ -1375,14 +1451,14 @@ GUIDES = [
         "meta_description": "Combine phone photos into one PDF for an application or form: why photo PDFs get huge, why compression may not help, and our tested fix.",
         "dek": "Combining photos into one PDF is easy. Getting a PDF small enough for an upload portal, with sensibly sized pages, takes one extra step before you upload -- here's what our tests showed.",
         "published": "2026-10-05",
-        "updated": "2026-10-10",
+        "updated": FIX_RELEASE_DATE,  # JPG to PDF wording + measured sizes (was 2026-10-10)
         "related_tools": ["jpg-to-pdf", "compress-pdf", "merge-pdf"],
         "sections": [
             {
                 "heading": "How our JPG to PDF tool builds the PDF",
                 "paragraphs": [
                     "Our [[jpg-to-pdf|photo to PDF converter]] puts each photo on its own page, in the order of the file list. Files are added to the end of the list each time you choose more, and each one has a Remove button, so the easiest way to get the order right is to add the photos one at a time.",
-                    "Your JPGs are placed into the PDF exactly as uploaded, byte for byte. There is no second round of compression, so no quality is lost -- but it also means the PDF ends up about the same size as all your photos added together. In our test, three images totalling 14,124 KB produced a 14,126 KB PDF.",
+                    "Your JPGs go into the PDF without being re-compressed: the compressed photo data is copied across as it is, and only hidden metadata such as the location is removed (more on that below). There is no second round of compression, so no quality is lost -- but it also means the PDF ends up about the same size as all your photos added together. In our test, three images totalling 9,693 KB produced a 9,694 KB PDF.",
                     "Photos taken with the phone held upright are shown upright. Phones often store such photos sideways with a tag telling viewers how to turn them, and our tool follows that tag: our sideways-stored test photo was set to display upright in the PDF.",
                 ],
             },
@@ -1397,7 +1473,7 @@ GUIDES = [
                 "heading": "Why the pages can come out enormous",
                 "paragraphs": [
                     "The page size of each PDF page is worked out from the photo's pixel count and its dpi label (dots per inch) -- the setting that says how big the picture should be when printed. Photos from cameras and phones are often labelled 72 dpi, or have no dpi label at all.",
-                    "In our test, a 12-megapixel photo (4032 x 3024 pixels) labelled 72 dpi became a page of 56 x 42 inches -- about 142 x 107 cm, far larger than A4. The same photo with no dpi label became a 42 x 31.5 inch page. A scan saved at 300 dpi by contrast came out at its true size, 8.3 x 11.7 inches (A4).",
+                    "In our test, a 12-megapixel photo (4032 x 3024 pixels) labelled 72 dpi became a page of 56 x 42 inches -- about 142 x 107 cm, far larger than A4. The same photo with no dpi label -- or with its dpi label stored only in the photo's hidden EXIF data, which our converter removes along with the location -- became a 42 x 31.5 inch page. A scan saved at 300 dpi by contrast came out at its true size, 8.3 x 11.7 inches (A4).",
                     "Most people won't notice, because PDF readers zoom to fit the screen. But a reviewer who prints the file, or a portal that checks page size, may.",
                 ],
             },
@@ -1789,6 +1865,7 @@ GUIDES = [
         "meta_description": "HEIC is the format iPhones use for photos. Why it won't open on some PCs, forms and Android phones, how to switch it off, and how to convert HEIC to JPG.",
         "dek": "If your iPhone photos arrive as .HEIC and won't open on a Windows PC, an Android phone or an upload form, here is what the format is, why Apple uses it, and the simplest ways to view or convert it.",
         "published": "2026-10-10",
+        "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added
         "related_tools": ["heic-to-jpg", "jpg-to-pdf"],
         "sections": [
             {
@@ -1815,14 +1892,53 @@ GUIDES = [
             {
                 "heading": "Converting the HEIC photos you already have",
                 "paragraphs": [
-                    "For photos already saved as HEIC, our [[heic-to-jpg|HEIC to JPG converter]] turns them into ordinary JPGs in the browser, up to 20 at a time and up to 65 megapixels each. From our own tests in October 2026, running the same code the tool uses: the converted JPG keeps the date the photo was taken and the camera make and model, and drops GPS location and other hidden data; a photo stored sideways is turned the right way up; and for a HEIC that holds several images, the tool uses the main (primary) image Apple marked, not whichever frame happens to be first.",
-                    "If you need those photos as a single document afterwards -- for a form or an application -- convert them to JPG and then use our [[jpg-to-pdf|JPG to PDF converter]].",
+                    "For photos already saved as HEIC, our [[heic-to-jpg|HEIC to JPG converter]] turns them into ordinary JPGs in the browser, up to 20 at a time and up to 65 megapixels each. Several photos come back together in one ZIP file, each JPG keeping its own file name.",
+                    "We tested what the converter keeps and removes, using the same code the tool runs (October 2026; see How we tested below). The JPG keeps the date taken, the camera make and model and the colour profile, and drops the GPS location and other hidden details. A photo stored sideways came out upright, and for a HEIC holding several images the tool converted the main (primary) image the file marks, not simply the first one stored.",
                 ],
+                "table": {
+                    "caption": "What our HEIC to JPG converter did with our test files (October 2026)",
+                    "headers": ["What we tested", "Result"],
+                    "rows": [
+                        ["GPS location", "Removed"],
+                        ["Owner name, serial number, software version", "Removed"],
+                        ["Date and time taken, camera make and model", "Kept"],
+                        ["Colour profile", "Kept"],
+                        ["Photo stored sideways (4032 x 3024 plus a rotation instruction)", "Upright JPG, 3024 x 4032"],
+                        ["One HEIC holding three images, the second marked as main", "The second (main) image was converted"],
+                        ["Three HEIC files at once", "One ZIP with three JPGs, original names kept"],
+                    ],
+                },
             },
             {
                 "heading": "Will the JPG be bigger than the HEIC?",
                 "paragraphs": [
-                    "Usually, yes. Because HEVC compression is newer and more efficient than JPEG, the same picture saved as JPEG takes more space -- in our October 2026 tests the JPG came out larger than the HEIC every time. That is normal and the picture quality is kept; it simply reflects the older format. If file size matters for an upload, resize the photo before converting, and see our guide on turning photos into one PDF for how to keep a photo PDF small.",
+                    "Usually, yes. Because HEVC compression is newer and more efficient than JPEG, the same picture saved as JPEG takes more space. Every single-image HEIC we tested produced a larger JPG: 12% and 26% larger for two 12-megapixel photo-like images, and almost three times larger for a flat-colour, screenshot-style image, which HEIC compresses especially well.",
+                    "The one JPG that came out smaller was from the HEIC holding three images -- simply because the JPG contains only one of them. The converter saves at quality 90 and full size, so the picture is kept; the extra size reflects the older format. If file size matters for an upload, resize the photo before converting.",
+                ],
+                "table": {
+                    "caption": "The same test images as HEIC and as JPG (our tests, October 2026)",
+                    "headers": ["Test image", "Pixels", "HEIC", "JPG from our tool", "Difference"],
+                    "rows": [
+                        ["Photo-like image 1", "4032 x 3024", "1,715 KB", "1,925 KB", "12% larger"],
+                        ["Photo-like image 2", "3024 x 4032", "1,587 KB", "1,994 KB", "26% larger"],
+                        ["Screenshot-style graphic", "1290 x 2796", "33 KB", "98 KB", "About 2.9 times larger"],
+                        ["HEIC holding three images", "1200 x 900 each", "64 KB (all three)", "62 KB (main image only)", "Smaller - only one image kept"],
+                    ],
+                    "note": "Computer-generated test images, not photos taken on an iPhone, so your own photos will give different sizes.",
+                },
+            },
+            {
+                "heading": "Putting converted photos into one PDF",
+                "paragraphs": [
+                    "If you need those photos as a single document -- for a form or an application -- convert them to JPG and then use our [[jpg-to-pdf|JPG to PDF converter]].",
+                    "Expect large pages. The converted JPG carries no print-size (dpi) setting, so JPG to PDF sizes each page as if the photo were printed at 96 dpi: in our test, a 3024 x 4032 photo converted this way became a 31.5 x 42 inch page (80 x 107 cm). PDF readers zoom to fit, so it looks normal on screen; if page size or file size matters, see our guide on turning photos into one PDF.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We made the test files ourselves rather than on an iPhone: computer-generated pictures with fine, photo-like detail, encoded as HEIC with the open-source libheif library (through pillow-heif 1.8, using its x265 encoder at default quality). We wrote test location, date, camera, owner-name and serial-number details into them, stored one sideways with a HEIF rotation instruction, and packed three different images into one file with the second marked as main.",
+                    "Each file was converted by the same code our HEIC to JPG tool runs, in a test copy of the site with Python 3.11, Pillow 12.3.0 and pi-heif 1.4.0 -- the versions the live site uses -- and the results were read back with Pillow. The tests ran on our own test machine, not on the live server.",
                 ],
             },
         ],
@@ -1831,9 +1947,10 @@ GUIDES = [
         "slug": "location-data-in-photos",
         "title": "Can a Photo Show Where It Was Taken? Location Data, and How to Remove It",
         "seo_title": "Location Data in Photos: Remove It Before Sharing | KuickKonvert",
-        "meta_description": "Phone photos can carry the GPS spot where they were taken. How to check, how to stop your phone adding it, and how our converters strip it -- tested October 2026.",
+        "meta_description": "Phone photos can carry the GPS spot where they were taken. How to check, stop your phone adding it, and which of our tools strip it -- tested October 2026.",
         "dek": "Many phone photos quietly record the exact place they were taken. Here is what that hidden data is, how to see it, and how to remove it before you share a picture or upload it to a form.",
         "published": "2026-10-10",
+        "updated": FIX_RELEASE_DATE,  # test results table + PDF tools + "How we tested" added
         "related_tools": ["heic-to-jpg", "webp-to-jpg", "png-to-jpg", "jpg-to-pdf"],
         "sections": [
             {
@@ -1856,16 +1973,45 @@ GUIDES = [
                 ],
             },
             {
-                "heading": "How our tools remove it (tested October 2026)",
+                "heading": "How our image tools remove it (tested October 2026)",
                 "paragraphs": [
-                    "Our image converters -- [[heic-to-jpg|HEIC to JPG]], [[webp-to-jpg|WEBP to JPG]], [[png-to-jpg|PNG to JPG]] and JPG to PNG -- keep only the date taken and the camera make and model, and drop GPS location and other hidden data. We confirmed this in our own tests: a photo carrying GPS came out of the converter with the location gone and only the harmless date and camera fields left.",
-                    "Our [[jpg-to-pdf|JPG to PDF converter]] now does the same thing as it builds the PDF: it removes the hidden EXIF data, including any GPS location, from each JPEG without changing the picture itself, so the place a photo was taken is not carried into the PDF either. (One aside: taking a screenshot of a photo also drops the original location data, which is why screenshots are safe to share.)",
+                    "Our image converters -- [[heic-to-jpg|HEIC to JPG]], [[webp-to-jpg|WEBP to JPG]], [[png-to-jpg|PNG to JPG]] and [[jpg-to-png|JPG to PNG]] -- keep only the date taken and the camera make and model, and drop GPS location and other hidden data. We tested each one with a file carrying test GPS coordinates, an owner name, a serial number and a software version: every time, only the date and the camera make and model were left.",
+                    "Our [[jpg-to-pdf|JPG to PDF converter]] goes further as it builds the PDF: it removes the hidden EXIF data from each JPEG entirely -- the GPS location, and the date and camera details too -- without re-compressing the picture. In our tests the location was also gone when a JPG carried it a second way, in an XMP block, and when a PNG with location data was turned into a PDF with either JPG to PDF or PNG to PDF. (One aside: taking a screenshot of a photo also drops the original location data, which is why screenshots are safe to share.)",
+                ],
+                "table": {
+                    "caption": "Location data after each of our tools (our tests, October 2026)",
+                    "headers": ["Tool", "Test file", "Location in the result?", "What else was left"],
+                    "rows": [
+                        ["HEIC to JPG", "HEIC photo with GPS", "No - removed", "Date taken, camera make and model"],
+                        ["WEBP to JPG", "WEBP image with GPS", "No - removed", "Date taken, camera make and model"],
+                        ["PNG to JPG", "PNG image with GPS", "No - removed", "Date taken, camera make and model"],
+                        ["JPG to PNG", "JPG with GPS (in EXIF and XMP)", "No - removed", "Date taken, camera make and model"],
+                        ["JPG to PDF", "The same JPG", "No - removed", "No photo details at all"],
+                        ["JPG to PDF and PNG to PDF", "PNG image with GPS", "No - removed", "No photo details at all"],
+                        ["Merge PDF and Rotate PDF", "PDF made elsewhere, photo inside still carrying GPS", "Yes - kept", "Everything, unchanged"],
+                        ["Compress PDF, Screen or eBook", "The same kind of PDF, photo at 300 dpi", "No - photo was re-saved", "-"],
+                        ["Compress PDF, Printer", "The same PDF", "Yes - kept", "Original returned, as it couldn't be made smaller"],
+                    ],
+                },
+            },
+            {
+                "heading": "PDFs made somewhere else",
+                "paragraphs": [
+                    "Our PDF tools work differently from the image tools. Merge PDF and Rotate PDF copy the pictures on each page across without re-saving them, so if a PDF was made by another app that left a photo's location inside it, the location is still there afterwards -- our test PDF kept it through both.",
+                    "Compress PDF isn't a reliable way to remove it either. It removed the location from our 300-dpi test photo on Screen and eBook, because those levels re-save the photo at a lower resolution. But when a file can't be made smaller -- on Printer, and on every level when we placed the same photo at 72 dpi -- the tool hands back your original file, location included. If you're not sure where a PDF's photos came from, rebuild it from the original pictures with JPG to PDF.",
                 ],
             },
             {
                 "heading": "A simple routine before sharing",
                 "paragraphs": [
-                    "If you are about to post a photo publicly or send it to someone you don't know well, run it through one of our converters first (or, if you are making a document, let JPG to PDF strip it), then check the file's Properties to confirm no GPS remains. Your upload and the converted file are deleted from our server as soon as your download is ready.",
+                    "If you are about to post a photo publicly or send it to someone you don't know well, run it through one of our image converters first (or, if you are making a document, let JPG to PDF strip it), then check the file's Properties to confirm no GPS remains. Don't rely on Merge, Rotate or Compress to remove it. Your upload and the converted file are deleted from our server as soon as your download is ready.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We created the test images ourselves -- computer-generated pictures, not real photos -- and wrote the same test details into each: GPS coordinates for an arbitrary point, a date, a camera make and model, an owner name, a serial number and a software version (one JPG also carried the location in an XMP block). For the PDF tools we used a PDF built with a general-purpose PDF library that keeps photo metadata, standing in for a PDF from another app.",
+                    "Every file went through the same code our tools run, in a test copy of the site (Python 3.11, Pillow 12.3.0 and pi-heif 1.4.0, as on the live site; Ghostscript 10.02 for Compress PDF). We read the results back with Pillow and pikepdf, checking every picture inside each PDF for EXIF and XMP data. The tests ran on our own test machine, not on the live server.",
                 ],
             },
         ],
@@ -1877,12 +2023,14 @@ GUIDES = [
         "meta_description": "WEBP is Google's web image format. Why pictures saved from websites are often .webp, what it does well, and how to convert WEBP to JPG -- tested October 2026.",
         "dek": "Saved a picture from a website and got a .webp file that won't open in your photo app or upload to a form? Here is what WEBP is, why sites use it, and how to convert it.",
         "published": "2026-10-10",
+        "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added
         "related_tools": ["webp-to-jpg", "jpg-to-pdf"],
         "sections": [
             {
                 "heading": "What WEBP is",
                 "paragraphs": [
                     "WEBP (pronounced 'weppy', file extension .webp) is an image format developed by Google specifically for the web, first released in 2010. It can compress pictures either with some quality loss (like JPEG) or losslessly (like PNG), and it also supports transparency and animation. At a similar quality it is usually smaller than JPEG or PNG, which saves bandwidth -- the reason so many websites now serve their images as WEBP.",
+                    "Both kinds use the same .webp extension, so you can't tell from the file name whether a WEBP is lossy or lossless. As our tests below show, that matters when you convert it.",
                 ],
             },
             {
@@ -1895,13 +2043,51 @@ GUIDES = [
             {
                 "heading": "Converting WEBP to JPG",
                 "paragraphs": [
-                    "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs in your browser, up to 20 at a time. From our tests in October 2026: a still WEBP becomes an ordinary JPG; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
+                    "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs in your browser, up to 20 at a time, at full size and quality 90. From our tests in October 2026: a still WEBP becomes an ordinary JPG with the same width and height; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
+                    "Hidden photo details are handled the same way as in our other image converters. A test WEBP carrying GPS location came out without it, while the date taken and the camera make and model were kept.",
                 ],
+                "table": {
+                    "caption": "What happened to our test WEBP files (October 2026)",
+                    "headers": ["Test file", "Result"],
+                    "rows": [
+                        ["Logo on a transparent background (600 x 600)", "Background became white; the logo's own colours were unchanged"],
+                        ["Animated WEBP, three frames (red, green, blue)", "One still JPG of the first (red) frame"],
+                        ["Photo-like image with GPS, date and camera details", "GPS removed; date taken and camera make and model kept"],
+                        ["Every test file", "JPG had the same width and height as the WEBP"],
+                    ],
+                },
             },
             {
                 "heading": "Will the JPG be larger?",
                 "paragraphs": [
-                    "Often, yes -- because WEBP is more efficient than JPEG, the same picture as a JPG can be bigger. In our tests a 93 KB web graphic became a 451 KB JPG, while a detailed photographic image stayed about the same size (around 1 MB either way). The quality is kept; the size simply reflects the older format. If you then need the images as one document, use our [[jpg-to-pdf|JPG to PDF converter]].",
+                    "It depends on how hard the WEBP was compressed. Lossy WEBPs saved at an ordinary quality setting (we used 80, the default in Pillow, the imaging library our converter uses) got bigger as quality-90 JPGs in our tests: a photo-like image doubled in size, and a flat-colour banner with text grew about 2.4 times. Flat graphics stored losslessly grew even more -- about 7 to 8 times for our banner and logo -- because lossless WEBP compresses large plain areas extremely well.",
+                    "A WEBP saved at very high quality, or losslessly, can go the other way: the same photo-like picture saved as a quality-95 WEBP got 42% smaller as a JPG, and from a lossless WEBP the JPG was about a ninth of the size. Either way the JPG is saved at full size and quality 90, where differences are hard to see; the change in file size mostly reflects how tightly the WEBP had been compressed.",
+                ],
+                "table": {
+                    "caption": "File sizes: WEBP and the JPG our tool made from it (October 2026)",
+                    "headers": ["Test image", "WEBP", "JPG", "Change"],
+                    "rows": [
+                        ["Photo-like, 1600 x 1200, lossy quality 80", "133 KB", "264 KB", "About 2 times larger"],
+                        ["Same picture, lossy quality 95", "632 KB", "370 KB", "42% smaller"],
+                        ["Same picture, lossless", "3,221 KB", "366 KB", "About a ninth of the size"],
+                        ["Banner with text, 1200 x 630, lossy quality 80", "34 KB", "83 KB", "About 2.4 times larger"],
+                        ["Same banner, lossless", "11 KB", "82 KB", "About 7.7 times larger"],
+                        ["Logo with transparency, 600 x 600, lossless", "3 KB", "22 KB", "About 7 times larger"],
+                    ],
+                    "note": "Computer-generated test images; your own images will give different numbers.",
+                },
+            },
+            {
+                "heading": "After converting",
+                "paragraphs": [
+                    "If a site or form has a file-size limit and the JPG is too big, resize the image first. If you then need the images as one document, use our [[jpg-to-pdf|JPG to PDF converter]]. Your upload and the JPG are deleted from our server as soon as your download is ready.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We generated the test images ourselves with Pillow, the imaging library our converter uses: a photo-like picture with fine detail saved as lossy WEBP at quality 80 and 95 and as lossless WEBP, a flat-colour banner with text, a logo on a transparent background, a three-frame animation, and a photo-like image carrying test GPS, date and camera details.",
+                    "Each went through the same code as our WEBP to JPG tool, in a test copy of the site using Python 3.11 and Pillow 12.3.0 -- the version the live site uses -- and we measured the results with Pillow. The tests ran on our own test machine, not on the live server.",
                 ],
             },
         ],
@@ -1910,40 +2096,75 @@ GUIDES = [
         "slug": "submitting-coursework-as-a-pdf",
         "title": "Submitting Coursework as a PDF: A Checklist That Portals Accept",
         "seo_title": "Submit Coursework as One PDF: A Checklist | KuickKonvert",
-        "meta_description": "Turn an assignment into one PDF a submission portal will accept: convert Word, add scanned or photographed pages, combine them in order, and keep it under the limit.",
+        "meta_description": "Turn an assignment into one PDF a submission portal will accept: convert Word, add scanned or photographed pages, combine them in order and keep it small.",
         "dek": "Most university and college portals want a single PDF, under a size limit, that opens cleanly. Here is a tested, step-by-step way to get there from a Word file, scanned pages, or phone photos.",
         "published": "2026-10-10",
+        "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added
         "related_tools": ["word-to-pdf", "merge-pdf", "compress-pdf", "jpg-to-pdf", "heic-to-jpg"],
         "sections": [
             {
                 "heading": "Start from the right source file",
                 "paragraphs": [
-                    "If your work is in Word, convert it with our [[word-to-pdf|Word to PDF converter]] (it takes both .doc and .docx). The PDF keeps your text as real, selectable text, and Heading styles become bookmarks. One thing to watch is fonts: common fonts such as Calibri and Arial keep your layout and page breaks, while some newer fonts -- including Aptos, Microsoft 365's newer default -- can make text rewrap. If the layout matters, see our guide on why a PDF's layout sometimes shifts, and check the PDF before you submit.",
+                    "If your work is in Word, convert it with our [[word-to-pdf|Word to PDF converter]] (it takes both .doc and .docx). The PDF keeps your text as real, selectable text, and Heading styles become bookmarks. In our test, a five-page essay with four headings in Word's Heading 1 style became a 26 KB PDF with selectable text on every page and four bookmarks.",
+                    "One thing to watch is fonts: common fonts such as Calibri and Arial keep your layout and page breaks, while some newer fonts -- including Aptos, Microsoft 365's newer default -- can make text rewrap. If the layout matters, see our guide on why a PDF's layout sometimes shifts, and check the PDF before you submit.",
                 ],
             },
             {
                 "heading": "Handwritten or photographed pages",
                 "paragraphs": [
                     "For handwritten answers or a page you can only photograph, take a clear, well-lit picture of each page. If the photos are iPhone HEIC files or web WEBP files, convert them to JPG first (our [[heic-to-jpg|HEIC to JPG]] tool handles iPhone photos), then combine them with our [[jpg-to-pdf|JPG to PDF converter]], adding them one at a time so the page order is right.",
-                    "Photo PDFs can come out very large, because each page is a full-resolution picture. If yours is too big, resize the photos before converting -- our guide on turning photos into one PDF shows how and why Compress PDF alone often can't shrink them.",
+                    "Expect very large pages. JPG to PDF sizes each page from the photo's resolution (dpi) label, or assumes 96 dpi when it finds none. In our tests a 3024 x 4032 phone-style photo of a page became a 42 x 56 inch page (about 107 x 142 cm) when labelled 72 dpi, or 31.5 x 42 inches when its label was stored only in the hidden EXIF data our tool removes; a page scanned at 300 dpi came out at true A4 size. PDF readers zoom to fit, so this looks normal on screen, but it can matter if someone prints the file or a portal checks page size.",
+                    "Photo PDFs can also come out very large in file size, because each page is a full-resolution picture. If yours is too big, resize the photos before converting -- our guide on turning photos into one PDF shows how and why Compress PDF alone often can't shrink them.",
                 ],
             },
             {
                 "heading": "Combine everything into one PDF",
                 "paragraphs": [
                     "If your submission is in pieces -- a cover sheet, the main document, an appendix of photos -- put them in the required order and join them with our [[merge-pdf|Merge PDF tool]]. Adding files one at a time is the simplest way to control the order.",
+                    "We checked the order both ways, and the merged file always followed the order the files were added. Each page keeps its own size, so our merged file mixed US Letter text pages, 42 x 56 inch photo pages and an A4 scan, and the essay's four bookmarks were not carried over -- a merge doesn't keep them.",
                 ],
+                "table": {
+                    "caption": "Our test submission, piece by piece (October 2026)",
+                    "headers": ["Part", "Made with", "Pages", "Page size in the PDF"],
+                    "rows": [
+                        ["Essay in Word, with Heading styles", "Word to PDF", "5", "8.5 x 11 in (US Letter, as set in the document)"],
+                        ["Two phone photos of handwritten pages", "JPG to PDF", "2", "42 x 56 in each (photos labelled 72 dpi)"],
+                        ["One page scanned at 300 dpi", "JPG to PDF (same file)", "1", "21.0 x 29.7 cm (A4)"],
+                        ["Everything joined", "Merge PDF", "8", "Each page kept its own size; bookmarks not kept"],
+                    ],
+                },
             },
             {
                 "heading": "Get under the size limit",
                 "paragraphs": [
-                    "If the portal has a maximum file size, try our [[compress-pdf|Compress PDF tool]]. It helps most when the PDF contains scanned pages or photos; a text-only PDF is already small and may not shrink further, and our tool simply returns the original unchanged if it can't make it smaller. For a photo-heavy PDF, resizing the photos before you build the PDF is the more reliable fix. We don't promise an exact final size -- that depends on your file.",
+                    "If the portal has a maximum file size, try our [[compress-pdf|Compress PDF tool]]. How much it helps depends on what is in the file, as our four test PDFs show.",
+                    "Scanned pages shrank dramatically: three pages scanned at 300 dpi went from 7,657 KB to 685 KB on eBook and 276 KB on Screen. Pages scanned at 200 dpi only shrank on Screen, because eBook reduces only images above 225 dpi and Printer doesn't reduce resolution at all. Our text-only essay was already small at 26 KB and lost only a few kilobytes.",
+                    "Photographed pages are the trap. In our combined PDF, compression shrank only the scanned page; the two phone photos were not reduced at all, because on a 42-inch-wide page a 3024-pixel photo is only 72 dpi -- below every level's threshold. For a photo-heavy PDF, resizing the photos before you build the PDF is the more reliable fix. We can't promise a final size, and if Compress PDF can't make a file smaller, you get your original back unchanged.",
+                    "Check readability after compressing. On Screen, our 300-dpi scan was reduced to 72 dpi: still readable on screen, but visibly blockier when zoomed in. eBook reduced it to 150 dpi and looked clean, so try eBook first.",
                 ],
+                "table": {
+                    "caption": "Compress PDF on four test PDFs (our tests, October 2026)",
+                    "headers": ["Test PDF", "Original", "Screen", "eBook", "Printer"],
+                    "rows": [
+                        ["Five-page essay from Word (text only)", "25.7 KB", "22.2 KB (86%)", "22.2 KB (86%)", "25.2 KB (98%)"],
+                        ["Three pages scanned at 300 dpi", "7,657 KB", "276 KB (3.6%)", "685 KB (8.9%)", "Not reduced - original returned"],
+                        ["Three pages scanned at 200 dpi", "3,523 KB", "247 KB (7.0%)", "Not reduced - original returned", "Not reduced - original returned"],
+                        ["Two phone photos of pages plus one 300-dpi scan", "9,694 KB", "7,222 KB (74%)", "7,363 KB (76%)", "Not reduced - original returned"],
+                    ],
+                    "note": "In the last PDF, only the scanned page shrank; the two photo pages were not reduced at any level.",
+                },
             },
             {
                 "heading": "Final checks before you submit",
                 "paragraphs": [
-                    "Make sure it is one PDF, that it opens cleanly, that the pages are in the right order and readable, and that it is under the portal's size limit. Open the finished file and scroll through it once. Everything you upload and every file we return is deleted from our server as soon as your download is ready.",
+                    "Make sure it is one PDF, that it opens cleanly, that the pages are upright, in the right order and readable, and that it is under the portal's size limit. Open the finished file and scroll through it once. Everything you upload and every file we return is deleted from our server as soon as your download is ready.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We built a test submission from computer-generated material: a five-page essay written with the python-docx library (Calibri as the font, with Heading styles), two 3024 x 4032 'phone photos' of text pages labelled 72 dpi, and A4 text pages made to look scanned at 300 and 200 dpi. LibreOffice used the metric-compatible Carlito font in place of Calibri; Carlito is also installed on our live server.",
+                    "Each step used the same code as our Word to PDF, JPG to PDF, Merge PDF and Compress PDF tools, run in a test copy of the site on our own test machine (LibreOffice 24.2 and Ghostscript 10.02 there; the live server's versions may differ slightly). We measured page sizes, page order, bookmarks and file sizes with pikepdf and pypdf.",
                 ],
             },
         ],

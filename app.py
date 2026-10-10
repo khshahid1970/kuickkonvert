@@ -36,7 +36,8 @@ from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
     HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, STATIC_LASTMOD,
-    RELEASE_DATE_TEXT,
+    RELEASE_DATE_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
+    ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
 from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_temp
 from converters.isolate import run_isolated, JobFailed
@@ -269,7 +270,19 @@ _CONSENT_REGIONS = frozenset({
 @app.context_processor
 def _inject_consent_required():
     country = (request.headers.get("CF-IPCountry") or "").upper()
-    return {"consent_required": country in _CONSENT_REGIONS}
+    required = country in _CONSENT_REGIONS
+    # consent_cfg (11 Oct 2026): settings for the consent banner / consent.js,
+    # see the "Consent" block in config.py. Only used when consent_required.
+    return {
+        "consent_required": required,
+        "consent_cfg": {
+            "version": CONSENT_VERSION,
+            "maxAgeDays": CONSENT_MAX_AGE_DAYS,
+            "mode": CONSENT_MODE_TYPE,
+            "badge": LAUNCHNEST_CONSENT_REGIONS,
+            "redaction": bool(ADS_DATA_REDACTION),
+        } if required else None,
+    }
 
 # --- Rate limiting / abuse protection -------------------------------------
 # Anonymous, no-login uploads are an obvious target for scripted abuse (mass
@@ -322,7 +335,9 @@ def _ip_kind(value):
 @app.before_request
 def _log_proxy_shape_once():
     global _proxy_shape_logged
-    if _proxy_shape_logged:
+    if _proxy_shape_logged or request.path == "/healthz":
+        # /healthz: Render's internal health probe doesn't come through
+        # Cloudflare, so it would log an unrepresentative shape.
         return
     _proxy_shape_logged = True
     try:
@@ -910,6 +925,22 @@ def favicon():
         mimetype="image/vnd.microsoft.icon",
     )
     response.headers["Cache-Control"] = "public, max-age=604800"
+    return response
+
+
+# Health check for Render (added 11 Oct 2026). After deploying, set Render's
+# "Health Check Path" to /healthz. Deliberately tiny: no template, no
+# database, no file access -- if the worker can answer this, it is up.
+# Exempt from the fair-use limiter (Render polls it often, always from the
+# same internal address), never cached, kept out of search results
+# (X-Robots-Tag) and out of the sitemap, and skipped by the once-per-worker
+# proxy-shape log below so a health probe never becomes the logged sample.
+@app.route("/healthz")
+@limiter.exempt
+def healthz():
+    response = Response("ok", mimetype="text/plain")
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Robots-Tag"] = "noindex"
     return response
 
 

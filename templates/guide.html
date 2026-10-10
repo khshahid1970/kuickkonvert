@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ guide.seo_title }}{% endblock %}
 {% block description %}{{ guide.meta_description }}{% endblock %}
+{# Breadcrumb values from config.py go through tojson (11 Oct 2026, review
+    F34): plain {{ }} HTML-escaped an apostrophe to &#39;, which JSON-LD
+    readers take literally ("What&#39;s ..."). tojson writes a valid JSON
+    string with its own quotes. #}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -9,7 +13,7 @@
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
     {"@type": "ListItem", "position": 2, "name": "Guides", "item": "{{ site_url }}/guides"},
-    {"@type": "ListItem", "position": 3, "name": "{{ guide.title }}", "item": "{{ canonical_url }}"}
+    {"@type": "ListItem", "position": 3, "name": {{ guide.title|tojson }}, "item": {{ canonical_url|tojson }}}
   ]
 }
 </script>

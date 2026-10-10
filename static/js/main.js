@@ -45,8 +45,23 @@
   // if gtag is absent or blocked by the visitor. The Google Ads "conversion"
   // event below is deliberately left exactly as it was (fired after download),
   // so Ads bidding is not disturbed.
+  // Consent regions, basic mode (added 11 Oct 2026): static/js/consent.js
+  // exposes a frozen window.__kkConsent ({mode, current()}). In "basic" mode
+  // a GA4 event is sent only with Analytics consent and the Google Ads
+  // conversion only with Advertising consent. Everywhere else this returns
+  // true, so behaviour is exactly as before: non-consent regions (whose
+  // unchanged head script defines only a legacy __kkConsent {accept, reject}
+  // with no "mode") and "advanced" mode.
+  function consentAllows(category) {
+    const c = window.__kkConsent;
+    if (!c || c.mode !== "basic") return true;
+    const cur = typeof c.current === "function" ? c.current() : null;
+    return !!(cur && cur[category]);
+  }
+
   function ga4(name, params) {
     if (typeof window.gtag !== "function") return;
+    if (!consentAllows("analytics")) return;
     const payload = { send_to: "G-K0VJLC113K", tool: slug };
     if (params) Object.assign(payload, params);
     window.gtag("event", name, payload);
@@ -62,6 +77,10 @@
       if (m.indexOf("valid pdf") !== -1 || m.indexOf("damaged") !== -1 ||
           m.indexOf("could not read") !== -1 || m.indexOf("couldn't read") !== -1) return "damaged";
       if (m.indexOf("unsupported") !== -1 || m.indexOf("not supported") !== -1) return "unsupported";
+      // EPS/PostScript (or PDF) uploaded to an image tool (converters/images.py
+      // _reject_non_raster): "... is a PostScript/EPS or PDF file, not an image
+      // this tool can convert ..." (added 11 Oct 2026; was counted as "other").
+      if (m.indexOf("not an image") !== -1 || m.indexOf("postscript") !== -1) return "unsupported";
       return "other";
     }
     return "other";
@@ -183,16 +202,20 @@
       // gtag() function is defined in base.html; the check keeps this line
       // harmless if analytics is ever removed or blocked by the visitor.
       if (typeof window.gtag === "function") {
-        window.gtag("event", "conversion", {
-          send_to: "AW-18473004328/meE0CPKWqokdEKjazuhE",
-        });
+        if (consentAllows("advertising")) {
+          window.gtag("event", "conversion", {
+            send_to: "AW-18473004328/meE0CPKWqokdEKjazuhE",
+          });
+        }
         // Same moment, reported to Google Analytics 4 so the owner can count
         // successful conversions per tool (parameter "tool" = page slug,
         // e.g. "pdf-to-word"). send_to keeps it out of Google Ads.
-        window.gtag("event", "file_conversion", {
-          send_to: "G-K0VJLC113K",
-          tool: slug,
-        });
+        if (consentAllows("analytics")) {
+          window.gtag("event", "file_conversion", {
+            send_to: "G-K0VJLC113K",
+            tool: slug,
+          });
+        }
       }
       // Suggest related tools only after a successful conversion. Looked up
       // here (not at page load) so this is harmless on a page without the

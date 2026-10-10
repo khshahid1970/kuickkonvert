@@ -20,16 +20,45 @@
      shares the single gtag.js loader below (Google documents one loader with
      one 'config' line per destination). The conversion itself is sent from
      static/js/main.js only after a file has actually downloaded.
-     Consent Mode v2: for visitors in the EEA, UK and Switzerland every
-     storage type defaults to 'denied' (no ad or analytics cookies; Google
-     receives only cookieless pings). Those visitors (consent_required, set
-     from Cloudflare's CF-IPCountry) are shown a consent banner: Accept calls
-     gtag('consent','update',...) to 'granted' and loads the tag + the
-     LaunchNest badge; Reject keeps 'denied' (cookieless pings only, no badge).
-     Until a choice is made, neither the tag nor the badge loads for them.
-     Everywhere else the defaults stay 'granted' and no banner is shown. For
+     Consent Mode v2: visitors in the EEA, UK and Switzerland
+     (consent_required, set from Cloudflare's CF-IPCountry) get the
+     consent-region script below and the banner (see "Consent v2"); until
+     they choose, the Google tag is not loaded. Everyone else gets the
+     {% else %} script: Google's region-scoped 'denied' default for those
+     countries plus 'granted' everywhere else, and no banner. For
      AdSense ad serving in the EEA, a Google-certified CMP will be enabled in
      AdSense before those ads go live. #}
+{#- Consent v2 (11 Oct 2026) -- consent-region pages ONLY (the {% else %}
+     branch below is the unchanged script every other visitor gets):
+     * ONE global default, all four storage types 'denied', with NO 'region'
+       list and no 'granted' line. Reason: Google applies a region-scoped
+       default using ITS OWN IP geolocation, and a region-specific default
+       takes precedence; a visitor Cloudflare places in the EEA/UK/CH but
+       Google geolocates elsewhere would otherwise have been 'granted'.
+     * gtag('set','ads_data_redaction',true) when ADS_DATA_REDACTION (config.py)
+       -- before any 'config' command. url_passthrough is NOT enabled.
+     * static/js/consent.js (same-origin, so allowed by the CSP without a
+       nonce) then reads the visitor's stored choice, sends
+       gtag('consent','update',...) with all four values, and only then
+       gtag('js')/gtag('config') and the tag itself. It also runs the banner,
+       "Cookie settings" and the LaunchNest badge. Settings: the "Consent"
+       block in config.py. #}{% if consent_required %}
+<script nonce="{{ csp_nonce }}">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied'
+  });
+  {%- if consent_cfg.redaction %}
+  gtag('set', 'ads_data_redaction', true);
+  {%- endif %}
+  window.__kkConsentConfig = {{ consent_cfg|tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/consent.js') }}"></script>
+{%- else %}
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -101,6 +130,7 @@
     // else (consent required, no stored choice): wait for the banner; load nothing.
   })();
 </script>
+{%- endif %}
 
 <title>{% block title %}KuickKonvert | Free File Conversion Tools{% endblock %}</title>
 <meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.{% endblock %}">
@@ -193,11 +223,40 @@
 </head>
 <body>
 {% if consent_required %}
-<div id="consent-banner" class="consent-banner" role="dialog" aria-label="Cookie consent" aria-live="polite">
-  <p class="consent-text">We use cookies to measure traffic and to measure and personalise ads. Accept to allow them, or reject to use only essential, cookieless measurement. See our <a href="{{ url_for('privacy') }}">Privacy notice</a>.</p>
+{# Consent banner v2 (11 Oct 2026): equal-prominence choices (three buttons,
+     one identical style), categories off by default, non-modal dialog (no
+     focus trap; the page stays usable). Hidden until static/js/consent.js
+     shows it -- without JavaScript nothing from Google loads anyway.
+     The wording describes what the code does in each CONSENT_MODE_TYPE; it
+     is legal text: changes need the adviser, and a material change should
+     bump CONSENT_VERSION in config.py. #}
+<div id="consent-banner" class="consent-banner" role="dialog" aria-labelledby="consent-title" aria-describedby="consent-desc" tabindex="-1" hidden>
+  <h2 id="consent-title" class="consent-title">Your privacy choices</h2>
+  <p id="consent-desc" class="consent-text">{% if consent_cfg.mode == 'advanced' %}With your permission we use Google Analytics to understand how our site and tools are used, and Google Ads to measure and personalise our ads. Both use cookies, and both stay off unless you allow them. If you don't allow them, Google receives only limited measurement signals without cookies. You can change your choice at any time with &ldquo;Cookie settings&rdquo; at the foot of every page. See our <a href="{{ url_for('privacy') }}">Privacy notice</a>.{% else %}With your permission, we use Google Analytics to understand how our website and tools are used, and Google Ads to measure advertising conversions and, where enabled, personalise ads. We use the relevant Google technologies only after you give the appropriate consent. If you decline both categories, we do not load Google&rsquo;s tag or send Google measurement signals. You can change your choices at any time using Cookie settings at the foot of every page. See our <a href="{{ url_for('privacy') }}">Privacy Notice</a>.{% endif %}</p>
   <div class="consent-actions">
-    <button type="button" class="btn btn-secondary" id="consent-reject">Reject</button>
-    <button type="button" class="btn btn-primary" id="consent-accept">Accept</button>
+    <button type="button" class="consent-btn" id="consent-accept">Accept all</button>
+    <button type="button" class="consent-btn" id="consent-reject">Reject all</button>
+    <button type="button" class="consent-btn" id="consent-choose" aria-expanded="false" aria-controls="consent-panel">Choose settings</button>
+  </div>
+  <div id="consent-panel" class="consent-panel" hidden>
+    <fieldset class="consent-fieldset">
+      <legend class="consent-legend">Choose what to allow</legend>
+      <div class="consent-option">
+        <input type="checkbox" id="consent-analytics" aria-describedby="consent-analytics-desc">
+        <div>
+          <label for="consent-analytics" class="consent-option-label">Analytics</label>
+          <p id="consent-analytics-desc" class="consent-option-desc">Google Analytics 4 helps us understand which pages and tools visitors use, their device and browser information, and approximate location. When enabled, it may use analytics cookies.</p>
+        </div>
+      </div>
+      <div class="consent-option">
+        <input type="checkbox" id="consent-advertising" aria-describedby="consent-advertising-desc">
+        <div>
+          <label for="consent-advertising" class="consent-option-label">Advertising</label>
+          <p id="consent-advertising-desc" class="consent-option-desc">Google Ads helps us measure whether visits from our ads lead to conversions and, where enabled and permitted, support remarketing and personalised advertising. When enabled, it may use advertising cookies.{% if consent_cfg.badge == 'advertising' %} Also shows the LaunchNest badge, an image loaded from launchnest.io.{% endif %}</p>
+        </div>
+      </div>
+    </fieldset>
+    <button type="button" class="consent-btn" id="consent-save">Save choices</button>
   </div>
 </div>
 {% endif %}
@@ -282,10 +341,19 @@
              link exactly as LaunchNest's embed code (no rel="nofollow") or
              their verification fails. launchnest.io is allowed in img-src in
              app.py's Content-Security-Policy so the image isn't blocked. #}
+        {#- Consent regions (11 Oct 2026): LAUNCHNEST_CONSENT_REGIONS in config.py.
+             "text_link" = a plain text link, same href/attributes, and no
+             request to launchnest.io at all; "advertising" = the image, whose
+             data-src consent.js turns into src only with Advertising consent.
+             The "-" whitespace control keeps everyone else's HTML unchanged. #}
         <p class="footer-badges">
+          {%- if consent_required and consent_cfg.badge == 'text_link' %}
+          <a href="https://launchnest.io/p/kuick-konvert" target="_blank">Listed on LaunchNest</a>
+          {%- else %}
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">
             <img id="launchnest-badge" {% if consent_required %}data-src{% else %}src{% endif %}="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
           </a>
+          {%- endif %}
         </p>
       </div>
       <div class="footer-col">
@@ -332,6 +400,15 @@
       <span>&copy; {{ 2026 }} Shahid Iqbal / KuickKonvert. Uploaded files are deleted automatically after conversion.</span>
       <a href="{{ url_for('privacy') }}">Privacy notice</a>
       <a href="{{ url_for('terms') }}">Terms</a>
+      {#- Consent withdrawal (11 Oct 2026): EEA/UK/CH visitors only, the same
+           visitors who get the consent banner. A real button, styled like the
+           links beside it; wired by static/js/consent.js, which reopens the banner
+           with the settings panel showing the current choices.
+           The "-" whitespace control keeps every other visitor's HTML
+           byte-for-byte as before. -#}
+      {%- if consent_required %}
+      <button type="button" class="footer-link-btn" id="cookie-settings">Cookie settings</button>
+      {%- endif %}
     </div>
     {# Trademark notice: makes clear KuickKonvert is independent of the
          brands whose file formats it converts (added 30 Sept 2026 for
@@ -340,16 +417,6 @@
   </div>
 </footer>
 <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
-{% if consent_required %}
-<script nonce="{{ csp_nonce }}">
-  (function () {
-    var a = document.getElementById('consent-accept');
-    var r = document.getElementById('consent-reject');
-    if (a) a.addEventListener('click', function () { if (window.__kkConsent) window.__kkConsent.accept(); });
-    if (r) r.addEventListener('click', function () { if (window.__kkConsent) window.__kkConsent.reject(); });
-    try { if (localStorage.getItem('kk_consent')) { var b = document.getElementById('consent-banner'); if (b) b.hidden = true; } } catch (e) {}
-  })();
-</script>
-{% endif %}
+
 </body>
 </html>

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ tool.seo_title }}{% endblock %}
 {% block description %}{{ tool.meta_description }}{% endblock %}
+{# Values from config.py go through tojson (11 Oct 2026, review F34), so a
+    name with an apostrophe or "&" is written as valid JSON instead of an
+    HTML entity. Output for today's tool names is unchanged. #}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -8,8 +11,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
-    {"@type": "ListItem", "position": 2, "name": "{{ tool.category }}", "item": "{{ site_url }}/#{{ tool.category|lower|replace(' ', '-') }}"},
-    {"@type": "ListItem", "position": 3, "name": "{{ tool.name }}", "item": "{{ canonical_url }}"}
+    {"@type": "ListItem", "position": 2, "name": {{ tool.category|tojson }}, "item": {{ (site_url ~ '/#' ~ tool.category|lower|replace(' ', '-'))|tojson }}},
+    {"@type": "ListItem", "position": 3, "name": {{ tool.name|tojson }}, "item": {{ canonical_url|tojson }}}
   ]
 }
 </script>
