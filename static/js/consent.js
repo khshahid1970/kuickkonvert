@@ -39,6 +39,16 @@
  *     cookies are deleted (only those names; host and parent domains,
  *     path=/): Analytics _ga, _ga_*; Advertising _gcl_au, _gcl_aw, _gcl_dc,
  *     _gcl_gb, _gcl_gs, _gcl_ag, _gac_*.
+ *     Advertising also removes the Google Ads tag's localStorage entries
+ *     (keys starting "_gcl_", e.g. _gcl_ls -- found in the live real-tag test
+ *     of 11 Oct 2026). The same clean-up runs on every page load for any
+ *     category the stored record refuses, so leftovers never survive a page.
+ *  5a. BASIC mode only: if a category is withdrawn while its tag is already
+ *     configured on the page (Cookie settings downgrade or Reject all), the
+ *     page is reloaded after the choice is saved and the cookies deleted. The
+ *     running tag could otherwise still send automatic, cookieless events
+ *     (e.g. GA4 enhanced-measurement form_start, seen in the live test of
+ *     11 Oct 2026) until the visitor leaves the page.
  *  6. LaunchNest badge: LAUNCHNEST_CONSENT_REGIONS "text_link" -> base.html
  *     renders a plain text link, nothing to do here; "advertising" -> the
  *     image's data-src is turned into src only with Advertising consent.
@@ -174,6 +184,23 @@
     });
   }
 
+  // Google Ads tag localStorage entries (e.g. "_gcl_ls").
+  function deleteAdsStorage() {
+    try {
+      var ls = window.localStorage, keys = [];
+      for (var i = 0; i < ls.length; i++) {
+        var k = ls.key(i);
+        if (k && k.indexOf('_gcl_') === 0) keys.push(k);
+      }
+      keys.forEach(function (k) { ls.removeItem(k); });
+    } catch (e) { /* storage blocked: nothing to remove */ }
+  }
+
+  function cleanUpRefused(choice) {
+    if (!choice.analytics) deleteCookies(isAnalyticsCookie);
+    if (!choice.advertising) { deleteCookies(isAdsCookie); deleteAdsStorage(); }
+  }
+
   // ---- LaunchNest badge (only in "advertising" mode) -------------------------
   function applyBadge(choice) {
     if (BADGE !== 'advertising') return;
@@ -193,6 +220,7 @@
 
   if (current) {
     gtag('consent', 'update', consentValues(current));
+    cleanUpRefused(current);
     if (tagAllowed(current)) { configureFor(current); registerLazyLoad(); }
   }
 
@@ -200,8 +228,15 @@
     current = { analytics: !!choice.analytics, advertising: !!choice.advertising };
     var stored = writeRecord(current);
     gtag('consent', 'update', consentValues(current));   // before config / tag load
-    if (!current.analytics) deleteCookies(isAnalyticsCookie);
-    if (!current.advertising) deleteCookies(isAdsCookie);
+    cleanUpRefused(current);
+    // Basic mode: a withdrawn category whose tag already runs on this page ->
+    // reload, so that tag is gone (see 5a above).
+    if (MODE === 'basic' && ((configured[GA_ID] && !current.analytics) ||
+                             (configured[ADS_ID] && !current.advertising))) {
+      closeBanner();
+      setTimeout(function () { try { window.location.reload(); } catch (e) { /* ignore */ } }, 50);
+      return stored;
+    }
     applyBadge(current);
     if (tagAllowed(current)) { configureFor(current); loadGoogleTag(); }
     closeBanner();
