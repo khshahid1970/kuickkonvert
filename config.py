@@ -59,7 +59,7 @@ STATIC_LASTMOD = {
     "guides": "2026-10-08",
     "about": RELEASE_DATE,
     "contact": "2026-10-08",
-    "privacy": RELEASE_DATE,
+    "privacy": "2026-10-11",   # counsel-approved notice (consent v2 + fix7), 11 Oct 2026
     "terms": RELEASE_DATE,
 }
 
