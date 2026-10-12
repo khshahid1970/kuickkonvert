@@ -198,7 +198,32 @@ def _redirect_trailing_slash():
 # 2026-10-08: subdomain wildcards (*.google.com etc.), as that guide lists for
 # Google Analytics: GA4 also sends hits to analytics.google.com, which the
 # www-only list blocked (console error on every page view).
-_GOOGLE_TLDS = "https://*.google.com https://*.google.com.pk https://*.google.co.in https://*.google.co.uk"
+# 2026-10-13: Google tag quality flagged "Urgent": img-src blocked
+# https://www.google.<country> pings (Google Ads audience/remarketing pings
+# are redirected to the visitor's own country Google domain). Added the
+# Google domain of every country the Google Ads campaign targets. Each entry
+# checked against https://www.google.com/supported_domains (187 domains in
+# total; deliberately NOT all of them: that would add ~9 KB to every
+# response header). To cover a new country, add its Google domain below.
+_GOOGLE_COUNTRY_DOMAINS = (
+    "com",     # global / United States
+    "com.pk",  # Pakistan
+    "co.in",   # India
+    "co.uk",   # United Kingdom
+    "com.bd",  # Bangladesh
+    "co.id",   # Indonesia
+    "com.my",  # Malaysia
+    "com.ph",  # Philippines
+    "lk",      # Sri Lanka
+    "com.np",  # Nepal
+    "ae",      # United Arab Emirates
+    "com.ng",  # Nigeria
+    "co.ke",   # Kenya
+    "com.eg",  # Egypt
+    "com.sa",  # Saudi Arabia
+    "com.om",  # Oman
+)
+_GOOGLE_TLDS = " ".join("https://*.google." + d for d in _GOOGLE_COUNTRY_DOMAINS)
 _CSP_DIRECTIVES = (
     "default-src 'self'; "
     "script-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com 'nonce-{nonce}'; "
