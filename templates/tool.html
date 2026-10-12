@@ -16,6 +16,28 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": {{ tool.name|tojson }},
+  "url": {{ canonical_url|tojson }},
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (web-based)",
+  "description": {{ tool.meta_description|tojson }},
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "KuickKonvert",
+    "url": "{{ site_url }}/"
+  }
+}
+</script>
 {% endblock %}
 {% block content %}
 <section class="tool-page">

@@ -955,6 +955,49 @@ def robots_txt():
     return Response(body, mimetype="text/plain")
 
 
+# llms.txt (https://llmstxt.org) -- a short, structured map of the site for AI
+# assistants and crawlers. Built from the same TOOLS/GUIDES lists that drive the
+# homepage and sitemap, so new tools and guides appear here automatically. It is
+# a convenience for AI agents only; it is NOT required by, and plays no part in,
+# Google/Bing indexing. Served as plain text (Markdown body) at the site root.
+@app.route("/llms.txt")
+def llms_txt():
+    lines = [
+        "# KuickKonvert",
+        "",
+        "> Free online file-conversion tools. Convert Word, Excel, PowerPoint, "
+        "images and PDFs in your browser -- no sign-up, and every uploaded file "
+        "is deleted automatically after conversion.",
+        "",
+        f"Website: {SITE_URL}/",
+        "",
+        "## Conversion tools",
+    ]
+    categories = []
+    for t in TOOLS:
+        cat = t.get("category") or "Tools"
+        if cat not in categories:
+            categories.append(cat)
+    for cat in categories:
+        lines.append("")
+        lines.append(f"### {cat}")
+        for t in TOOLS:
+            if (t.get("category") or "Tools") == cat:
+                lines.append(f"- [{t['name']}]({SITE_URL}/tools/{t['slug']})")
+    lines.append("")
+    lines.append("## Guides")
+    for g in GUIDES:
+        lines.append(f"- [{g['title']}]({SITE_URL}/guides/{g['slug']})")
+    lines.append("")
+    lines.append("## Key pages")
+    lines.append(f"- [About]({SITE_URL}/about)")
+    lines.append(f"- [Privacy notice]({SITE_URL}/privacy)")
+    lines.append(f"- [Terms of Service]({SITE_URL}/terms)")
+    lines.append(f"- [Contact]({SITE_URL}/contact)")
+    lines.append("")
+    return Response("\n".join(lines) + "\n", mimetype="text/plain")
+
+
 @app.route("/ads.txt")
 def ads_txt():
     # Required by Google AdSense so ad exchanges can confirm KuickKonvert is
