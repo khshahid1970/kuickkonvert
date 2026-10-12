@@ -966,8 +966,8 @@ def llms_txt():
         "# KuickKonvert",
         "",
         "> Free online file-conversion tools. Convert Word, Excel, PowerPoint, "
-        "images and PDFs in your browser -- no sign-up, and every uploaded file "
-        "is deleted automatically after conversion.",
+        "images and PDFs without signing up. Files are processed on our servers "
+        "and deleted automatically after conversion.",
         "",
         f"Website: {SITE_URL}/",
         "",
