@@ -28,7 +28,8 @@
   "description": {{ guide.meta_description|tojson }},
   "datePublished": {{ guide.published|tojson }},
   "dateModified": {{ (guide.updated or guide.published)|tojson }},
-  "author": {"@type": "Person", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}},
+  "image": ["{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}"],
+  "author": {"@type": "Person", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}, "url": "{{ site_url }}/about"},
   "publisher": {"@type": "Organization", "name": "KuickKonvert", "url": "{{ site_url }}/"},
   "mainEntityOfPage": {"@type": "WebPage", "@id": "{{ canonical_url }}"}
 }

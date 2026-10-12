@@ -49,9 +49,19 @@ RELEASE_DATE_TEXT = _date.fromisoformat(RELEASE_DATE).strftime("%-d %B %Y")
 # RELEASE_DATE above is deliberately NOT moved: it also dates the Terms
 # "Effective date" and every tool page, which this release doesn't change.
 FIX_RELEASE_DATE = "2026-10-11"
-HOME_LASTMOD = RELEASE_DATE
+# SEO_FIX_RELEASE_DATE = the day the 12 Oct 2026 SEO fixes go live: Article
+# markup on every guide gains "image" and author "url", and the Organization
+# logo (read by Google from the home page) points to the square logo. Google
+# counts structured-data changes as significant, so ONLY the sitemap <lastmod>
+# of the home page and the 18 guides moves to this date. Nothing visible
+# changes: a guide's "Updated" line and Article dateModified stay as they are.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) before you
+# commit, if it is not 12 Oct 2026. <<<
+SEO_FIX_RELEASE_DATE = "2026-10-12"
+HOME_LASTMOD = SEO_FIX_RELEASE_DATE
 TOOLS_LASTMOD = RELEASE_DATE
 GUIDES_LINKS_LASTMOD = "2026-10-08"
+GUIDES_MARKUP_LASTMOD = SEO_FIX_RELEASE_DATE
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
@@ -436,7 +446,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
         "seo_title": "Excel to PDF Converter - XLS & XLSX to PDF | KuickKonvert",
-        "meta_description": "Convert XLS and XLSX spreadsheets to PDF online for free. No installation or sign-up -- fast, private Excel to PDF conversion.",
+        "meta_description": "Convert XLS and XLSX spreadsheets to PDF online for free. No installation or sign-up — fast, private Excel to PDF conversion.",
     },
     "pdf-to-excel": {
         "intro": "PDF to Excel extracts tables from a PDF and rebuilds them as an editable XLSX file, so you can sort, filter, or recalculate data that arrived as a static document.",
@@ -469,7 +479,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-ppt", "word-to-pdf", "compress-pdf"],
         "seo_title": "PPT to PDF Converter - PowerPoint to PDF Free | KuickKonvert",
-        "meta_description": "Convert PPT and PPTX presentations to PDF online for free. Fast, simple, private -- no sign-up or software required.",
+        "meta_description": "Convert PPT and PPTX presentations to PDF online for free. Fast, simple, private — no sign-up or software required.",
     },
     "pdf-to-ppt": {
         "intro": "PDF to PPT turns each page of a PDF into a slide in a PowerPoint file, keeping each page exactly as it looks in the PDF.",
@@ -707,7 +717,7 @@ TOOL_CONTENT = {
         ],
         "related": ["merge-pdf", "split-pdf", "pdf-to-jpg"],
         "seo_title": "Compress PDF Online Free - PDF Size Reducer | KuickKonvert",
-        "meta_description": "Free PDF size reducer online: compress PDF files and reduce PDF size while keeping them readable. Choose a compression level -- no sign-up.",
+        "meta_description": "Free PDF size reducer online: compress PDF files and reduce PDF size while keeping them readable. Choose a compression level — no sign-up.",
     },
     "rotate-pdf": {
         "how_to_heading": "How to rotate PDF pages",
@@ -761,7 +771,7 @@ TOOL_CONTENT = {
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
-        "meta_description": "Password protect a PDF online for free. No sign-up or installation -- add a password so only people who know it can open the file.",
+        "meta_description": "Password protect a PDF online for free. No sign-up or installation — add a password so only people who know it can open the file.",
     },
 }
 
@@ -881,7 +891,7 @@ GUIDES = [
         "slug": "why-pdf-layout-shifts",
         "title": "Why a PDF's Layout Sometimes Shifts After Conversion (and How to Avoid It)",
         "seo_title": "Why PDF Layout Shifts After Conversion | KuickKonvert",
-        "meta_description": "Converted a Word document to PDF and the fonts or page count changed? Our test shows exactly why -- and why Word's newer default font, Aptos, is affected.",
+        "meta_description": "Converted a Word document to PDF and the fonts or page count changed? Our test shows exactly why — and why Word's newer default font, Aptos, is affected.",
         "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution. Our test shows how much difference it can make.",
         "published": "2026-09-14",
         "updated": "2026-10-05",
@@ -1582,7 +1592,7 @@ GUIDES = [
         "slug": "powerpoint-to-pdf-and-back",
         "title": "PowerPoint and PDF, Both Ways: What Carries Over (With Test Results)",
         "seo_title": "PowerPoint and PDF: What Carries Over | KuickKonvert",
-        "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF -- and why PDF to PowerPoint gives picture slides. Our tests.",
+        "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF — and why PDF to PowerPoint gives picture slides. Our tests.",
         "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found.",
         "published": "2026-10-05",
         "updated": "2026-10-10",
@@ -1946,8 +1956,8 @@ GUIDES = [
     {
         "slug": "location-data-in-photos",
         "title": "Can a Photo Show Where It Was Taken? Location Data, and How to Remove It",
-        "seo_title": "Location Data in Photos: Remove It Before Sharing | KuickKonvert",
-        "meta_description": "Phone photos can carry the GPS spot where they were taken. How to check, stop your phone adding it, and which of our tools strip it -- tested October 2026.",
+        "seo_title": "Location Data in Photos: How to Remove It | KuickKonvert",
+        "meta_description": "Phone photos can carry the GPS spot where they were taken. How to check, stop your phone adding it, and which of our tools strip it — tested October 2026.",
         "dek": "Many phone photos quietly record the exact place they were taken. Here is what that hidden data is, how to see it, and how to remove it before you share a picture or upload it to a form.",
         "published": "2026-10-10",
         "updated": FIX_RELEASE_DATE,  # test results table + PDF tools + "How we tested" added
@@ -2020,7 +2030,7 @@ GUIDES = [
         "slug": "what-is-a-webp-image",
         "title": "What Is a WEBP Image, and Why Won't It Open Everywhere?",
         "seo_title": "What Is a WEBP Image? Convert WEBP to JPG | KuickKonvert",
-        "meta_description": "WEBP is Google's web image format. Why pictures saved from websites are often .webp, what it does well, and how to convert WEBP to JPG -- tested October 2026.",
+        "meta_description": "WEBP is Google's web image format. Why pictures saved from websites are often .webp, what it does well, and how to convert WEBP to JPG — tested October 2026.",
         "dek": "Saved a picture from a website and got a .webp file that won't open in your photo app or upload to a form? Here is what WEBP is, why sites use it, and how to convert it.",
         "published": "2026-10-10",
         "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added

@@ -35,7 +35,7 @@ from flask_limiter.util import get_remote_address
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
-    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, STATIC_LASTMOD,
+    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
     RELEASE_DATE_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
     ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
@@ -1013,7 +1013,9 @@ def sitemap_xml():
     #   * guides: the latest of the guide's own "updated"/"published" date
     #     and GUIDES_LINKS_LASTMOD (the last time links were added to every
     #     guide -- Google counts new links as a significant change, but they
-    #     don't warrant a visible "Updated" date on the page).
+    #     don't warrant a visible "Updated" date on the page) and
+    #     GUIDES_MARKUP_LASTMOD (the last change to every guide's structured
+    #     data -- also significant, also not a visible "Updated" date).
     # When a page changes significantly, bump the matching date in config.py
     # (for a guide's own text, add/refresh its "updated": "YYYY-MM-DD").
     entries = [
@@ -1030,7 +1032,8 @@ def sitemap_xml():
     ]
     entries += [
         (f"{SITE_URL}/guides/{g['slug']}",
-         max(d for d in (g.get("updated"), g.get("published"), GUIDES_LINKS_LASTMOD) if d))
+         max(d for d in (g.get("updated"), g.get("published"), GUIDES_LINKS_LASTMOD,
+                         GUIDES_MARKUP_LASTMOD) if d))
         for g in GUIDES
     ]
 

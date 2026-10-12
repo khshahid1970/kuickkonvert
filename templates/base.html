@@ -172,7 +172,7 @@
   "@type": "Organization",
   "name": "KuickKonvert",
   "url": "{{ site_url }}/",
-  "logo": "{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}",
+  "logo": "{{ site_url }}{{ url_for('static', filename='img/logo-512.png') }}",
   "email": "info@kuickkonvert.com",
   "sameAs": [
     "https://www.facebook.com/profile.php?id=61594014512417",
@@ -231,7 +231,7 @@
      is legal text: changes need the adviser, and a material change should
      bump CONSENT_VERSION in config.py. #}
 <div id="consent-banner" class="consent-banner" role="dialog" aria-labelledby="consent-title" aria-describedby="consent-desc" tabindex="-1" hidden>
-  <h2 id="consent-title" class="consent-title">Your privacy choices</h2>
+  <p id="consent-title" class="consent-title">Your privacy choices</p>
   <p id="consent-desc" class="consent-text">{% if consent_cfg.mode == 'advanced' %}With your permission we use Google Analytics to understand how our site and tools are used, and Google Ads to measure and personalise our ads. Both use cookies, and both stay off unless you allow them. If you don't allow them, Google receives only limited measurement signals without cookies. You can change your choice at any time with &ldquo;Cookie settings&rdquo; at the foot of every page. See our <a href="{{ url_for('privacy') }}">Privacy notice</a>.{% else %}With your permission, we use Google Analytics to understand how our website and tools are used, and Google Ads to measure advertising conversions and, where enabled, personalise ads. We use the relevant Google technologies only after you give the appropriate consent. If you decline both categories, we do not load Google&rsquo;s tag or send Google measurement signals. You can change your choices at any time using Cookie settings at the foot of every page. See our <a href="{{ url_for('privacy') }}">Privacy Notice</a>.{% endif %}</p>
   <div class="consent-actions">
     <button type="button" class="consent-btn" id="consent-accept">Accept all</button>
