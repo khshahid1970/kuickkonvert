@@ -965,6 +965,23 @@ body {
 .legal h2 { font-size: 17px; margin-top: 28px; }
 .legal p { color: var(--color-text-muted); }
 
+/* Link to us page (15 Oct 2026): copy-paste code snippets. Long lines wrap
+   inside the box instead of making the whole page scroll sideways on phones.
+   Wrapping is visual only -- the Copy buttons still copy the original lines. */
+.embed-code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+  background: var(--color-primary-tint);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--color-border);
