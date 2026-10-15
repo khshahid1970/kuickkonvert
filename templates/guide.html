@@ -99,6 +99,17 @@
         {% endfor %}
       </ul>
       {% endif %}
+
+      {#- Added 15 Oct 2026: 2-3 guides on a closely related topic
+          (RELATED_GUIDES in config.py). Reuses the Related tools list style. -#}
+      {% if related_guides %}
+      <h2>Related guides</h2>
+      <ul class="related-tools-list">
+        {% for rg in related_guides %}
+        <li><a href="{{ url_for('guide_page', slug=rg.slug) }}">{{ rg.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </section>
   </div>
 </section>
