@@ -35,7 +35,7 @@ from flask_limiter.util import get_remote_address
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
-    HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
+    RELATED_GUIDES, HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
     RELEASE_DATE_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
     ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
@@ -817,11 +817,14 @@ def guide_page(slug):
     related_tools = [
         TOOLS_BY_SLUG[s] for s in guide.get("related_tools", []) if s in TOOLS_BY_SLUG
     ]
+    # 15 Oct 2026: guide-to-guide links (RELATED_GUIDES in config.py).
+    related_guides = [GUIDES_BY_SLUG[s] for s in RELATED_GUIDES.get(slug, [])]
     return render_template(
         "guide.html",
         guide=guide,
         canonical_url=f"{SITE_URL}/guides/{slug}",
         related_tools=related_tools,
+        related_guides=related_guides,
     )
 
 
@@ -938,6 +941,14 @@ def contact():
 @app.route("/terms")
 def terms():
     return render_template("terms.html", canonical_url=f"{SITE_URL}/terms")
+
+
+# Added 2026-10-14: "Link to us" page -- ready-made text link + badge + per-tool
+# link snippets, so other sites can link back to KuickKonvert easily (supports
+# off-site authority/backlink building). Static content page, same shape as about.
+@app.route("/link-to-us")
+def link_to_us():
+    return render_template("link_to_us.html", canonical_url=f"{SITE_URL}/link-to-us")
 
 
 # Added 2026-10-08: some browsers and crawlers ask for /favicon.ico directly
@@ -1093,6 +1104,7 @@ def sitemap_xml():
         (f"{SITE_URL}/contact", STATIC_LASTMOD.get("contact")),
         (f"{SITE_URL}/terms", STATIC_LASTMOD.get("terms")),
         (f"{SITE_URL}/guides", STATIC_LASTMOD.get("guides")),
+        (f"{SITE_URL}/link-to-us", STATIC_LASTMOD.get("link-to-us")),
     ]
     entries += [
         (f"{SITE_URL}/tools/{t['slug']}", t.get("lastmod") or TOOLS_LASTMOD)

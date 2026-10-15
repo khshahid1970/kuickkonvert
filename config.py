@@ -60,7 +60,13 @@ FIX_RELEASE_DATE = "2026-10-11"
 SEO_FIX_RELEASE_DATE = "2026-10-12"
 HOME_LASTMOD = SEO_FIX_RELEASE_DATE
 TOOLS_LASTMOD = RELEASE_DATE
-GUIDES_LINKS_LASTMOD = "2026-10-08"
+# 15 Oct 2026: every guide gains a "Related guides" block (RELATED_GUIDES,
+# below), so every guide's sitemap <lastmod> moves to this date. The same
+# value is also used for the DOC vs DOCX guide's visible "Updated" date and
+# for the new /link-to-us page's <lastmod>, so there is ONE date to set.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) before you
+# commit, if it is not 15 Oct 2026. This is the only date to change. <<<
+GUIDES_LINKS_LASTMOD = "2026-10-15"
 GUIDES_MARKUP_LASTMOD = SEO_FIX_RELEASE_DATE
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
@@ -71,6 +77,7 @@ STATIC_LASTMOD = {
     "contact": "2026-10-08",
     "privacy": "2026-10-11",   # counsel-approved notice (consent v2 + fix7), 11 Oct 2026
     "terms": RELEASE_DATE,
+    "link-to-us": GUIDES_LINKS_LASTMOD,   # new page, 15 Oct 2026 package
 }
 
 # ---- Consent (EEA / UK / Switzerland visitors only) ------------------------
@@ -828,9 +835,34 @@ GUIDES = [
         "meta_description": "DOC and DOCX both open in Word but aren't the same format underneath. What changed, what our own size test found, and when the difference affects you.",
         "dek": "Both open in Word, but DOC and DOCX are built on completely different technology. Here's what that changes for you -- including one common claim our own test didn't bear out.",
         "published": "2026-09-14",
-        "updated": "2026-10-05",
-        "related_tools": ["word-to-pdf"],
+        # 15 Oct 2026: quick-comparison table and three short question
+        # sections added (the doc/docx query group is this site's largest
+        # source of search impressions in GSC). Every statement in them
+        # repeats a fact already stated and sourced further down this guide,
+        # or is about our own PDF to Word converter (always writes .docx --
+        # converters/office.py). OWNER: set to the actual deploy day.
+        "updated": GUIDES_LINKS_LASTMOD,   # = deploy day (set once, above)
+        "related_tools": ["word-to-pdf", "pdf-to-word"],
         "sections": [
+            {
+                "heading": "DOC vs DOCX at a glance",
+                "paragraphs": [
+                    "The short version: DOCX is the modern Word format and the right choice for almost everything. DOC is the older format, still worth knowing about if someone uses a very old version of Word.",
+                ],
+                "table": {
+                    "caption": "DOC and DOCX compared",
+                    "headers": ["", "DOC", "DOCX"],
+                    "rows": [
+                        ["Word's default format", "Word 97 to Word 2003", "Word 2007 onwards"],
+                        ["What the file is inside", "One binary file", "A ZIP archive of XML files (Office Open XML)"],
+                        ["Can contain macros?", "Yes", "No - macro documents use .docm"],
+                        ["Opens in Word 2003 and earlier?", "Yes", "Only with Microsoft's compatibility pack"],
+                        ["File size", "About the same in our test", "About the same in our test"],
+                        ["Converts to PDF with our tool?", "Yes", "Yes"],
+                    ],
+                    "note": "Details and sources for each row are in the sections below.",
+                },
+            },
             {
                 "heading": "Two different formats, one program",
                 "paragraphs": [
@@ -883,6 +915,25 @@ GUIDES = [
                 "paragraphs": [
                     "Use DOCX unless someone specifically needs DOC for an old program. It is Word's default, it is the format other software supports best, and it keeps macros out unless you deliberately choose .docm.",
                     "If a form or portal asks for \"a Word document\" without saying which, DOCX is the safe choice. If it must not be edited at all, send a PDF instead -- our [[word-to-pdf|DOC to PDF converter]] accepts both .doc and .docx. Your upload and the PDF are deleted from our server as soon as your download is ready.",
+                    "Going the other way, our [[pdf-to-word|PDF to Word converter]] always gives you a .docx file, so it opens in any current version of Word, Google Docs or LibreOffice.",
+                ],
+            },
+            {
+                "heading": "Is DOC the same as DOCX?",
+                "paragraphs": [
+                    "No. Both are Word documents and both open in current versions of Word, but they are different file formats: DOC is a single binary file, while DOCX is a ZIP archive of XML files. Word 2003 and earlier cannot open a DOCX without Microsoft's compatibility pack.",
+                ],
+            },
+            {
+                "heading": "Is a DOCX file a Word document?",
+                "paragraphs": [
+                    "Yes. DOCX has been Microsoft Word's default format since Word 2007, so a .docx file is a normal Word document. Google Docs, LibreOffice and Apple Pages can open and edit it too.",
+                ],
+            },
+            {
+                "heading": "What does DOCX stand for?",
+                "paragraphs": [
+                    "The \"x\" refers to XML: a DOCX file stores the document as XML files (the Office Open XML standard) packed into a ZIP archive. DOC, the older format, is short for \"document\".",
                 ],
             },
         ],
@@ -1902,7 +1953,7 @@ GUIDES = [
             {
                 "heading": "Converting the HEIC photos you already have",
                 "paragraphs": [
-                    "For photos already saved as HEIC, our [[heic-to-jpg|HEIC to JPG converter]] turns them into ordinary JPGs in the browser, up to 20 at a time and up to 65 megapixels each. Several photos come back together in one ZIP file, each JPG keeping its own file name.",
+                    "For photos already saved as HEIC, our [[heic-to-jpg|HEIC to JPG converter]] turns them into ordinary JPGs, up to 20 at a time and up to 65 megapixels each. Several photos come back together in one ZIP file, each JPG keeping its own file name.",
                     "We tested what the converter keeps and removes, using the same code the tool runs (October 2026; see How we tested below). The JPG keeps the date taken, the camera make and model and the colour profile, and drops the GPS location and other hidden details. A photo stored sideways came out upright, and for a HEIC holding several images the tool converted the main (primary) image the file marks, not simply the first one stored.",
                 ],
                 "table": {
@@ -2053,7 +2104,7 @@ GUIDES = [
             {
                 "heading": "Converting WEBP to JPG",
                 "paragraphs": [
-                    "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs in your browser, up to 20 at a time, at full size and quality 90. From our tests in October 2026: a still WEBP becomes an ordinary JPG with the same width and height; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
+                    "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs, up to 20 at a time, at full size and quality 90. From our tests in October 2026: a still WEBP becomes an ordinary JPG with the same width and height; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
                     "Hidden photo details are handled the same way as in our other image converters. A test WEBP carrying GPS location came out without it, while the date taken and the camera make and model were kept.",
                 ],
                 "table": {
@@ -2182,6 +2233,40 @@ GUIDES = [
 ]
 
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
+
+# ---- Related guides (added 15 Oct 2026) ----------------------------------
+# A crawl of the live site on 15 Oct 2026 found no guide linking to any
+# other guide, and seven guides reachable from only three pages each. Each
+# guide below links to 2-3 guides on a closely related topic, shown as a
+# "Related guides" list under "Related tools" (templates/guide.html).
+# Edit freely; a misspelt slug stops the app at start-up (check below), so
+# a broken link can never reach the live site.
+RELATED_GUIDES = {
+    "docx-vs-doc": ["word-to-pdf-what-carries-over", "why-pdf-layout-shifts", "pdf-to-word-text-vs-scanned"],
+    "why-pdf-layout-shifts": ["word-to-pdf-what-carries-over", "docx-vs-doc", "powerpoint-to-pdf-and-back"],
+    "pdf-compression-levels-explained": ["photos-to-one-pdf-jpg-to-pdf-tips", "submitting-coursework-as-a-pdf", "jpg-vs-png"],
+    "jpg-vs-png": ["photos-to-one-pdf-jpg-to-pdf-tips", "what-is-a-heic-file", "pdf-compression-levels-explained"],
+    "merge-pdf-in-the-right-order": ["split-and-rotate-pdf-pages", "submitting-coursework-as-a-pdf", "photos-to-one-pdf-jpg-to-pdf-tips"],
+    "pdf-password-protection-explained": ["watermark-pdf-what-it-protects", "location-data-in-photos"],
+    "excel-to-pdf-fit-on-one-page": ["pdf-to-excel-table-conversion-results", "why-pdf-layout-shifts"],
+    "pdf-to-excel-table-conversion-results": ["pdf-to-word-text-vs-scanned", "excel-to-pdf-fit-on-one-page"],
+    "photos-to-one-pdf-jpg-to-pdf-tips": ["what-is-a-heic-file", "pdf-compression-levels-explained", "submitting-coursework-as-a-pdf"],
+    "pdf-to-word-text-vs-scanned": ["pdf-to-excel-table-conversion-results", "docx-vs-doc"],
+    "powerpoint-to-pdf-and-back": ["why-pdf-layout-shifts", "word-to-pdf-what-carries-over", "excel-to-pdf-fit-on-one-page"],
+    "watermark-pdf-what-it-protects": ["pdf-password-protection-explained", "split-and-rotate-pdf-pages"],
+    "split-and-rotate-pdf-pages": ["merge-pdf-in-the-right-order", "pdf-compression-levels-explained"],
+    "word-to-pdf-what-carries-over": ["why-pdf-layout-shifts", "docx-vs-doc", "submitting-coursework-as-a-pdf"],
+    "what-is-a-heic-file": ["location-data-in-photos", "what-is-a-webp-image", "photos-to-one-pdf-jpg-to-pdf-tips"],
+    "location-data-in-photos": ["what-is-a-heic-file", "what-is-a-webp-image", "pdf-password-protection-explained"],
+    "what-is-a-webp-image": ["what-is-a-heic-file", "jpg-vs-png", "location-data-in-photos"],
+    "submitting-coursework-as-a-pdf": ["photos-to-one-pdf-jpg-to-pdf-tips", "pdf-compression-levels-explained", "merge-pdf-in-the-right-order"],
+}
+for _src, _targets in RELATED_GUIDES.items():
+    if _src not in GUIDES_BY_SLUG:
+        raise ValueError(f"RELATED_GUIDES: unknown guide slug {_src!r}")
+    for _t in _targets:
+        if _t not in GUIDES_BY_SLUG or _t == _src:
+            raise ValueError(f"RELATED_GUIDES[{_src!r}]: bad target {_t!r}")
 
 # Reverse index: tool slug -> the guides that reference it, so tool.html can
 # render a "Further reading" block without every TOOL_CONTENT entry having
