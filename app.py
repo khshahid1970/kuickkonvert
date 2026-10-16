@@ -692,6 +692,7 @@ def h_protect_pdf(files, form, job_dir):
 # the same). converters/images.py does the actual work and enforces the
 # size limits (65 MP per image, 150 MB of output per conversion).
 MAX_IMAGES_PER_CONVERSION = 20
+IMAGE_TO_IMAGE_SLUGS = frozenset({"heic-to-jpg", "webp-to-jpg", "png-to-jpg", "jpg-to-png"})
 
 
 def _image_to_image(files, job_dir, accepted_exts, out_format, same_exts, same_label):
@@ -790,6 +791,16 @@ def tool_page(slug):
     accepted_formats = [ext.strip(".").upper() for ext in tool["accept"].split(",")]
     related_tools = [TOOLS_BY_SLUG[s] for s in tool.get("related", []) if s in TOOLS_BY_SLUG]
     related_guides = GUIDES_BY_TOOL.get(slug, [])
+    # Upload limits shown at the upload box and checked in the browser before
+    # anything is sent (Package 1, 16 Oct 2026). They mirror the server rules:
+    # MAX_CONTENT_LENGTH for the whole upload, 2+ files for Merge, and the
+    # 20-image cap of the image-to-image tools. The server still enforces all
+    # of them; the browser check only saves a wasted upload.
+    upload_rules = {
+        "max_mb": MAX_CONTENT_LENGTH // (1024 * 1024),
+        "min_files": 2 if slug == "merge-pdf" else 1,
+        "max_files": MAX_IMAGES_PER_CONVERSION if slug in IMAGE_TO_IMAGE_SLUGS else 0,
+    }
     return render_template(
         "tool.html",
         tool=tool,
@@ -797,6 +808,7 @@ def tool_page(slug):
         accepted_formats=accepted_formats,
         related_tools=related_tools,
         related_guides=related_guides,
+        upload_rules=upload_rules,
     )
 
 
@@ -867,6 +879,56 @@ def _maybe_sweep_temp():
         _sweep_lock.release()
 
 
+# --- Machine-readable error codes (Package 1, 16 Oct 2026) -----------------
+# Every failed /convert reply now carries a short, stable "code" next to the
+# human "error" message, so static/js/main.js can report WHY a conversion
+# failed to GA4 (as error_code) instead of lumping most failures into
+# "other" (76.5% of 409 failures on 11-15 Oct 2026). The code is derived
+# from the message text in one place, so none of the many raise sites in
+# converters/ had to change. Codes never contain file names or content.
+# Order matters: the first matching phrase wins.
+_ERROR_CODE_RULES = (
+    ("add at least two pdfs", "merge_needs_two"),
+    ("usage restrictions", "pdf_restricted"),
+    ("is password-protected", "pdf_locked"),
+    ("no text or tables could be found", "pdf_scanned"),
+    ("scanned image without extractable text", "pdf_scanned"),
+    ("unsupported file type", "wrong_type"),
+    ("not an image this tool can", "wrong_type"),
+    ("doesn't need converting", "already_target_format"),
+    ("is empty", "empty_file"),
+    ("choose at least one file", "no_file"),
+    ("images at a time", "too_many_files"),
+    ("megapixels", "image_too_big"),
+    ("too large to convert", "image_too_big"),
+    ("too big to download in one go", "output_too_big"),
+    ("pages at a time", "too_many_pages"),
+    ("password with at least", "password_too_short"),
+    ("enter the text", "missing_text"),
+    ("rotation must", "bad_option"),
+    ("took too long", "too_slow"),
+    ("doesn't look like a valid pdf", "pdf_damaged"),
+    ("could not read this pdf", "pdf_damaged"),
+    ("could not open this pdf", "pdf_damaged"),
+    ("could not render a page", "pdf_damaged"),
+    ("has no pages", "pdf_damaged"),
+    ("no pages found", "pdf_damaged"),
+    ("could not convert this pdf", "pdf_damaged"),
+    ("not a valid image", "image_damaged"),
+    ("isn't a valid image", "image_damaged"),
+    ("couldn't be read", "image_damaged"),
+    ("libreoffice could not convert", "office_failed"),
+)
+
+
+def _error_code(message):
+    m = (message or "").lower()
+    for phrase, code in _ERROR_CODE_RULES:
+        if phrase in m:
+            return code
+    return "other_400"
+
+
 @app.route("/convert/<slug>", methods=["POST"])
 @limiter.limit("10 per minute; 100 per hour")
 def convert(slug):
@@ -882,7 +944,8 @@ def convert(slug):
         files = files[:1]
 
     if not _CONVERT_SLOTS.acquire(timeout=90):
-        return jsonify({"error": "The converter is busy right now. Please try again in a minute."}), 503
+        return jsonify({"error": "The converter is busy right now. Please try again in a minute.",
+                        "code": "busy"}), 503
     try:
         with job_workspace() as job_dir:
             out_path, download_name, mimetype = run_isolated(
@@ -902,15 +965,17 @@ def convert(slug):
             with open(out_path, "rb") as fh:
                 data = fh.read()
     except ConversionError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return jsonify({"error": str(exc), "code": _error_code(str(exc))}), 400
     except JobFailed as exc:
         # Memory cap or time limit hit in the child process. Logged without
         # the file name (privacy); the visitor gets a clear message.
         app.logger.warning("Conversion stopped on %s (%s)", slug, exc.detail)
-        return jsonify({"error": str(exc)}), 413
+        code = "server_time_limit" if "time limit" in (exc.detail or "") else "server_memory_limit"
+        return jsonify({"error": str(exc), "code": code}), 413
     except Exception as exc:
         app.logger.exception("Unhandled conversion error on %s", slug)
-        return jsonify({"error": "Something went wrong during conversion. Please try again."}), 500
+        return jsonify({"error": "Something went wrong during conversion. Please try again.",
+                        "code": "server_error"}), 500
     finally:
         _CONVERT_SLOTS.release()
 
@@ -1136,12 +1201,14 @@ def not_found(e):
 
 @app.errorhandler(413)
 def too_large(e):
-    return jsonify({"error": "File is too large. Please upload a smaller file."}), 413
+    return jsonify({"error": "File is too large. Please upload a smaller file.",
+                    "code": "file_too_large"}), 413
 
 
 @app.errorhandler(429)
 def rate_limited(e):
-    return jsonify({"error": "Too many requests -- please wait a moment and try again."}), 429
+    return jsonify({"error": "Too many requests -- please wait a moment and try again.",
+                    "code": "rate_limited"}), 429
 
 
 @app.errorhandler(500)
