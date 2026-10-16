@@ -68,12 +68,19 @@ TOOLS_LASTMOD = RELEASE_DATE
 # commit, if it is not 15 Oct 2026. This is the only date to change. <<<
 GUIDES_LINKS_LASTMOD = "2026-10-15"
 GUIDES_MARKUP_LASTMOD = SEO_FIX_RELEASE_DATE
+# 16 Oct 2026: three internal-link gaps closed -- Merge PDF now lists the
+# PDF compression guide, PDF to Excel lists the scanned-PDF guide (both via
+# the guides' related_tools, shown under "Further reading"), and About links
+# the guides hub. Used as the sitemap <lastmod> of /tools/merge-pdf,
+# /tools/pdf-to-excel and /about only.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 16 Oct. <<<
+LINK_GAPS_LASTMOD = "2026-10-16"
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
 STATIC_LASTMOD = {
     "guides": "2026-10-08",
-    "about": RELEASE_DATE,
+    "about": LINK_GAPS_LASTMOD,   # 16 Oct 2026: link to the guides hub added
     "contact": "2026-10-08",
     "privacy": "2026-10-11",   # counsel-approved notice (consent v2 + fix7), 11 Oct 2026
     "terms": RELEASE_DATE,
@@ -471,6 +478,8 @@ TOOL_CONTENT = {
         "related": ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
         "seo_title": "PDF to Excel Converter Online Free | KuickKonvert",
         "meta_description": "Convert PDF tables into editable Excel XLSX files online. Free PDF to Excel converter with no sign-up or installation.",
+        # 16 Oct 2026: new "Further reading" guide link (see LINK_GAPS_LASTMOD).
+        "lastmod": LINK_GAPS_LASTMOD,
     },
     "ppt-to-pdf": {
         "intro": "PPT to PDF converts PowerPoint presentations to PDF online for free -- PPT and PPTX to PDF -- so slides display exactly as designed on any device, without needing PowerPoint installed.",
@@ -685,6 +694,8 @@ TOOL_CONTENT = {
         "related": ["split-pdf", "compress-pdf", "pdf-to-word"],
         "seo_title": "Merge PDF Online Free - Combine PDF Files | KuickKonvert",
         "meta_description": "Merge PDF files online for free: combine PDF documents into one file, in the order you add them. A simple PDF merger with no sign-up or installation.",
+        # 16 Oct 2026: new "Further reading" guide link (see LINK_GAPS_LASTMOD).
+        "lastmod": LINK_GAPS_LASTMOD,
     },
     "split-pdf": {
         "how_to_heading": "How to split a PDF into separate pages",
@@ -1014,7 +1025,7 @@ GUIDES = [
         "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
         "published": "2026-09-14",
         "updated": "2026-10-02",
-        "related_tools": ["compress-pdf"],
+        "related_tools": ["compress-pdf", "merge-pdf"],
         "sections": [
             {
                 "heading": "What actually makes a PDF big",
@@ -1584,7 +1595,7 @@ GUIDES = [
         "meta_description": "Why some PDFs convert to editable Word text and others become a picture: how to spot a scan, our own test results, and a free way to handle scans.",
         "dek": "Whether a PDF converts into editable Word text depends on one thing: whether the PDF contains real text or a picture of text. Here's how to tell in five seconds, and what to do when it's a scan.",
         "published": "2026-10-05",
-        "related_tools": ["pdf-to-word"],
+        "related_tools": ["pdf-to-word", "pdf-to-excel"],
         "sections": [
             {
                 "heading": "Two kinds of PDF that look the same",
