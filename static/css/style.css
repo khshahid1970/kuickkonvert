@@ -782,6 +782,13 @@ body {
   margin: 0 0 14px;
 }
 
+/* Accepted types and limits under the Choose button (Package 1, 16 Oct 2026) */
+.upload-limits {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+
 .btn {
   display: inline-block;
   padding: 10px 22px;
