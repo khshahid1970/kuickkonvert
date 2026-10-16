@@ -11,7 +11,44 @@
   const convertBtn = document.getElementById("convert-btn");
   const statusEl = document.getElementById("status");
 
+  // Upload rules (Package 1, 16 Oct 2026), rendered into data-* attributes by
+  // tool.html from the same values the server enforces. Checked here only to
+  // stop an upload that would certainly fail; the server still checks all.
+  const acceptExts = (form.dataset.accept || "")
+    .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  const maxBytes = (parseInt(form.dataset.maxMb, 10) || 50) * 1024 * 1024 - 64 * 1024;
+  const minFiles = parseInt(form.dataset.minFiles, 10) || 1;
+  const maxFiles = parseInt(form.dataset.maxFiles, 10) || 0;
+  const typesText = (document.getElementById("upload-limits") || {}).textContent || "";
+
   let selectedFiles = [];
+
+  function totalBytes() {
+    return selectedFiles.reduce((sum, f) => sum + (f.size || 0), 0);
+  }
+
+  function extOk(name) {
+    if (acceptExts.length === 0) return true;
+    const dot = (name || "").lastIndexOf(".");
+    return dot !== -1 && acceptExts.indexOf(name.slice(dot).toLowerCase()) !== -1;
+  }
+
+  // Returns null when the current selection can be sent, otherwise
+  // {code, message} describing the first problem found.
+  function selectionProblem() {
+    if (selectedFiles.length < minFiles) {
+      return { code: "merge_needs_two", message: `Add ${minFiles} or more PDFs to merge (you have ${selectedFiles.length}).` };
+    }
+    if (maxFiles && selectedFiles.length > maxFiles) {
+      return { code: "too_many_files", message: `You can convert up to ${maxFiles} files at a time -- please remove ${selectedFiles.length - maxFiles}.` };
+    }
+    if (totalBytes() > maxBytes) {
+      const mb = (totalBytes() / 1048576).toFixed(1);
+      const limit = form.dataset.maxMb || "50";
+      return { code: "file_too_large", message: `These files add up to ${mb} MB; the limit is ${limit} MB${multi ? " in total" : ""}. Please use ${multi ? "fewer or smaller files" : "a smaller file"}.` };
+    }
+    return null;
+  }
 
   function renderFileList() {
     fileListEl.innerHTML = "";
@@ -30,7 +67,15 @@
       li.appendChild(btn);
       fileListEl.appendChild(li);
     });
-    convertBtn.disabled = selectedFiles.length === 0;
+    const problem = selectedFiles.length ? selectionProblem() : null;
+    convertBtn.disabled = selectedFiles.length === 0 || !!problem;
+    if (problem) {
+      // Too few files is a "keep going" hint, not an error.
+      setStatus(escapeHtml(problem.message), problem.code === "merge_needs_two" ? "" : "error");
+    } else if (statusEl.classList.contains("error") || statusEl.dataset.hint === "1") {
+      setStatus("");
+    }
+    statusEl.dataset.hint = problem && problem.code === "merge_needs_two" ? "1" : "";
   }
 
   function escapeHtml(s) {
@@ -67,6 +112,23 @@
     window.gtag("event", name, payload);
   }
 
+  // Package 1 (16 Oct 2026): the server now sends a stable "code" with every
+  // failure. error_type keeps the broad categories used since 10 Oct; the new
+  // error_code parameter carries the precise reason.
+  const CODE_TYPES = {
+    pdf_damaged: "damaged", image_damaged: "damaged", pdf_locked: "damaged",
+    wrong_type: "unsupported", already_target_format: "unsupported", pdf_scanned: "unsupported",
+    pdf_restricted: "unsupported",
+    file_too_large: "too_large", image_too_big: "too_large", output_too_big: "too_large",
+    too_many_pages: "too_large", server_memory_limit: "too_large", server_time_limit: "too_large",
+    too_slow: "too_large",
+    rate_limited: "rate_limited", busy: "busy", network_upload: "network",
+  };
+
+  function errorTypeFromCode(code) {
+    return CODE_TYPES[code] || (code && code.indexOf("http_") === 0 ? "gateway" : "other");
+  }
+
   function errorTypeFromStatus(status, message) {
     if (status === 413) return "too_large";
     if (status === 429) return "rate_limited";
@@ -87,7 +149,10 @@
   }
 
   function addFiles(fileListLike) {
-    const incoming = Array.from(fileListLike);
+    const all = Array.from(fileListLike);
+    // Drop files of a type this tool can't take, before any upload.
+    const incoming = all.filter((f) => extOk(f.name));
+    const rejected = all.length - incoming.length;
     if (!multi) {
       selectedFiles = incoming.slice(0, 1);
     } else {
@@ -95,6 +160,11 @@
     }
     renderFileList();
     if (incoming.length > 0) ga4("file_selected");
+    if (rejected > 0) {
+      ga4("conversion_blocked", { error_type: "unsupported", error_code: "wrong_type" });
+      const which = rejected === 1 ? "That file isn't" : `${rejected} files aren't`;
+      setStatus(escapeHtml(`${which} the right type for this tool. Accepted: ${typesText.split("·")[0].trim()}.`), "error");
+    }
   }
 
   input.addEventListener("change", () => addFiles(input.files));
@@ -157,6 +227,12 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (selectedFiles.length === 0) return;
+    const problem = selectionProblem();
+    if (problem) {
+      ga4("conversion_blocked", { error_type: errorTypeFromCode(problem.code), error_code: problem.code });
+      setStatus(escapeHtml(problem.message), "error");
+      return;
+    }
 
     convertBtn.disabled = true;
     setStatus('<span class="spinner"></span>Converting&hellip;');
@@ -171,15 +247,33 @@
       }
     });
 
+    let resp;
     try {
-      const resp = await fetch(`/convert/${slug}`, { method: "POST", body: fd });
+      // One automatic retry when the connection drops before any reply
+      // (fetch rejects). Never retried after the server has answered.
+      try {
+        resp = await fetch(`/convert/${slug}`, { method: "POST", body: fd });
+      } catch (firstErr) {
+        setStatus('<span class="spinner"></span>Connection dropped &ndash; trying again&hellip;');
+        ga4("upload_retried");
+        resp = await fetch(`/convert/${slug}`, { method: "POST", body: fd });
+      }
       if (!resp.ok) {
         let message = "Conversion failed. Please try again.";
+        let code = "";
         try {
           const data = await resp.json();
           if (data && data.error) message = data.error;
-        } catch (_) {}
-        ga4("conversion_failed", { error_type: errorTypeFromStatus(resp.status, message) });
+          if (data && data.code) code = String(data.code);
+        } catch (_) {
+          // Not our JSON: a gateway/proxy page (e.g. 502 during a deploy).
+          code = "http_" + resp.status;
+          if (resp.status >= 500) message = "The server didn't respond properly. Please try again in a minute.";
+        }
+        ga4("conversion_failed", {
+          error_type: code ? errorTypeFromCode(code) : errorTypeFromStatus(resp.status, message),
+          error_code: code || ("http_" + resp.status),
+        });
         setStatus(escapeHtml(message), "error");
         convertBtn.disabled = false;
         return;
@@ -223,8 +317,12 @@
       const nextSteps = document.getElementById("next-steps");
       if (nextSteps) nextSteps.hidden = false;
     } catch (err) {
-      ga4("conversion_failed", { error_type: "other" });
-      setStatus("Network error. Please check your connection and try again.", "error");
+      // No reply at all (upload dropped twice) vs. reply cut off mid-download.
+      const code = resp ? "download_interrupted" : "network_upload";
+      ga4("conversion_failed", { error_type: "network", error_code: code });
+      setStatus(resp
+        ? "The download was interrupted. Please try again."
+        : "Upload interrupted &ndash; please check your connection and try again. Large files upload more reliably on Wi-Fi.", "error");
     } finally {
       convertBtn.disabled = false;
     }
