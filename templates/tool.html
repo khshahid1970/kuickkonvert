@@ -67,7 +67,11 @@
 
     <form id="convert-form"
           data-slug="{{ tool.slug }}"
-          data-multi="{{ 'true' if tool.multi else 'false' }}">
+          data-multi="{{ 'true' if tool.multi else 'false' }}"
+          data-accept="{{ tool.accept }}"
+          data-max-mb="{{ upload_rules.max_mb }}"
+          data-min-files="{{ upload_rules.min_files }}"
+          data-max-files="{{ upload_rules.max_files }}">
 
       <div class="dropzone" id="dropzone">
         <span class="dropzone-icon">
@@ -75,7 +79,14 @@
         </span>
         <p class="dropzone-hint">Drag &amp; drop {{ 'files' if tool.multi else 'a file' }} here, or</p>
         <label class="btn btn-secondary" for="file-input" id="file-input-label" role="button" tabindex="0">Choose {{ 'files' if tool.multi else 'file' }}</label>
-        <input type="file" id="file-input" name="file" accept="{{ tool.accept }}" {% if tool.multi %}multiple{% endif %} aria-label="Choose {{ 'files' if tool.multi else 'file' }}" hidden>
+        <input type="file" id="file-input" name="file" accept="{{ tool.accept }}" {% if tool.multi %}multiple{% endif %} aria-label="Choose {{ 'files' if tool.multi else 'file' }}" aria-describedby="upload-limits" hidden>
+        {% set fmts = accepted_formats %}
+        <p class="upload-limits" id="upload-limits">
+          {{ (fmts[:-1]|join(', ') ~ ' or ' ~ fmts[-1]) if fmts|length > 1 else fmts[0] }}
+          {%- if upload_rules.min_files > 1 %} &middot; add {{ upload_rules.min_files }} or more files{% endif %}
+          {%- if upload_rules.max_files %} &middot; up to {{ upload_rules.max_files }} files{% endif %}
+          &middot; up to {{ upload_rules.max_mb }} MB{{ ' in total' if tool.multi else '' }}
+        </p>
       </div>
 
       <ul id="file-list" class="file-list"></ul>
