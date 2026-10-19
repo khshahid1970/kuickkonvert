@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}About KuickKonvert - Free Online File Converter{% endblock %}
-{% block description %}KuickKonvert is a free online file conversion service for Word, Excel, PowerPoint, PDF, and image files — no sign-up, nothing stored.{% endblock %}
+{% block description %}KuickKonvert is a free online file conversion service for Word, Excel, PowerPoint, PDF, and image files — no sign-up, and uploads are deleted automatically after conversion.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -31,7 +31,7 @@
     <p>Three principles shape every tool on this site:</p>
     <ul class="why-list">
       <li><strong>No sign-up.</strong> Every tool is usable immediately -- there's no account, no email capture, and no login wall between you and your file.</li>
-      <li><strong>Nothing is stored.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
+      <li><strong>Nothing is kept.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
       <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50MB limit per upload (all files together) to keep conversions fast for everyone.</li>
     </ul>
 

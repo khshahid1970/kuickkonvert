@@ -28,6 +28,30 @@
     <h2>What to include</h2>
     <p>This single address covers all enquiries -- general questions, a tool that isn't working as expected, and privacy or data-handling questions about the <a href="{{ url_for('privacy') }}">Privacy notice</a>. To help us respond quickly, mention which tool you were using and, if relevant, roughly what size and format the file was (please don't attach the file itself if it contains sensitive information).</p>
 
+    <h2>Reporting a problem with a tool</h2>
+    <p>If a conversion fails or the result looks wrong, these details help us find the cause quickly:</p>
+    <ul>
+      <li>the tool you used, for example <a href="{{ url_for('tool_page', slug='pdf-to-word') }}">PDF to Word</a> or <a href="{{ url_for('tool_page', slug='merge-pdf') }}">Merge PDF</a>;</li>
+      <li>the file type and its approximate size and number of pages;</li>
+      <li>the exact message shown on the page, if there was one;</li>
+      <li>what you expected and what you got instead;</li>
+      <li>your device and browser, for example "Android phone, Chrome".</li>
+    </ul>
+
+    <h2>Before you write: common answers</h2>
+    <ul>
+      <li><strong>Upload limits.</strong> Each conversion accepts up to 50 MB in total. Image tools take up to 20 images at a time, and PDF to JPG, PDF to PNG and PDF to PPT convert up to 50 pages at a time; for a longer PDF, use <a href="{{ url_for('tool_page', slug='split-pdf') }}">Split PDF</a> first.</li>
+      <li><strong>Password-protected PDFs.</strong> A PDF that needs a password to open can't be converted. Remove the password in the program that created it, then try again.</li>
+      <li><strong>Scanned PDFs.</strong> A scanned page is a picture of text, so PDF to Word can't turn it into editable text. Our guide <a href="{{ url_for('guide_page', slug='pdf-to-word-text-vs-scanned') }}">Text-based vs scanned PDFs</a> explains the difference and what to do with a scan.</li>
+      <li><strong>More help.</strong> Our <a href="{{ url_for('guides_index') }}">guides</a> answer common questions about file formats, and each tool page has its own FAQ.</li>
+    </ul>
+
+    <h2>Privacy questions</h2>
+    <p>For questions about how your files and data are handled, read the <a href="{{ url_for('privacy') }}">Privacy notice</a> first, then email the address above. Please don't send us a file that contains personal or confidential information.</p>
+
+    <h2>Source code</h2>
+    <p>KuickKonvert is open source under the AGPL-3.0 licence. Developers can read the code and report issues on <a href="https://github.com/khshahid1970/kuickkonvert" target="_blank" rel="noopener">GitHub</a>.</p>
+
     <h2>Response times</h2>
     <p>KuickKonvert is currently run by a single operator, so please allow a reasonable amount of time for a reply.</p>
   </div>

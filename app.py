@@ -43,6 +43,7 @@ from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_t
 from converters.isolate import run_isolated, JobFailed
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
+    convert_word_format,
 )
 from converters.tables import convert_pdf_to_excel
 from converters.images import images_to_pdf, pdf_to_images, convert_images
@@ -554,6 +555,17 @@ def h_word_to_pdf(files, form, job_dir):
     return out, change_ext(os.path.basename(src), "pdf"), "application/pdf"
 
 
+def h_doc_to_docx(files, form, job_dir):
+    # 19 Oct 2026: .doc -> .docx, .docx -> .doc (direction follows the upload).
+    [src] = _save_uploads(files, job_dir, {"doc", "docx"})
+    out = convert_word_format(src, job_dir)
+    if out.lower().endswith(".docx"):
+        return out, change_ext(os.path.basename(src), "docx"), (
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+    return out, change_ext(os.path.basename(src), "doc"), "application/msword"
+
+
 def h_excel_to_pdf(files, form, job_dir):
     [src] = _save_uploads(files, job_dir, {"xls", "xlsx"})
     out = convert_office_to_pdf(src, job_dir)
@@ -749,6 +761,7 @@ HANDLERS = {
     "excel-to-pdf": h_excel_to_pdf,
     "ppt-to-pdf": h_ppt_to_pdf,
     "pdf-to-word": h_pdf_to_word,
+    "doc-to-docx": h_doc_to_docx,
     "pdf-to-excel": h_pdf_to_excel,
     "pdf-to-ppt": h_pdf_to_ppt,
     "jpg-to-pdf": h_jpg_to_pdf,

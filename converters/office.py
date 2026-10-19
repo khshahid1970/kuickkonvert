@@ -314,6 +314,22 @@ def convert_office_to_pdf(input_path: str, out_dir: str) -> str:
     return _run_soffice(xlsx_path, out_dir, "pdf")
 
 
+def convert_word_format(input_path: str, out_dir: str) -> str:
+    """DOC <-> DOCX (19 Oct 2026, /tools/doc-to-docx).
+
+    The direction follows the uploaded file: .doc -> .docx, .docx -> .doc.
+    Same LibreOffice path as convert_office_to_pdf, including the F5 (SSRF)
+    removal of external links before LibreOffice opens the file.
+    """
+    ext = os.path.splitext(input_path)[1].lower().lstrip(".")
+    strip_external_links(input_path)
+    if ext == "doc":
+        return _run_soffice(input_path, out_dir, "docx:MS Word 2007 XML")
+    if ext == "docx":
+        return _run_soffice(input_path, out_dir, "doc:MS Word 97")
+    raise ConversionError("Please upload a .doc or .docx file.")
+
+
 def convert_pdf_to_word(input_path: str, out_dir: str) -> str:
     out_path = os.path.join(out_dir, "converted_via_pdf2docx.docx")
     # Privacy (added 2026-10-07): pdf2docx writes to the server log through

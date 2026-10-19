@@ -134,7 +134,7 @@
 {%- endif %}
 
 <title>{% block title %}KuickKonvert | Free File Conversion Tools{% endblock %}</title>
-<meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored.{% endblock %}">
+<meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up; uploaded files are deleted automatically after conversion.{% endblock %}">
 {% if not is_error_page %}<link rel="canonical" href="{{ canonical_url|default(site_url ~ request.path) }}">{% endif %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
@@ -165,7 +165,7 @@
   "@type": "WebSite",
   "name": "KuickKonvert",
   "url": "{{ site_url }}/",
-  "description": "Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up, files are not stored."
+  "description": "Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up; uploaded files are deleted automatically after conversion."
 }
 </script>
 <script type="application/ld+json">

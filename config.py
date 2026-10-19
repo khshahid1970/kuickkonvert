@@ -58,7 +58,7 @@ FIX_RELEASE_DATE = "2026-10-11"
 # >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) before you
 # commit, if it is not 12 Oct 2026. <<<
 SEO_FIX_RELEASE_DATE = "2026-10-12"
-HOME_LASTMOD = SEO_FIX_RELEASE_DATE
+# HOME_LASTMOD: set below with DOC_DOCX_RELEASE_DATE (19 Oct 2026); was SEO_FIX_RELEASE_DATE.
 TOOLS_LASTMOD = RELEASE_DATE
 # 15 Oct 2026: every guide gains a "Related guides" block (RELATED_GUIDES,
 # below), so every guide's sitemap <lastmod> moves to this date. The same
@@ -75,14 +75,25 @@ GUIDES_MARKUP_LASTMOD = SEO_FIX_RELEASE_DATE
 # /tools/pdf-to-excel and /about only.
 # >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 16 Oct. <<<
 LINK_GAPS_LASTMOD = "2026-10-16"
+# 19 Oct 2026 release ("DOC vs DOCX" package): new DOC to DOCX tool
+# (/tools/doc-to-docx), the DOC vs DOCX guide's new title, opening and
+# "How to convert" section, and the corrected "files are not stored" wording
+# (now "deleted automatically after conversion", matching the Organization
+# data). Dates ONLY the pages whose own content changes: the home page (new
+# tool card, tool count, WebSite description), /about (tool count and
+# description), the new tool, Word to PDF and PDF to Word (new related-tool
+# link) and the DOC vs DOCX guide (visible "Updated" line too).
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 19 Oct. <<<
+DOC_DOCX_RELEASE_DATE = "2026-10-19"
+HOME_LASTMOD = DOC_DOCX_RELEASE_DATE
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
 STATIC_LASTMOD = {
-    "guides": "2026-10-08",
-    "about": LINK_GAPS_LASTMOD,   # 16 Oct 2026: link to the guides hub added
-    "contact": "2026-10-08",
-    "privacy": "2026-10-11",   # counsel-approved notice (consent v2 + fix7), 11 Oct 2026
+    "guides": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: DOC vs DOCX guide title/summary changed (was 2026-10-08)
+    "about": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: tool count + description wording (was LINK_GAPS_LASTMOD)
+    "contact": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: help sections added (low word count, Ubersuggest)
+    "privacy": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: <title> lengthened + meta wording (notice text unchanged; counsel-approved 11 Oct 2026)
     "terms": RELEASE_DATE,
     "link-to-us": GUIDES_LINKS_LASTMOD,   # new page, 15 Oct 2026 package
 }
@@ -172,6 +183,18 @@ TOOLS = [
         "multi": False,
         "from_fmt": "PDF",
         "to_fmt": "DOC",
+    },
+    {
+        # 19 Oct 2026: new tool. Direction follows the uploaded file:
+        # .doc -> .docx, .docx -> .doc (converters/office.py convert_word_format).
+        "slug": "doc-to-docx",
+        "name": "DOC to DOCX",
+        "category": "Documents",
+        "description": "Convert old Word DOC files to DOCX -- or DOCX back to DOC for older Word.",
+        "accept": ".doc,.docx",
+        "multi": False,
+        "from_fmt": "DOC",
+        "to_fmt": "DOCX",
     },
     {
         "slug": "excel-to-pdf",
@@ -422,9 +445,11 @@ TOOL_CONTENT = {
             ("Will my formatting change?", "Page layout, fonts, and images are preserved as closely as possible. The main exception is font substitution (see \"Good to know\" above): fonts other than Calibri, Cambria, Arial, Times New Roman and Courier New can make text rewrap."),
             ("Can I convert a password-protected Word file?", "No -- remove the password in Word first (File → Info → Protect Document), then convert."),
         ],
-        "related": ["pdf-to-word", "excel-to-pdf", "ppt-to-pdf"],
+        "related": ["pdf-to-word", "doc-to-docx", "excel-to-pdf", "ppt-to-pdf"],
         "seo_title": "Word to PDF Converter - DOC & DOCX to PDF | KuickKonvert",
         "meta_description": "Free online DOC to PDF converter: convert Word files (DOC and DOCX) to PDF with no sign-up or installation. Files are deleted automatically.",
+        # 19 Oct 2026: new related-tool link to DOC to DOCX.
+        "lastmod": DOC_DOCX_RELEASE_DATE,
     },
     "pdf-to-word": {
         "intro": "This free tool converts PDF to Word online: it turns a PDF's pages into an editable DOCX file (PDF to DOCX), so you can update text you'd otherwise have to retype. It works best on PDFs that already contain real text, rather than a scan of a printed page.",
@@ -438,11 +463,36 @@ TOOL_CONTENT = {
             ("Will bullet points and numbering be preserved?", "They convert to plain text lines rather than a live bulleted list -- you may need to reapply list formatting in Word."),
             ("Does this work on a scanned PDF?", "This tool extracts text that's already embedded in the PDF; it doesn't perform OCR, so a scanned image-only PDF won't produce editable text."),
             ("Can I convert PDF to Word without sign-up?", "Yes -- there's no account, email or payment. Upload your PDF, convert it, and download the DOCX file. Your upload and the result are deleted from our server as soon as your download is ready."),
-            ("Can I convert PDF to DOC instead of DOCX?", "Our PDF to Word converter creates a DOCX file -- the standard Word format since Word 2007, which opens in Microsoft Word, Google Docs and LibreOffice. If you specifically need the older .doc format, open the DOCX in Word and choose File → Save As → Word 97-2003 Document (*.doc)."),
+            ("Can I convert PDF to DOC instead of DOCX?", "Our PDF to Word converter creates a DOCX file -- the standard Word format since Word 2007, which opens in Microsoft Word, Google Docs and LibreOffice. If you specifically need the older .doc format, upload the DOCX to our DOC to DOCX converter, which also converts DOCX to DOC -- or open it in Word and choose File → Save As → Word 97-2003 Document (*.doc)."),
         ],
-        "related": ["word-to-pdf", "pdf-to-excel", "pdf-to-ppt", "compress-pdf"],
+        "related": ["word-to-pdf", "doc-to-docx", "pdf-to-excel", "pdf-to-ppt", "compress-pdf"],
         "seo_title": "PDF to Word Converter Online Free (DOCX) | KuickKonvert",
         "meta_description": "Free online PDF to Word converter: turn a PDF into an editable Word (DOCX) file with no sign-up. Best results with text-based PDFs.",
+        # 19 Oct 2026: new related-tool link and FAQ mention of DOC to DOCX.
+        "lastmod": DOC_DOCX_RELEASE_DATE,
+    },
+    "doc-to-docx": {
+        "intro": "DOC to DOCX converts old Word 97-2003 documents (.doc) into DOCX, the format every version of Word since 2007 uses by default and the one Google Docs and LibreOffice handle best. It also works the other way: upload a .docx and you get a .doc back, for someone who still uses Word 2003 or earlier.",
+        "good_to_know": "The direction is set by the file you upload: a .doc comes back as a .docx, and a .docx comes back as a .doc. The conversion runs through LibreOffice on our server; text, headings, tables and pictures carry over, but a document with a complex layout can come out slightly differently, so give the result a quick look before you send it. Pictures linked from other websites (rather than stored in the file) are removed from a DOCX before conversion, for security. Password-protected files can't be converted.",
+        "use_cases": [
+            "Uploading an old .doc to a form or portal that only accepts .docx.",
+            "Opening an old Word 97-2003 file in Google Docs or a current program without Compatibility Mode.",
+            "Sending a document to someone who still uses Word 2003 or earlier (DOCX to DOC).",
+        ],
+        "faq": [
+            ("What is the difference between DOC and DOCX?", "DOC is the binary format used by Word 97 to 2003; DOCX is the modern format used since Word 2007, a ZIP archive of XML files. Our DOC vs DOCX guide explains what that changes for you."),
+            ("Can I convert DOCX to DOC as well?", "Yes -- upload a .docx file and you get a .doc back. You only need this if the person you are sending it to uses Word 2003 or earlier; every newer version of Word opens DOCX."),
+            ("Will my document look the same?", "Text, headings, tables and pictures carry over. Complex layouts can shift slightly, and fonts we don't have installed are replaced, so check the converted file before you send it."),
+            ("Can I convert DOC to DOCX in Microsoft Word instead?", "Yes. Open the .doc in Word and choose File → Save As → Word Document (*.docx). Our converter is useful when you don't have Word installed."),
+            ("Is it free, and are my files kept?", "It is free, with no sign-up. Your upload and the converted file are deleted from our server as soon as your download is ready."),
+        ],
+        "related": ["word-to-pdf", "pdf-to-word"],
+        "seo_title": "DOC to DOCX Converter Online Free | KuickKonvert",
+        "meta_description": "Convert DOC to DOCX online for free: turn old Word 97-2003 files into modern .docx, or DOCX back to DOC. No sign-up; files are deleted automatically.",
+        "h1": "DOC to DOCX Converter (and DOCX to DOC)",
+        # Label used in the "How to" steps: the result can be either format.
+        "out_label": "DOCX (or DOC)",
+        "lastmod": DOC_DOCX_RELEASE_DATE,
     },
     "excel-to-pdf": {
         "intro": "Excel to PDF turns an XLS or XLSX spreadsheet into a fixed-layout PDF -- useful whenever you want to share numbers without letting the recipient edit formulas, or print a clean copy of a sheet.",
@@ -801,6 +851,7 @@ CATEGORIES = ["Documents", "Images", "PDF Tools"]
 # Maps a format label to the CSS badge class used on homepage tool cards.
 FORMAT_BADGE_CLASS = {
     "DOC": "badge-doc",
+    "DOCX": "badge-doc",   # 19 Oct 2026: DOC to DOCX tool card (same Word blue)
     "XLS": "badge-xls",
     "PPT": "badge-ppt",
     "PDF": "badge-pdf",
@@ -841,10 +892,14 @@ ALLOWED_EXTENSIONS = {
 GUIDES = [
     {
         "slug": "docx-vs-doc",
-        "title": "DOCX vs DOC: What's Actually Different (and When It Matters)",
-        "seo_title": "DOCX vs DOC: The Real Difference Explained | KuickKonvert",
-        "meta_description": "DOC and DOCX both open in Word but aren't the same format underneath. What changed, what our own size test found, and when the difference affects you.",
-        "dek": "Both open in Word, but DOC and DOCX are built on completely different technology. Here's what that changes for you -- including one common claim our own test didn't bear out.",
+        # 19 Oct 2026: title, SEO title, meta description and opening rewritten
+        # "DOC vs DOCX" first and answer-first (SEO report 19 Oct 2026); new
+        # "How to convert DOC to DOCX (and back)" section; DOC to DOCX tool
+        # added to related_tools. The slug stays the same.
+        "title": "DOC vs DOCX: What's Actually Different (and When It Matters)",
+        "seo_title": "DOC vs DOCX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "meta_description": "What's the difference between DOC and DOCX? A side-by-side table, a real file-size test and a simple answer: use DOCX unless an old Word needs DOC.",
+        "dek": "DOCX is Word's modern format (Word 2007 onwards): a ZIP archive of XML files. DOC is the older binary format used by Word 97 to 2003. Use DOCX for almost everything, and DOC only when someone has a very old version of Word. Below: what that changes for you, and one common claim our own test didn't bear out.",
         "published": "2026-09-14",
         # 15 Oct 2026: quick-comparison table and three short question
         # sections added (the doc/docx query group is this site's largest
@@ -852,8 +907,8 @@ GUIDES = [
         # repeats a fact already stated and sourced further down this guide,
         # or is about our own PDF to Word converter (always writes .docx --
         # converters/office.py). OWNER: set to the actual deploy day.
-        "updated": GUIDES_LINKS_LASTMOD,   # = deploy day (set once, above)
-        "related_tools": ["word-to-pdf", "pdf-to-word"],
+        "updated": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026 (was GUIDES_LINKS_LASTMOD)
+        "related_tools": ["doc-to-docx", "word-to-pdf", "pdf-to-word"],
         "sections": [
             {
                 "heading": "DOC vs DOCX at a glance",
@@ -927,6 +982,14 @@ GUIDES = [
                     "Use DOCX unless someone specifically needs DOC for an old program. It is Word's default, it is the format other software supports best, and it keeps macros out unless you deliberately choose .docm.",
                     "If a form or portal asks for \"a Word document\" without saying which, DOCX is the safe choice. If it must not be edited at all, send a PDF instead -- our [[word-to-pdf|DOC to PDF converter]] accepts both .doc and .docx. Your upload and the PDF are deleted from our server as soon as your download is ready.",
                     "Going the other way, our [[pdf-to-word|PDF to Word converter]] always gives you a .docx file, so it opens in any current version of Word, Google Docs or LibreOffice.",
+                ],
+            },
+            {
+                "heading": "How to convert DOC to DOCX (and back)",
+                "paragraphs": [
+                    "In Microsoft Word: open the .doc file, choose File → Save As, and pick Word Document (*.docx). To go the other way, pick Word 97-2003 Document (*.doc) instead.",
+                    "Without Word: upload the file to our [[doc-to-docx|DOC to DOCX converter]]. A .doc comes back as a .docx, and a .docx comes back as a .doc. It is free, needs no sign-up, and your upload and the converted file are deleted from our server as soon as your download is ready.",
+                    "Either way, open the converted file once before you send it. Text, headings, tables and pictures carry over, but a complex layout can shift slightly.",
                 ],
             },
             {

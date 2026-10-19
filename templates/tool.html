@@ -16,28 +16,9 @@
   ]
 }
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": {{ tool.name|tojson }},
-  "url": {{ canonical_url|tojson }},
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Any (web-based)",
-  "description": {{ tool.meta_description|tojson }},
-  "isAccessibleForFree": true,
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "KuickKonvert",
-    "url": "{{ site_url }}/"
-  }
-}
-</script>
+{# SoftwareApplication JSON-LD removed 19 Oct 2026: Google's Software App
+    rich result requires aggregateRating or review, and KuickKonvert does
+    not publish ratings (no invented ratings). BreadcrumbList above stays. #}
 {% endblock %}
 {% block content %}
 <section class="tool-page">
@@ -133,7 +114,7 @@
     <section class="tool-info">
       <h2>{{ tool.get('how_to_heading') or ('How to convert ' ~ tool.name) }}</h2>
       {% set fmts = accepted_formats %}
-      {% set out_fmt = {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'}.get(tool.to_fmt, tool.to_fmt) %}
+      {% set out_fmt = tool.get('out_label') or {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'}.get(tool.to_fmt, tool.to_fmt) %}
       <ol class="how-to-steps">
         <li>Select your {{ (fmts[:-1]|join(', ') ~ ' or ' ~ fmts[-1]) if fmts|length > 1 else fmts[0] }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
         <li>Press Convert{{ ' (after changing the options above, if you want to)' if tool.get('fields') else '' }}. The conversion runs on our server and usually takes a few seconds.</li>
