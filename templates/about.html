@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}About KuickKonvert - Free Online File Converter{% endblock %}
-{% block description %}KuickKonvert is a free online file conversion service for Word, Excel, PowerPoint, PDF, and image files — no sign-up, and uploads are deleted automatically after conversion.{% endblock %}
+{% block description %}KuickKonvert offers {{ tool_count }} free online tools for Word, Excel, PowerPoint, PDF and images. No sign-up; files are deleted automatically after conversion.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -24,6 +24,7 @@
     <h1>About KuickKonvert</h1>
 
     <h2>What KuickKonvert is</h2>
+    <p><strong>KuickKonvert — spelled with a K</strong></p>
     <p>KuickKonvert is a free online file conversion service covering Word, Excel, PowerPoint, PDF, and image formats -- {{ tool_count }} tools in total, from everyday conversions like Word to PDF through to PDF utilities like merging, splitting, compressing, and password-protecting. Every tool works in your web browser, with your file converted on our server and then deleted, so there's nothing to install and no account to create.</p>
     <p>Alongside the tools, our <a href="{{ url_for('guides_index') }}">guides</a> explain in plain English what actually changes when you convert a file -- fonts, page layout, file size, password protection and more -- based on our own tests.</p>
 
@@ -34,6 +35,20 @@
       <li><strong>Nothing is kept.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
       <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50MB limit per upload (all files together) to keep conversions fast for everyone.</li>
     </ul>
+
+    <h2>How we test</h2>
+    <p>Before a change goes live, we run it on a test copy of the site and convert sample files with every tool, then check the results. The test results in our guides come from our own conversions of test files, and those guides say what we tested and with which software. Your own files may behave differently, so always check a converted file before you rely on it.</p>
+
+    {#- Package 2 (24 Oct 2026): the two sections below were approved by
+         counsel on 16 Oct 2026 (claude/legal-agpl-memo-16102026.md,
+         section 1) and are used VERBATIM. Do not edit the wording without
+         counsel's approval. -#}
+    <h2>Open Source Software Blueprints</h2>
+    <p>KuickKonvert's underlying application source code is published under the GNU Affero General Public License v3 (AGPL-3.0). The complete repository is inspectable and available at <a href="https://github.com/khshahid1970/kuickkonvert" target="_blank" rel="noopener">https://github.com/khshahid1970/kuickkonvert</a>.</p>
+    <p>To the maximum extent permitted by applicable law, this source code is provided "AS-IS" without warranties of any kind. Access to and performance of the live web interface at kuickkonvert.com is free of charge and remains governed exclusively by our website Terms of Service.</p>
+
+    <h2>Third-Party Software Components</h2>
+    <p>This cloud application layer utilizes unmodified third-party open-source programs and utility packages (including LibreOffice, Ghostscript, Poppler, and PyMuPDF). Listing these components does not convey licensing permissions; their distinct license versions, explicit copyrights, and compliance obligations remain subject to verification under their respective license headers.</p>
 
     <h2>Who operates KuickKonvert</h2>
     <p>KuickKonvert is a production of Shahid Iqbal. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>

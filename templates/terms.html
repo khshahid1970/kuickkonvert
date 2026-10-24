@@ -22,7 +22,7 @@
       <span aria-current="page">Terms of Service</span>
     </nav>
     <h1>Terms of Service</h1>
-    <p><em>Effective date: {{ release_date_text }}.</em></p>
+    <p><em>Effective date: {{ release_date_text }}. Last updated: {{ terms_updated_text }}.</em></p>
 
     <h2>1. Who these terms are between</h2>
     <p>These Terms of Service ("Terms") govern your use of KuickKonvert (the "Service"), available at kuickkonvert.com, operated by Shahid Iqbal ("we", "us", "our"). By uploading a file, clicking Convert, or otherwise using the Service, you agree to these Terms and to our <a href="{{ url_for('privacy') }}">Privacy notice</a>. If you do not agree, do not use the Service.</p>
@@ -72,7 +72,13 @@
     <h2>14. Dispute resolution: informal resolution first, then forum</h2>
     <p>Informal resolution. Before starting any formal proceeding, you agree to contact us at {{ obfuscated_mailto('info@kuickkonvert.com') }} with a brief description of the dispute, and to allow us 30 days to try to resolve it informally. Forum. Subject to any mandatory right you have under your local consumer-protection law to bring proceedings in your own country, the courts of Islamabad, Pakistan shall have exclusive jurisdiction over any dispute arising out of or relating to the Service or these Terms.</p>
 
-    <h2>15. Contact</h2>
+    {#- Package 2 (24 Oct 2026): clause approved by counsel on 16 Oct 2026
+         (claude/legal-agpl-memo-16102026.md, section 1), used VERBATIM. Do not
+         edit the wording without counsel's approval. -#}
+    <h2>15. Software Licensing vs. Hosted Infrastructure Access</h2>
+    <p>These Terms of Service govern your access to and usage of the live web user interface and data-processing limits hosted at kuickkonvert.com. Separately, the underlying application software source code is distributed independently under the GNU Affero General Public License v3 (AGPL-3.0). Nothing within these website service usage terms limits, waives, or alters your rights or obligations under that open-source software license. These Terms do not exclude mandatory legal obligations or third-party license conditions that cannot be lawfully disclaimed.</p>
+
+    <h2>16. Contact</h2>
     <p>Questions about these Terms, and notices under section 7, can be sent to {{ obfuscated_mailto('info@kuickkonvert.com') }}, or via the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
   </div>
 </section>
