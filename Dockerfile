@@ -30,8 +30,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Package 2 (24 Oct 2026): install the COMPLETE pinned list (every dependency
+# at an exact version, see requirements-lock.txt), so the image matches the
+# public repository exactly; "pip check" stops the build on any conflict.
+COPY requirements.txt requirements-lock.txt ./
+RUN pip install --no-cache-dir -r requirements-lock.txt && pip check
 
 COPY . .
 RUN mkdir -p tmp

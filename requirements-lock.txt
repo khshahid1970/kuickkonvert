@@ -1,0 +1,62 @@
+# requirements-lock.txt -- the COMPLETE, pinned list of Python packages the
+# live site installs (Package 2, 24 Oct 2026). The Dockerfile installs from
+# THIS file, so the public repository states exactly which versions run.
+#
+# What it is: requirements.txt (the 16 packages the code uses directly)
+# resolved with every dependency of a dependency pinned too -- 44 packages.
+# The versions are the ones that resolved on 16 Oct 2026 (the licence check
+# in the AGPL legal record, e.g. pymupdf 1.28.2), for Python 3.11 on Linux:
+#   uv pip compile requirements.txt --python-version 3.11 \
+#     --python-platform x86_64-manylinux_2_28 \
+#     --exclude-newer 2026-10-16T12:00:00Z
+# Checked 24 Oct 2026: a fresh Python 3.11 install from this file gives exactly
+# these 44 packages (pip freeze) and "pip check" finds no conflicts.
+#
+# Why it matters: without it, a rebuild after 19 Oct 2026 would pick up
+# PyMuPDF 2.0 and 8 extra packages (onnxruntime, protobuf, ...), untested.
+# To upgrade: change requirements.txt, re-run the command above with a new
+# date, run the full tests, and commit both files together.
+blinker==1.9.0
+cffi==2.1.1
+chardet==7.6.0
+charset-normalizer==3.5.2
+click==8.5.0
+cryptography==50.0.2
+deprecated==1.3.1
+et-xmlfile==2.0.0
+fire==0.7.1
+flask==3.1.3
+flask-limiter==4.1.1
+fonttools==4.67.0
+gunicorn==22.0.0
+img2pdf==0.5.1
+itsdangerous==2.2.0
+jinja2==3.1.6
+limits==5.8.0
+lxml==6.1.3
+markupsafe==3.0.4
+numpy==2.4.6
+opencv-python-headless==5.0.0.93
+openpyxl==3.1.5
+ordered-set==4.1.0
+packaging==26.3
+pdf2docx==0.5.13
+pdf2image==1.17.0
+pdfminer-six==20260107
+pdfplumber==0.11.10
+pi-heif==1.4.0
+pikepdf==9.3.0
+pillow==12.3.0
+pycparser==3.11
+pymupdf==1.28.2
+pypdf==6.19.0
+pypdfium2==5.14.0
+python-docx==1.2.0
+python-dotenv==1.2.2
+python-pptx==1.0.2
+reportlab==4.2.5
+termcolor==3.3.0
+typing-extensions==4.16.0
+werkzeug==3.1.9
+wrapt==2.5.1
+xlsxwriter==3.2.9

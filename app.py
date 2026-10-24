@@ -36,7 +36,7 @@ from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
     RELATED_GUIDES, HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
-    RELEASE_DATE_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
+    RELEASE_DATE_TEXT, TERMS_UPDATED_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
     ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
 from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_temp
@@ -1018,7 +1018,9 @@ def contact():
 
 @app.route("/terms")
 def terms():
-    return render_template("terms.html", canonical_url=f"{SITE_URL}/terms")
+    # Package 2 (24 Oct 2026): the "Last updated" line next to the effective date.
+    return render_template("terms.html", canonical_url=f"{SITE_URL}/terms",
+                           terms_updated_text=TERMS_UPDATED_TEXT)
 
 
 # Added 2026-10-14: "Link to us" page -- ready-made text link + badge + per-tool

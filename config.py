@@ -85,16 +85,38 @@ LINK_GAPS_LASTMOD = "2026-10-16"
 # link) and the DOC vs DOCX guide (visible "Updated" line too).
 # >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 19 Oct. <<<
 DOC_DOCX_RELEASE_DATE = "2026-10-19"
+# 24 Oct 2026 (AI-visibility plan, Google steps 2 and 5): three new guides
+# (xls-vs-xlsx, ppt-vs-pptx, pdf-or-word-which-to-send) and answer-first
+# openings for the PDF compression and Excel fit-to-page guides.
+# Combined release (Package 2 + 3): uses PACKAGE2_RELEASE_DATE below, so there is ONE date to set.
 HOME_LASTMOD = DOC_DOCX_RELEASE_DATE
+# Package 2 ("trust content", built 24 Oct 2026): About gains the open-source
+# sections (wording approved by counsel, 16 Oct 2026, used verbatim) and a
+# "How we test" note; Terms gains section 15 "Software Licensing vs. Hosted
+# Infrastructure Access" and a "Last updated" line; new guide "What happens
+# to your file"; font-substitution table in the Word to PDF guide; the guides
+# list gains the new guide. Dates ONLY those pages (sitemap <lastmod>, the
+# Terms "Last updated" line and the two guides' visible dates). The footer
+# link text change on every page is not a change to their own content.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 24 Oct. <<<
+PACKAGE2_RELEASE_DATE = "2026-10-24"
+NEW_GUIDES_RELEASE_DATE = PACKAGE2_RELEASE_DATE  # Package 3 guides and openings (combined release)
+TERMS_UPDATED_TEXT = _date.fromisoformat(PACKAGE2_RELEASE_DATE).strftime("%-d %B %Y")
+# Package 2 also carries the two queued fixes (claude/next-release-pending.md):
+# the shorter /about meta description (173 -> 147 characters, Bing flag) and
+# TikTok in the Organization sameAs + footer. The home page carries the
+# Organization data Google reads and gains the new guide in its guides list,
+# so its <lastmod> moves too.
+HOME_LASTMOD = PACKAGE2_RELEASE_DATE   # was DOC_DOCX_RELEASE_DATE
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
 STATIC_LASTMOD = {
-    "guides": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: DOC vs DOCX guide title/summary changed (was 2026-10-08)
-    "about": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: tool count + description wording (was LINK_GAPS_LASTMOD)
+    "guides": PACKAGE2_RELEASE_DATE,   # Package 2: new guide listed (was DOC_DOCX_RELEASE_DATE)
+    "about": PACKAGE2_RELEASE_DATE,   # Package 2: open-source sections + How we test (was DOC_DOCX_RELEASE_DATE)
     "contact": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: help sections added (low word count, Ubersuggest)
     "privacy": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: <title> lengthened + meta wording (notice text unchanged; counsel-approved 11 Oct 2026)
-    "terms": RELEASE_DATE,
+    "terms": PACKAGE2_RELEASE_DATE,   # Package 2: new section 15 + "Last updated" line (was RELEASE_DATE)
     "link-to-us": GUIDES_LINKS_LASTMOD,   # new page, 15 Oct 2026 package
 }
 
@@ -1085,9 +1107,9 @@ GUIDES = [
         "title": "PDF Compression Explained: Screen vs eBook vs Printer (With Real Test Results)",
         "seo_title": "PDF Compression Levels Explained (Tested) | KuickKonvert",
         "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
-        "dek": "Each level is a fixed recipe for shrinking the images inside a PDF. Knowing the recipe tells you in advance which level will actually make your file smaller -- and which won't.",
+        "dek": "Compressing a PDF makes it smaller mainly by shrinking the pictures inside it: lowering their resolution and storing them with stronger JPEG compression. Text stays sharp at every level. Screen shrinks photos the most, eBook is the balanced choice, and Printer keeps the most detail -- while a text-only PDF may hardly shrink at all. Below: what each level does, and our own test results.",
         "published": "2026-09-14",
-        "updated": "2026-10-02",
+        "updated": NEW_GUIDES_RELEASE_DATE,  # 24 Oct 2026: answer-first opening (was: "2026-10-02")
         "related_tools": ["compress-pdf", "merge-pdf"],
         "sections": [
             {
@@ -1428,9 +1450,9 @@ GUIDES = [
         "title": "How to Make a Spreadsheet Fit on One Page When You Save It as a PDF",
         "seo_title": "How to Fit a Spreadsheet on One PDF Page | KuickKonvert",
         "meta_description": "Why spreadsheets split across pages in a PDF, what our Excel to PDF tool does automatically, our measured results, and how to keep the text readable.",
-        "dek": "Our Excel to PDF tool always fits every column across the page width. The real question is how small the text becomes -- and that is something you can control before you upload.",
+        "dek": "To fit a whole sheet on one PDF page in Excel, open Page Layout > Page Setup, choose Fit to 1 page wide by 1 tall, then save as PDF. Our Excel to PDF tool does the width part automatically: every column is fitted across the page, and long sheets continue onto further pages. The real question is how small the text becomes -- and that is something you can control before you upload.",
         "published": "2026-10-05",
-        "updated": "2026-10-10",
+        "updated": NEW_GUIDES_RELEASE_DATE,  # 24 Oct 2026: answer-first opening (was: "2026-10-10")
         "related_tools": ["excel-to-pdf"],
         "sections": [
             {
@@ -1929,6 +1951,7 @@ GUIDES = [
         "meta_description": "Do links, headings, headers, comments and photos survive Word to PDF conversion? Our test results, including how photos are resized, and what to check first.",
         "dek": "A Word document holds more than the words on the page: links, heading structure, comments, full-size photos. We tested which of these make it into the PDF our tool creates.",
         "published": "2026-10-05",
+        "updated": PACKAGE2_RELEASE_DATE,   # Package 2: font-substitution table added
         "related_tools": ["word-to-pdf"],
         "sections": [
             {
@@ -1984,6 +2007,21 @@ GUIDES = [
                 "paragraphs": [
                     "Text is converted as real text, but in the fonts available on our server. Calibri and Arial are replaced by metric-compatible twins, so the layout stays the same. Aptos, the newer Microsoft 365 default, is not, and in our test the same document grew from four pages to five. Our guide on why a PDF's layout sometimes shifts explains this in detail.",
                 ],
+                # Package 2 (24 Oct 2026): facts from the Dockerfile notes (the
+                # font packages installed on the server) and checked with
+                # fc-match on the test machine.
+                "table": {
+                    "caption": "Fonts our server uses in place of common Microsoft fonts",
+                    "headers": ["Font in your document", "Font used in the PDF"],
+                    "rows": [
+                        ["Calibri", "Carlito"],
+                        ["Cambria", "Caladea"],
+                        ["Arial", "Liberation Sans"],
+                        ["Times New Roman", "Liberation Serif"],
+                        ["Courier New", "Liberation Mono"],
+                    ],
+                    "note": "Each replacement has the same character widths as the original, so line breaks and page counts match. The letters look similar but not identical, because the Microsoft fonts themselves can't be redistributed. Fonts not in this table, such as Aptos, may be replaced by a font with different widths, so check the page count.",
+                },
             },
             {
                 "heading": "Checklist before converting",
@@ -2304,6 +2342,327 @@ GUIDES = [
             },
         ],
     },
+    {
+        # Package 2 (24 Oct 2026). Every statement here is checked against the
+        # code at the time of writing -- change it if the code changes:
+        #   converters/utils.py job_workspace() (own folder, deleted in a
+        #   finally block), subprocess_env() (helper temp files inside it) and
+        #   sweep_stale_temp() (30-minute age); app.py convert() (output read
+        #   into memory, folder deleted, then sent), _maybe_sweep_temp() and
+        #   the start-up sweep (TEMP_SWEEP_SECONDS, default 1800);
+        #   config.MAX_CONTENT_LENGTH (50 MB default) and
+        #   app.MAX_IMAGES_PER_CONVERSION (20, image-to-image tools only);
+        #   converters/isolate.py (separate process, 700 MB / 170 s defaults);
+        #   logging as in the Privacy notice. Region: Render Settings show
+        #   "Singapore (Southeast Asia)" (checked 10 Oct 2026).
+        "slug": "what-happens-to-your-file",
+        "title": "What Happens to Your File When You Use KuickKonvert",
+        "seo_title": "What Happens to Your File on KuickKonvert | KuickKonvert",
+        "meta_description": "Where your upload goes, how long it exists and when it is deleted: each conversion runs in its own temporary folder on our server and is then deleted.",
+        "dek": "KuickKonvert converts files on our server, not in your browser. Here is, step by step, where your file goes, how long it exists there, and how it is deleted.",
+        "published": PACKAGE2_RELEASE_DATE,
+        "related_tools": [],
+        "sections": [
+            {
+                "heading": "Where your file is converted",
+                "paragraphs": [
+                    "When you press Convert, your file is uploaded to our server and converted there. The server is run by our hosting provider, Render, in its Singapore (Southeast Asia) region, and traffic reaches it through Cloudflare's network. If you are outside Singapore, this means your file is briefly processed in another country.",
+                ],
+            },
+            {
+                "heading": "Each conversion gets its own temporary folder",
+                "paragraphs": [
+                    "Every conversion starts with a new, empty folder with a random name. Your uploaded file, any working files the converter creates and the converted result are all written into that folder. The helper programs we use, such as LibreOffice and Ghostscript, are pointed at the same folder for their own temporary files.",
+                    "Each conversion also runs in a separate process with its own memory allowance and a time limit, so one very large file can't hold up the whole server.",
+                ],
+            },
+            {
+                "heading": "When your file is deleted",
+                "paragraphs": [
+                    "When the conversion finishes, the converted file is read into memory, the whole folder is deleted, and only then is the result sent to your browser. If the conversion fails, the folder is deleted in the same way. The code that deletes it runs whatever the outcome, success or error.",
+                    "If a server process stops unexpectedly in the middle of a conversion, its folder can be left behind. A clean-up removes any such folder once it is more than 30 minutes old. It runs whenever a server process starts, and at most every 30 minutes when a new conversion begins.",
+                ],
+            },
+            {
+                "heading": "Size limits",
+                "paragraphs": [
+                    "Each upload can be up to 50 MB, counting all the files in it together. The image converters (HEIC, WEBP and PNG to JPG, and JPG to PNG) take up to 20 images at a time.",
+                ],
+            },
+            {
+                "heading": "What our logs record",
+                "paragraphs": [
+                    "Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one. Our hosting providers also see basic request details, such as the page or tool requested, as described in our Privacy notice.",
+                ],
+            },
+            {
+                "heading": "What this means for you",
+                "paragraphs": [
+                    "Keep your original file: we don't keep a copy, so once the folder is deleted there is nothing we can send you again. Download the result when it is ready, and open it to check it before you rely on it. If a file contains information you are not allowed to share, don't upload it. Our Privacy notice has the full details.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "xls-vs-xlsx",
+        # 24 Oct 2026 (AI-visibility plan, Google step 5): mirrors the DOC vs
+        # DOCX guide, the site's largest source of search impressions. Facts:
+        # Microsoft support "Use Excel with earlier versions of Excel" (row and
+        # column limits, data beyond them "will not be saved") and "Open XML
+        # Formats and file name extensions" (.xlsm, 75 percent). Test figures:
+        # measure_office.py, 24 Oct 2026, LibreOffice 24.2, converters/office.py.
+        "title": "XLS vs XLSX: What's the Difference? (With Test Results)",
+        "seo_title": "XLS vs XLSX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "meta_description": "XLS vs XLSX explained: row limits, file size and macros, plus our own test. Use XLSX unless an old Excel needs XLS -- and why rows can go missing.",
+        "dek": "XLSX is Excel's modern format (Excel 2007 onwards): a ZIP archive of XML files that holds up to 1,048,576 rows. XLS is the older binary format of Excel 97 to 2003, limited to 65,536 rows and 256 columns. Use XLSX for almost everything -- saving a big sheet as XLS drops whatever doesn't fit, as our test shows.",
+        "published": NEW_GUIDES_RELEASE_DATE,
+        "related_tools": ["excel-to-pdf", "pdf-to-excel"],
+        "sections": [
+            {
+                "heading": "XLS vs XLSX at a glance",
+                "paragraphs": [
+                    "The short version: XLSX is the modern Excel format and the right choice for almost everything. XLS is the older format, still worth knowing about if someone uses a very old version of Excel.",
+                ],
+                "table": {
+                    "caption": "XLS and XLSX compared",
+                    "headers": ["", "XLS", "XLSX"],
+                    "rows": [
+                        ["Excel's default format", "Excel 97 to Excel 2003", "Excel 2007 onwards"],
+                        ["What the file is inside", "One binary file", "A ZIP archive of XML files (Office Open XML)"],
+                        ["Rows and columns per sheet", "65,536 rows x 256 columns", "1,048,576 rows x 16,384 columns"],
+                        ["Can contain macros?", "Yes", "No - macro workbooks use .xlsm"],
+                        ["File size in our test", "About 1.6 to 3.3 times larger", "Smaller"],
+                        ["Converts to PDF with our tool?", "Yes", "Yes"],
+                    ],
+                    "note": "Details and sources for each row are in the sections below.",
+                },
+            },
+            {
+                "heading": "Two different formats",
+                "paragraphs": [
+                    "XLS was Excel's format from Excel 97 through Excel 2003: a single binary file. XLSX replaced it as the default from Excel 2007. Like DOCX for Word, an XLSX file is really a ZIP archive of XML files, part of the Office Open XML standard.",
+                    "You can see the difference in the first bytes of each file. In our test, the XLSX file started with the letters PK, the signature of a ZIP archive, and the XLS file started with D0 CF 11 E0, the marker of Microsoft's older compound binary format.",
+                ],
+            },
+            {
+                "heading": "The row limit: what happens to data that doesn't fit",
+                "paragraphs": [
+                    "Microsoft's support page on using Excel with earlier versions puts it plainly: an Excel 97-2003 worksheet is only 65,536 rows tall by 256 columns wide, data beyond that \"will not be saved\", and formulas that refer to it return a #REF! error. Excel's Compatibility Checker warns you when you save as XLS; other programs may not.",
+                    "We tested it. A sheet with 70,000 numbered rows, saved as XLS and opened again, ended at row 65,536 -- the last 4,464 rows were gone. A sheet 300 columns wide came back with 256 columns. Nothing in the reopened file shows that anything is missing, so the loss is easy to overlook if someone else saved it.",
+                ],
+                "table": {
+                    "caption": "Saving beyond the XLS limits (our test, October 2026)",
+                    "headers": ["Test sheet", "Saved as XLS and reopened"],
+                    "rows": [
+                        ["70,000 rows x 4 columns", "65,536 rows kept; 4,464 rows lost"],
+                        ["10 rows x 300 columns", "256 columns kept; 44 columns lost"],
+                    ],
+                    "note": "The XLS copies were saved with LibreOffice; Microsoft documents the same limits for Excel itself.",
+                },
+            },
+            {
+                "heading": "Is XLSX smaller? In our tests, yes",
+                "paragraphs": [
+                    "Microsoft says Open XML files are compressed automatically and \"can be up to 75 percent smaller in some cases\". Unlike our DOC vs DOCX test, where the two Word formats came out almost the same, the spreadsheet difference was large: our XLS copies were 1.6 to 3.3 times the size of the XLSX originals.",
+                ],
+                "table": {
+                    "caption": "The same workbook saved both ways (our test, October 2026)",
+                    "headers": ["Test workbook", "XLSX", "XLS"],
+                    "rows": [
+                        ["One sheet, 50 rows x 6 columns", "6.6 KB", "10.5 KB"],
+                        ["Three sheets, 5,000 rows x 8 columns each", "632 KB", "1,702 KB"],
+                        ["One sheet, 70,000 rows x 4 columns", "1,619 KB", "5,287 KB (and only 65,536 rows kept)"],
+                    ],
+                    "note": "Numbers, text and dates generated for the test. The XLS copies were saved with LibreOffice, not Microsoft Excel; sizes from Excel itself can differ.",
+                },
+            },
+            {
+                "heading": "When the difference actually matters",
+                "paragraphs": [
+                    "Old software. Excel 2003 and earlier can't open an .xlsx without Microsoft's compatibility pack -- the usual reason anyone still asks for .xls.",
+                    "Large sheets. Anything over 65,536 rows or 256 columns has to stay XLSX.",
+                    "Macros. A normal .xlsx can't contain macros; Excel uses .xlsm for macro-enabled workbooks. An .xls from an unknown sender may contain macros.",
+                    "Converting to PDF. Our [[excel-to-pdf|Excel to PDF converter]] accepts both .xls and .xlsx. An .xls is first converted to .xlsx on our server, then every column is fitted across the page width. Your upload and the PDF are deleted from our server as soon as your download is ready.",
+                ],
+            },
+            {
+                "heading": "Which one should you use?",
+                "paragraphs": [
+                    "Use XLSX unless someone specifically needs XLS for an old program. It is Excel's default, it holds far more data, and in our tests it was the smaller file. If you must send an XLS, check first that the sheet fits within 65,536 rows and 256 columns.",
+                    "If the reader only needs to see the figures, not edit them, a PDF is often better than either. Going the other way, our [[pdf-to-excel|PDF to Excel converter]] always gives you an .xlsx file.",
+                ],
+            },
+            {
+                "heading": "Is XLS the same as XLSX?",
+                "paragraphs": [
+                    "No. Both are Excel workbooks and both open in current versions of Excel, but they are different file formats with different limits: XLS is a single binary file with at most 65,536 rows and 256 columns per sheet, while XLSX is a ZIP archive of XML files with up to 1,048,576 rows and 16,384 columns.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We generated test workbooks with openpyxl (numbers, text and dates), saved copies as XLS with LibreOffice 24.2, then reopened them to count rows and columns. File sizes were measured on disk. The tests ran in a test copy of this site on our own machine, using the same converter code as our Excel to PDF tool; the live server's software versions may differ slightly.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "ppt-vs-pptx",
+        # 24 Oct 2026 (AI-visibility plan, Google step 5). Facts: Library of
+        # Congress format description fdd000511 (PPTX the default from
+        # PowerPoint 2007; ISO/IEC 29500) and Microsoft "Open XML Formats and
+        # file name extensions" (.pptm). Test figures: measure_office.py,
+        # 24 Oct 2026, LibreOffice 24.2, converters/office.py.
+        "title": "PPT vs PPTX: What's the Difference? (With Test Results)",
+        "seo_title": "PPT vs PPTX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "meta_description": "PPT vs PPTX explained: what changed, file size, macros and PDF conversion, with our own test results. Use PPTX unless an old PowerPoint needs PPT.",
+        "dek": "PPTX is PowerPoint's modern format (PowerPoint 2007 onwards): a ZIP archive of XML files. PPT is the older binary format of PowerPoint 97 to 2003. Use PPTX for almost everything; in our tests it was the smaller file, and both formats gave the same PDF.",
+        "published": NEW_GUIDES_RELEASE_DATE,
+        "related_tools": ["ppt-to-pdf", "pdf-to-ppt"],
+        "sections": [
+            {
+                "heading": "PPT vs PPTX at a glance",
+                "paragraphs": [
+                    "The short version: PPTX is the modern PowerPoint format and the right choice for almost everything. PPT is the older format, still worth knowing about if someone uses a very old version of PowerPoint.",
+                ],
+                "table": {
+                    "caption": "PPT and PPTX compared",
+                    "headers": ["", "PPT", "PPTX"],
+                    "rows": [
+                        ["PowerPoint's default format", "PowerPoint 97 to 2003", "PowerPoint 2007 onwards"],
+                        ["What the file is inside", "One binary file", "A ZIP archive of XML files (Office Open XML)"],
+                        ["Can contain macros?", "Yes", "No - macro presentations use .pptm"],
+                        ["File size in our test", "Larger", "Smaller"],
+                        ["Same PDF from our tool?", "Yes", "Yes"],
+                    ],
+                    "note": "Details and sources for each row are in the sections below.",
+                },
+            },
+            {
+                "heading": "Two different formats",
+                "paragraphs": [
+                    "PPT was PowerPoint's format from PowerPoint 97 through 2003. According to the US Library of Congress's format records, PPTX replaced it as the default from PowerPoint 2007, and it is standardised as ISO/IEC 29500 (Office Open XML). PowerPoint can still save in the old format, as \"PowerPoint 97-2003 Presentation\".",
+                    "In our test files, the PPTX started with PK, the signature of a ZIP archive, and the PPT with D0 CF 11 E0, the marker of Microsoft's older compound binary format -- the same split as DOC and DOCX for Word.",
+                ],
+            },
+            {
+                "heading": "File size: what we measured",
+                "paragraphs": [
+                    "We built a ten-slide text presentation and a copy with one extra full-slide photo, then saved each as PPTX and as PPT. For the text-only deck the difference was dramatic: 36 KB as PPTX against 659 KB as PPT. With the photo, most of the file was the photo itself, already compressed as a JPG, so the gap shrank: 3,108 KB against 3,756 KB.",
+                    "Both formats then went through our PowerPoint to PDF converter and gave the same result: the same number of pages and almost exactly the same PDF size.",
+                ],
+                "table": {
+                    "caption": "The same presentation saved both ways (our test, October 2026)",
+                    "headers": ["Test presentation", "PPTX", "PPT", "PDF from our tool (either format)"],
+                    "rows": [
+                        ["10 text slides", "36 KB", "659 KB", "10 pages, about 45 KB"],
+                        ["Same 10 slides plus one 4000 x 3000 photo (3,072 KB JPG)", "3,108 KB", "3,756 KB", "11 pages, about 1,832 KB"],
+                    ],
+                    "note": "The PPT copies were saved with LibreOffice, not Microsoft PowerPoint; sizes from PowerPoint itself can differ.",
+                },
+            },
+            {
+                "heading": "When the difference actually matters",
+                "paragraphs": [
+                    "Old software. PowerPoint 2003 and earlier can't open a .pptx without Microsoft's compatibility pack -- the usual reason someone still asks for .ppt.",
+                    "Macros. A normal .pptx can't contain macros; PowerPoint uses .pptm for macro-enabled presentations. A .ppt from an unknown sender may contain macros.",
+                    "Email and upload limits. In our test the old format was the bigger file, so if a presentation is too large to send, saving it as PPT won't help -- compressing the pictures inside it, or sending a PDF, usually will.",
+                ],
+            },
+            {
+                "heading": "Which one should you use?",
+                "paragraphs": [
+                    "Use PPTX unless someone specifically needs PPT for an old program. If the audience only needs to view the slides, send a PDF: it looks the same on every device. Our [[ppt-to-pdf|PowerPoint to PDF converter]] accepts both .ppt and .pptx, and your upload and the PDF are deleted from our server as soon as your download is ready.",
+                    "Going the other way, our [[pdf-to-ppt|PDF to PowerPoint converter]] gives you a .pptx file with each PDF page as a picture slide.",
+                ],
+            },
+            {
+                "heading": "Is PPT the same as PPTX?",
+                "paragraphs": [
+                    "No. Both are PowerPoint presentations and both open in current versions of PowerPoint, but they are different file formats: PPT is a single binary file, while PPTX is a ZIP archive of XML files. PowerPoint 2003 and earlier cannot open a PPTX without Microsoft's compatibility pack.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We generated the presentations with python-pptx (ten title-and-text slides, plus a copy with one computer-generated 4000 x 3000 photo), saved copies as PPT with LibreOffice 24.2, and converted both versions to PDF with the same code our PowerPoint to PDF tool runs. The tests ran in a test copy of this site on our own machine; the live server's software versions may differ slightly.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "pdf-or-word-which-to-send",
+        # 24 Oct 2026 (AI-visibility plan, Google step 5): a decision guide
+        # that links out to the detailed Word-to-PDF guides. Test figures:
+        # measure_word_pdf.py, 24 Oct 2026, LibreOffice 24.2,
+        # converters/office.py convert_office_to_pdf (fonts checked with pypdf).
+        "title": "PDF or Word: Which Should You Send? (With Test Results)",
+        "seo_title": "PDF or Word: Which Should You Send? (Tested) | KuickKonvert",
+        "meta_description": "Should you send a PDF or a Word file? When each is right, what changes when you convert, and our test: a 6 MB Word file became a 1.8 MB PDF.",
+        "dek": "Send a PDF when the document is finished and must look the same for everyone -- a CV, an invoice, a form or a report. Send Word (DOCX) when the other person needs to edit it, or when they ask for Word. Here is why, with what we measured when converting.",
+        "published": NEW_GUIDES_RELEASE_DATE,
+        "related_tools": ["word-to-pdf", "pdf-to-word"],
+        "sections": [
+            {
+                "heading": "The quick answer",
+                "paragraphs": [
+                    "PDF is for reading; Word is for editing. If someone has asked for a specific format, use that. Otherwise:",
+                ],
+                "table": {
+                    "caption": "PDF or Word: which to send",
+                    "headers": ["You are sending...", "Send", "Why"],
+                    "rows": [
+                        ["A finished CV, letter, invoice or report", "PDF", "Looks the same on every device and is harder to change by accident"],
+                        ["A draft someone will edit or comment on", "Word (DOCX)", "Easy to edit, track changes and comment"],
+                        ["A form to print or sign", "PDF", "Keeps the exact page layout for printing"],
+                        ["A file to a portal that asks for Word", "Word (DOCX)", "Follow the instructions -- some systems read Word files"],
+                        ["Something with large photos, by email", "PDF", "In our test it was less than a third of the Word file's size"],
+                    ],
+                },
+            },
+            {
+                "heading": "Why a PDF looks the same everywhere",
+                "paragraphs": [
+                    "A Word file is laid out by whichever program opens it, using the fonts installed on that computer. If a font is missing, the program substitutes another one and lines can re-wrap. A PDF stores the finished pages, and normally the fonts as well.",
+                    "In our test, the PDF made by our Word to PDF tool had its fonts embedded and its text was still real text: it could be searched and copied. On our server, Calibri is replaced by Carlito, a font with identical letter widths, so the layout is kept. Newer fonts such as Aptos are a known exception, explained in our guide on why a PDF's layout sometimes shifts.",
+                ],
+            },
+            {
+                "heading": "File size: what we measured",
+                "paragraphs": [
+                    "We wrote a two-page CV-style document in Word format and converted it with the same code our Word to PDF tool runs. The text-only version went from 36 KB as DOCX to 21 KB as PDF. A version with two 4000 x 3000 photos added went from 6,179 KB to 1,808 KB, because photos are stored in the PDF at 300 pixels for every inch they take up on the page, which is still sharp for printing.",
+                ],
+                "table": {
+                    "caption": "The same document as Word and as PDF (our test, October 2026)",
+                    "headers": ["Test document", "Word (DOCX)", "PDF from our tool", "PDF text searchable?"],
+                    "rows": [
+                        ["2 pages of text", "36 KB", "21 KB", "Yes"],
+                        ["Same text plus two 4000 x 3000 photos (4 pages)", "6,179 KB", "1,808 KB", "Yes"],
+                    ],
+                    "note": "Computer-generated test document; your own files will give different numbers.",
+                },
+            },
+            {
+                "heading": "Is a PDF safe from editing?",
+                "paragraphs": [
+                    "Not completely. A PDF is harder to change by accident, but PDF editors and converters -- including our own [[pdf-to-word|PDF to Word converter]] -- can turn a text-based PDF back into an editable document. If you need to stop casual copying or opening, add a password with our [[protect-pdf|Protect PDF tool]]; for proof of origin, a visible watermark helps more than a file format.",
+                ],
+            },
+            {
+                "heading": "How to convert",
+                "paragraphs": [
+                    "Word to PDF: in Word, choose File > Save As and pick PDF, or upload the .doc or .docx to our [[word-to-pdf|Word to PDF converter]]. PDF to Word: upload the PDF to our [[pdf-to-word|PDF to Word converter]] and you get a .docx. Both are free with no sign-up, and your upload and the converted file are deleted from our server as soon as your download is ready.",
+                    "Always open the converted file once before you send it, and check the fonts and page breaks.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "We generated the test document with python-docx (Calibri 11 pt, headings, about two pages of text) and a copy with two computer-generated 4000 x 3000 photos placed 6 inches wide. Both went through the same code our Word to PDF tool runs (LibreOffice 24.2) in a test copy of this site on our own machine; we checked the page count, embedded fonts and searchable text with pypdf. The live server's software versions may differ slightly.",
+                ],
+            },
+        ],
+    },
 ]
 
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
@@ -2322,10 +2681,10 @@ RELATED_GUIDES = {
     "jpg-vs-png": ["photos-to-one-pdf-jpg-to-pdf-tips", "what-is-a-heic-file", "pdf-compression-levels-explained"],
     "merge-pdf-in-the-right-order": ["split-and-rotate-pdf-pages", "submitting-coursework-as-a-pdf", "photos-to-one-pdf-jpg-to-pdf-tips"],
     "pdf-password-protection-explained": ["watermark-pdf-what-it-protects", "location-data-in-photos"],
-    "excel-to-pdf-fit-on-one-page": ["pdf-to-excel-table-conversion-results", "why-pdf-layout-shifts"],
+    "excel-to-pdf-fit-on-one-page": ["pdf-to-excel-table-conversion-results", "why-pdf-layout-shifts", "xls-vs-xlsx"],
     "pdf-to-excel-table-conversion-results": ["pdf-to-word-text-vs-scanned", "excel-to-pdf-fit-on-one-page"],
     "photos-to-one-pdf-jpg-to-pdf-tips": ["what-is-a-heic-file", "pdf-compression-levels-explained", "submitting-coursework-as-a-pdf"],
-    "pdf-to-word-text-vs-scanned": ["pdf-to-excel-table-conversion-results", "docx-vs-doc"],
+    "pdf-to-word-text-vs-scanned": ["pdf-to-excel-table-conversion-results", "docx-vs-doc", "pdf-or-word-which-to-send"],
     "powerpoint-to-pdf-and-back": ["why-pdf-layout-shifts", "word-to-pdf-what-carries-over", "excel-to-pdf-fit-on-one-page"],
     "watermark-pdf-what-it-protects": ["pdf-password-protection-explained", "split-and-rotate-pdf-pages"],
     "split-and-rotate-pdf-pages": ["merge-pdf-in-the-right-order", "pdf-compression-levels-explained"],
@@ -2334,6 +2693,9 @@ RELATED_GUIDES = {
     "location-data-in-photos": ["what-is-a-heic-file", "what-is-a-webp-image", "pdf-password-protection-explained"],
     "what-is-a-webp-image": ["what-is-a-heic-file", "jpg-vs-png", "location-data-in-photos"],
     "submitting-coursework-as-a-pdf": ["photos-to-one-pdf-jpg-to-pdf-tips", "pdf-compression-levels-explained", "merge-pdf-in-the-right-order"],
+    "xls-vs-xlsx": ["docx-vs-doc", "excel-to-pdf-fit-on-one-page", "pdf-to-excel-table-conversion-results"],
+    "ppt-vs-pptx": ["docx-vs-doc", "powerpoint-to-pdf-and-back", "xls-vs-xlsx"],
+    "pdf-or-word-which-to-send": ["word-to-pdf-what-carries-over", "why-pdf-layout-shifts", "docx-vs-doc"],
 }
 for _src, _targets in RELATED_GUIDES.items():
     if _src not in GUIDES_BY_SLUG:
