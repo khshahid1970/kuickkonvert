@@ -150,8 +150,10 @@
         {% endfor %}
       </ul>
 
-      <h2>Privacy &amp; security</h2>
-      <p>Your file is used only to perform this conversion, in an isolated temporary workspace, and is deleted automatically as soon as the converted file is returned to you (or immediately if the conversion fails). See our <a href="{{ url_for('privacy') }}">Privacy notice</a> for details.</p>
+      {# Release 5 (26 Oct 2026): the 40-word paragraph repeated on all 21 tool
+         pages is replaced by one line that links to the full explanation. #}
+      <h2>Privacy</h2>
+      <p>Everything you upload here is deleted automatically after conversion. <a href="{{ url_for('guide_page', slug='what-happens-to-your-file') }}">See what happens to your file, step by step</a>.</p>
 
       <h2>Frequently asked questions</h2>
       <div class="faq-list faq-list-compact">

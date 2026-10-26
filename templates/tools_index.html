@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}All {{ tool_count }} Free File Conversion Tools | KuickKonvert{% endblock %}
+{% block description %}All {{ tool_count }} free KuickKonvert tools on one page: Word, Excel, PowerPoint, image and PDF converters. No sign-up; files are deleted automatically.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "All tools", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
+{% block content %}
+{# Release 5 (26 Oct 2026): /tools hub page. Before this release /tools
+   returned 404. Lists every tool from config.TOOLS, grouped by category,
+   so a new tool appears here automatically. #}
+<section class="tool-page">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">All tools</span>
+    </nav>
+    <h1>All {{ tool_count }} free conversion tools</h1>
+    <p class="tool-page-desc">Every KuickKonvert tool on one page. All of them are free, need no sign-up and work from your browser on any device. Uploaded files are processed on our server and deleted automatically after conversion.</p>
+
+    {% for cat in categories %}
+    <h2>{{ cat }}</h2>
+    <div class="tool-grid">
+      {% for t in by_category[cat] %}
+      <a class="tool-card" href="{{ url_for('tool_page', slug=t.slug) }}">
+        {% if t.get('from_fmt') and t.get('to_fmt') %}
+        <span class="tool-card-formats">
+          <span class="format-badge {{ badge_class.get(t.from_fmt, '') }}">{{ t.from_fmt }}</span>
+          <span class="format-badge-arrow">&rarr;</span>
+          <span class="format-badge {{ badge_class.get(t.to_fmt, '') }}">{{ t.to_fmt }}</span>
+        </span>
+        {% endif %}
+        <span class="tool-card-name">{{ t.name }}</span>
+        <span class="tool-card-desc">{{ t.description }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <p>Want to know more about the formats? Read our <a href="{{ url_for('guides_index') }}">plain-English guides</a>.</p>
+  </div>
+</section>
+{% endblock %}
