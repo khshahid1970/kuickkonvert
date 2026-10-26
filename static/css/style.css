@@ -1187,3 +1187,32 @@ body {
 .social-icon { width: 16px; height: 16px; display: block; }
 .footer-social a:hover .social-badge,
 .footer-social a:focus-visible .social-badge { background: var(--color-primary); color: #fff; }
+
+/* Release 5 (26 Oct 2026): larger tap targets on phones.
+   HubSpot Website Grader flagged links/buttons under 48 x 48 px. Google
+   Lighthouse already passes (WCAG 2.2 target size, 24 px with spacing);
+   this makes footer links, breadcrumbs, FAQ rows and buttons at least
+   44 px tall on small screens. Desktop layout is unchanged. */
+@media (max-width: 780px) {
+  .footer-col ul { gap: 0; }
+  .footer-col li > a,
+  .footer-bottom a,
+  .footer-link-btn,
+  .footer-featured a,
+  .footer-credit a,
+  .footer-social .social-list a,
+  .footer-social .social-email a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; }
+  .faq-item { padding-top: 0; padding-bottom: 0; }
+  .faq-item summary { display: flex; align-items: center; min-height: 44px; padding: 10px 0; }
+  .faq-item[open] p { margin-bottom: 14px; }
+  .btn { min-height: 44px; }
+  .nav-toggle { width: 44px; height: 44px; }
+  .guides-teaser-more,
+  .next-steps-list a,
+  .related-tools-list a { display: inline-flex; align-items: center; min-height: 44px; }
+}
