@@ -1,0 +1,49 @@
+# Automatic IndexNow ping after each deploy (Release 5, 26 Oct 2026).
+#
+# When something is pushed to main, Render deploys it. This workflow waits
+# for the deploy, reads the LIVE sitemap, and tells IndexNow (Bing, Yandex,
+# Seznam, Naver and the other participating engines) about every page whose
+# <lastmod> date is today or yesterday -- i.e. the pages this release
+# changed, because config.py dates each changed page with the release day.
+# Google does not use IndexNow; use Search Console for Google.
+#
+# The key is public by design: https://kuickkonvert.com/2408c240ba6c3916f8e395b4fdafec43.txt
+# If two commits are pushed close together, only the last run completes.
+# It can also be started by hand: Actions -> IndexNow ping -> Run workflow.
+name: IndexNow ping
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Wait for the Render deploy
+        if: github.event_name == 'push'
+        run: sleep 420
+      - name: Send changed pages to IndexNow
+        run: |
+          python3 - <<'PY'
+          import datetime, json, re, sys, urllib.request
+          SITE = "https://kuickkonvert.com"
+          KEY = "2408c240ba6c3916f8e395b4fdafec43"
+          xml = urllib.request.urlopen(SITE + "/sitemap.xml", timeout=30).read().decode()
+          cutoff = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+          urls = [loc for loc, lm in re.findall(r"<loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>", xml) if lm >= cutoff]
+          print(f"{len(urls)} page(s) with lastmod >= {cutoff}")
+          for u in urls:
+              print("  ", u)
+          if not urls:
+              sys.exit(0)
+          body = json.dumps({"host": "kuickkonvert.com", "key": KEY,
+                             "keyLocation": f"{SITE}/{KEY}.txt", "urlList": urls}).encode()
+          req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body,
+                                       headers={"Content-Type": "application/json; charset=utf-8"})
+          with urllib.request.urlopen(req, timeout=30) as r:
+              print("IndexNow response:", r.status)
+          PY
