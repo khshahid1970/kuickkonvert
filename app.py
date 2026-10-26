@@ -35,7 +35,7 @@ from flask_limiter.util import get_remote_address
 from config import (
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
-    RELATED_GUIDES, HOME_LASTMOD, TOOLS_LASTMOD, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
+    RELATED_GUIDES, HOME_LASTMOD, TOOLS_LASTMOD, RELEASE5_DATE, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
     RELEASE_DATE_TEXT, TERMS_UPDATED_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
     ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
@@ -796,6 +796,19 @@ def index():
     )
 
 
+@app.route("/tools")
+def tools_index():
+    # Release 5 (26 Oct 2026): hub page listing every tool (was a 404).
+    by_category = {c: [t for t in TOOLS if t["category"] == c] for c in CATEGORIES}
+    return render_template(
+        "tools_index.html",
+        categories=CATEGORIES,
+        by_category=by_category,
+        badge_class=FORMAT_BADGE_CLASS,
+        canonical_url=f"{SITE_URL}/tools",
+    )
+
+
 @app.route("/tools/<slug>")
 def tool_page(slug):
     tool = TOOLS_BY_SLUG.get(slug)
@@ -1101,6 +1114,8 @@ def llms_txt():
             if (t.get("category") or "Tools") == cat:
                 lines.append(f"- [{t['name']}]({SITE_URL}/tools/{t['slug']})")
     lines.append("")
+    lines.append(f"- [All tools on one page]({SITE_URL}/tools)")
+    lines.append("")
     lines.append("## Guides")
     for g in GUIDES:
         lines.append(f"- [{g['title']}]({SITE_URL}/guides/{g['slug']})")
@@ -1185,9 +1200,12 @@ def sitemap_xml():
         (f"{SITE_URL}/terms", STATIC_LASTMOD.get("terms")),
         (f"{SITE_URL}/guides", STATIC_LASTMOD.get("guides")),
         (f"{SITE_URL}/link-to-us", STATIC_LASTMOD.get("link-to-us")),
+        (f"{SITE_URL}/tools", STATIC_LASTMOD.get("tools")),
     ]
     entries += [
-        (f"{SITE_URL}/tools/{t['slug']}", t.get("lastmod") or TOOLS_LASTMOD)
+        # Release 5 (26 Oct 2026) changed every tool page (privacy line), so
+        # no tool page is older than RELEASE5_DATE.
+        (f"{SITE_URL}/tools/{t['slug']}", max(t.get("lastmod") or TOOLS_LASTMOD, RELEASE5_DATE))
         for t in TOOLS
     ]
     entries += [

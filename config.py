@@ -108,6 +108,13 @@ TERMS_UPDATED_TEXT = _date.fromisoformat(PACKAGE2_RELEASE_DATE).strftime("%-d %B
 # Organization data Google reads and gains the new guide in its guides list,
 # so its <lastmod> moves too.
 HOME_LASTMOD = PACKAGE2_RELEASE_DATE   # was DOC_DOCX_RELEASE_DATE
+# Release 5 (26 Oct 2026, SEO-tools review): /tools hub page (new), shorter
+# privacy line + 4 de-duplicated FAQ questions on tool pages, home heading
+# "Private by design", larger tap targets on phones (CSS only).
+# Dates: every tool page, the home page and /tools.
+# >>> OWNER: set this to the ACTUAL deploy day (YYYY-MM-DD) if not 26 Oct. <<<
+RELEASE5_DATE = "2026-10-26"
+HOME_LASTMOD = RELEASE5_DATE   # Release 5: heading + link to /tools (was PACKAGE2_RELEASE_DATE)
 # Static pages (key = URL path without the "/"). 8 Oct 2026 (evening): new
 # titles on the guides list, About, Contact, Privacy and Terms, plus
 # breadcrumb data on the guides list, About and Contact.
@@ -118,6 +125,7 @@ STATIC_LASTMOD = {
     "privacy": DOC_DOCX_RELEASE_DATE,   # 19 Oct 2026: <title> lengthened + meta wording (notice text unchanged; counsel-approved 11 Oct 2026)
     "terms": PACKAGE2_RELEASE_DATE,   # Package 2: new section 15 + "Last updated" line (was RELEASE_DATE)
     "link-to-us": GUIDES_LINKS_LASTMOD,   # new page, 15 Oct 2026 package
+    "tools": RELEASE5_DATE,   # Release 5: new /tools hub page
 }
 
 # ---- Consent (EEA / UK / Switzerland visitors only) ------------------------
@@ -619,7 +627,7 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("What happens to transparent backgrounds?", "Transparent areas are placed on a white background, so a logo or graphic with a transparent background appears on white in the PDF, just as it would on a printed page."),
-            ("Can I mix JPG and PNG files in one PDF?", "Yes -- use JPG to PDF, which accepts JPG and PNG images together and combines them in the order you add them. This page accepts PNG files only."),
+            ("Can I combine PNG and JPG images in one PDF?", "Yes -- use JPG to PDF, which accepts JPG and PNG images together and combines them in the order you add them. This page accepts PNG files only."),
             ("Can I convert PNG to PDF online for free?", "Yes -- this tool is completely free, with no account or software installation needed. You upload from your browser and the PDF is built on our server."),
         ],
         "related": ["jpg-to-pdf", "pdf-to-png", "merge-pdf"],
@@ -654,7 +662,7 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("Why PNG instead of JPG?", "PNG uses lossless compression, so sharp text and line art stay crisp -- JPG can be a better choice for photo-heavy pages where a smaller file size matters more."),
-            ("What do I get for a multi-page PDF?", "A ZIP file containing one PNG image per page."),
+            ("What will I get if my PDF has several pages?", "A ZIP file containing one PNG image per page."),
         ],
         "related": ["pdf-to-jpg", "png-to-pdf", "compress-pdf"],
         "seo_title": "PDF to PNG Converter Online Free | KuickKonvert",
@@ -699,8 +707,8 @@ TOOL_CONTENT = {
             ("What is a WEBP file?", "WEBP is an image format created by Google for the web. It makes pictures smaller so pages load faster, which is why images saved from many websites arrive as .webp -- but some programs, upload forms and older devices still can't open it."),
             ("What happens to animated WEBP files?", "Only the first frame is converted, as a still JPG -- the JPG format can't hold animation."),
             ("What happens to transparent areas?", "They become white, because JPG doesn't support transparency."),
-            ("How many images can I convert at once?", "Up to 20 at a time, with a combined upload of up to 50 MB. Several images download together in one ZIP file."),
-            ("Do I need to install anything?", "No -- it works in your browser on Windows, Mac, Android or iPhone. Upload your WEBP images, convert them and download the JPGs. There's no sign-up."),
+            ("How many WEBP files can I convert in one go?", "Up to 20 WEBP images per batch, with a combined upload of up to 50 MB. When you convert several, the JPGs download together in one ZIP file."),
+            ("Do I need special software to open WEBP files as JPG?", "No -- it works in your browser on Windows, Mac, Android or iPhone. Upload your WEBP images, convert them and download the JPGs. There's no sign-up."),
         ],
         "related": ["png-to-jpg", "jpg-to-pdf", "heic-to-jpg"],
         "seo_title": "WEBP to JPG Converter Online Free | KuickKonvert",
@@ -857,7 +865,7 @@ TOOL_CONTENT = {
             ("What encryption does this use?", "256-bit AES encryption, applied with the password you choose. This is the method the current PDF standard (PDF 2.0) specifies for password-protected PDFs, and Adobe Acrobat and Reader have supported it since version 9."),
             ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
             ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up or subscription. The limits are a 50MB upload cap and fair-use limits on how many conversions can run per minute."),
-            ("Do I need to install anything?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
+            ("Do I need to install anything to password-protect a PDF?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
