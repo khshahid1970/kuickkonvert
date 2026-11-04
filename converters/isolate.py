@@ -44,6 +44,12 @@ TOO_LARGE_MESSAGE = (
     "This file is too large or complex to convert on our server. "
     "Please try a smaller file, or split a long PDF with Split PDF and convert it in parts."
 )
+# Release 6 (Nov 2026), D18: the image tools get their own wording --
+# "split a long PDF" makes no sense to someone converting photos.
+IMAGE_TOO_LARGE_MESSAGE = (
+    "These images are too large to convert together on our server. "
+    "Please try fewer or smaller images at a time."
+)
 TOO_SLOW_MESSAGE = (
     "The conversion took too long. The file may be very large or complex -- "
     "please try a smaller file."
@@ -126,13 +132,15 @@ def _child(func, args, write_fd, conversion_error_cls):
         os._exit(exit_code)
 
 
-def run_isolated(func, args, conversion_error_cls):
+def run_isolated(func, args, conversion_error_cls, too_large_message=TOO_LARGE_MESSAGE):
     """Call func(*args) in a memory-capped child process.
 
     func must return (out_path, download_name, mimetype) and write its output
     file to disk (the parent reads it back from the same path).
     Raises conversion_error_cls(message) for normal conversion errors, and
     JobFailed(message) if the child ran out of memory, crashed or timed out.
+    too_large_message is the visitor's message when the memory cap is hit
+    (Release 6: IMAGE_TOO_LARGE_MESSAGE for the image tools).
     """
     read_fd, write_fd = os.pipe()
     pid = os.fork()
@@ -184,13 +192,13 @@ def run_isolated(func, args, conversion_error_cls):
             how = "killed by signal %d" % os.WTERMSIG(status)
         else:
             how = "exit code %d" % os.WEXITSTATUS(status)
-        raise JobFailed(TOO_LARGE_MESSAGE, "child ended without result, %s" % how)
+        raise JobFailed(too_large_message, "child ended without result, %s" % how)
     if payload.get("ok"):
         return payload["out_path"], payload["download_name"], payload["mimetype"]
     if payload.get("kind") == "conversion":
         raise conversion_error_cls(payload.get("message") or "Conversion failed.")
     if payload.get("kind") == "memory":
-        raise JobFailed(TOO_LARGE_MESSAGE, "memory cap: %s, start %s MB + allowance %s MB, at failure %s MB" % (
+        raise JobFailed(too_large_message, "memory cap: %s, start %s MB + allowance %s MB, at failure %s MB" % (
             payload.get("error"), payload.get("base_mb"), JOB_MEMORY_MB, payload.get("peak_mb")))
     # Any other unexpected error inside the child.
     raise RuntimeError("Isolated conversion failed: %s" % payload.get("error", "unknown"))

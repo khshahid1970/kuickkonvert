@@ -3,7 +3,7 @@ import os
 
 import img2pdf
 from pdf2image import convert_from_path
-from PIL import Image, ImageOps, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError
 
 from .office import ConversionError
 from .isolate import is_out_of_memory
@@ -165,8 +165,9 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
         for p in image_paths:
             _reject_non_raster(p)
             with Image.open(p) as im:
-                # JPEG only: the case _strip_jpeg_metadata affects.
-                rotations.append(_page_rotation(im) if (im.format or "").upper() == "JPEG" else 0)
+                # Release 6 (Nov 2026), D21: for every image, not only JPEG --
+                # img2pdf no longer reads EXIF itself (rotation=none below).
+                rotations.append(_page_rotation(im))
                 has_alpha = im.mode in ("RGBA", "LA") or (
                     im.mode == "P" and "transparency" in im.info
                 )
@@ -192,13 +193,25 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
                     normalized.append(fixed)
 
         with open(out_path, "wb") as f:
-            f.write(img2pdf.convert(normalized))
+            # Release 6 (Nov 2026), D21: rotation=none -- img2pdf read the EXIF
+            # orientation of a PNG itself and stopped with an error ("Could not
+            # build a PDF from these images: not a TIFF file ...") when that
+            # EXIF block was damaged, or the orientation was text or mirrored.
+            # The page turn now always comes from _page_rotation() above, which
+            # gives the same /Rotate as img2pdf did and ignores a damaged value.
+            # (JPEGs reach img2pdf without EXIF, see F7, so nothing changes for them.)
+            f.write(img2pdf.convert(normalized, rotation=img2pdf.Rotation.none))
         if any(rotations):
             _apply_page_rotations(out_path, rotations)
         return out_path
     except UnidentifiedImageError as exc:
         raise ConversionError("One of the uploaded files is not a valid image.") from exc
     except Exception as exc:
+        # Release 6 (Nov 2026), D18: hitting the memory cap used to end here as
+        # "Could not build a PDF from these images: " (400); let
+        # converters/isolate.py show the "too large" message instead.
+        if is_out_of_memory(exc):
+            raise MemoryError() from None
         raise ConversionError(f"Could not build a PDF from these images: {exc}") from exc
 
 
@@ -339,25 +352,62 @@ def _enable_heif():
 
 
 def _kept_exif(im):
-    """A new EXIF block holding only the date taken and the camera make/model
-    (None if the image has none of these)."""
+    """The bytes of a new EXIF block holding only the date taken and the
+    camera make/model (None if the image has none of these).
+
+    Release 6 (Nov 2026), D21: a damaged EXIF block (e.g. the camera model
+    stored as a fraction) made Pillow raise TypeError, AttributeError or
+    struct.error while writing the new block, and the visitor got "Something
+    went wrong". Any such problem now just means: no EXIF in the output.
+    """
     try:
         src = im.getexif()
+        out = Image.Exif()
+        for tag in _EXIF_KEEP_MAIN:
+            value = src.get(tag)
+            if value:
+                out[tag] = value
+        try:
+            sub = src.get_ifd(0x8769)
+        except Exception:
+            sub = {}
+        kept_sub = {t: sub[t] for t in _EXIF_KEEP_SUB if sub.get(t)}
+        if kept_sub:
+            out[0x8769] = kept_sub
+        return out.tobytes() if len(out) else None
+    except MemoryError:
+        raise
     except Exception:
         return None
-    out = Image.Exif()
-    for tag in _EXIF_KEEP_MAIN:
-        value = src.get(tag)
-        if value:
-            out[tag] = value
+
+
+# Release 6 (Nov 2026), D21: turn the picture the right way up ourselves.
+# ImageOps.exif_transpose() also rewrites the EXIF block, which raises on a
+# damaged one -- and that block is thrown away below anyway (img.info = {}).
+# Same orientation table as Pillow's exif_transpose.
+_ORIENTATION_TRANSPOSE = {
+    2: Image.Transpose.FLIP_LEFT_RIGHT,
+    3: Image.Transpose.ROTATE_180,
+    4: Image.Transpose.FLIP_TOP_BOTTOM,
+    5: Image.Transpose.TRANSPOSE,
+    6: Image.Transpose.ROTATE_270,
+    7: Image.Transpose.TRANSVERSE,
+    8: Image.Transpose.ROTATE_90,
+}
+
+
+def _orientation_transpose(im):
+    """The transpose needed to show im upright, or None (also for damaged EXIF)."""
     try:
-        sub = src.get_ifd(0x8769)
+        return _ORIENTATION_TRANSPOSE.get(im.getexif().get(0x0112))
+    except MemoryError:
+        raise
     except Exception:
-        sub = {}
-    kept_sub = {t: sub[t] for t in _EXIF_KEEP_SUB if sub.get(t)}
-    if kept_sub:
-        out[0x8769] = kept_sub
-    return out if len(out) else None
+        return None
+
+
+# JPEG's own size limit (libjpeg): at most 65,500 pixels wide or high.
+JPEG_MAX_SIDE = 65500
 
 
 def _icc_space(icc):
@@ -394,14 +444,22 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
                         f"{label} is {w * h / 1e6:.0f} megapixels. This tool converts images "
                         f"up to {MAX_IMAGE_MEGAPIXELS} megapixels -- please use a smaller image."
                     )
+                if out_format == "JPEG" and max(w, h) > JPEG_MAX_SIDE:
+                    # Release 6 (Nov 2026), D21: was reported as "damaged".
+                    raise ConversionError(
+                        f"{label} is too large to save as JPG -- a JPG can be at most "
+                        f"65,500 pixels per side, and this image is {w:,} x {h:,} pixels. "
+                        "Please use a smaller image."
+                    )
                 # F8: do NOT seek(0). pi_heif opens a multi-image HEIC on its
                 # PRIMARY image, which is not always frame 0, so seeking to 0
                 # could pick the wrong picture. Image.open already starts on the
                 # first frame of an animated WEBP, so no seek is needed there.
                 exif = _kept_exif(im)
                 icc = im.info.get("icc_profile")
-                if im.getexif().get(0x0112, 1) not in (1, None):
-                    img = ImageOps.exif_transpose(im)  # turn it the right way up
+                method = _orientation_transpose(im)
+                if method is not None:
+                    img = im.transpose(method)  # turn it the right way up
                 else:
                     img = im
                     img.load()
@@ -420,7 +478,7 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
                 if icc:
                     params["icc_profile"] = icc
                 if exif is not None:
-                    params["exif"] = exif.tobytes()
+                    params["exif"] = exif
                 if out_format == "JPEG":
                     img.save(out_path, "JPEG", quality=JPEG_QUALITY, optimize=True, **params)
                 else:

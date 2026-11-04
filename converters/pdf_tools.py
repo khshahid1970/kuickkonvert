@@ -69,6 +69,162 @@ def ensure_pdf_unlocked(path: str, display_name: str = "This PDF") -> None:
         raise ConversionError(DAMAGED_PDF_MESSAGE.format(name=display_name))
 
 
+# ---- Release 6 (Nov 2026): quick pre-check for PDF to Word / PDF to Excel --
+# A heavy PDF used to run until the job time limit (170 s) or the memory cap
+# before the visitor saw an error (Render logs 26-27 Oct 2026: 4 of the 5
+# stopped conversions were PDF to Word on the time limit). These checks only
+# read the PDF's structure -- nothing is rendered or converted -- and take
+# well under a second, so a file that can't finish is refused straight away.
+# Measured 4 Nov 2026 (sandbox, 700 MB allowance, 170 s limit, test PDFs):
+#   * PDF to Word, plain text: 100 pages 18 s, 200 pages 35 s.
+#   * PDF to Word time grows with the SQUARE of the number of text pieces and
+#     drawn lines/boxes per page (pdf2docx compares shapes with each other to
+#     find tables): a 10-page bank statement with ruled cells took 82 s, the
+#     31-page one hit the 170 s limit; a 50-page form-like PDF too.
+#   * PDF to Word, scanned pages: 20 pages at 300 dpi took 31 s (OK), but
+#     5 pages scanned at 600 dpi hit the memory cap -- memory follows picture
+#     size, and the result is pictures, not editable text, anyway.
+#   * PDF to Excel kept every page in memory (100 pages 447 MB, 200 pages
+#     failed); fixed in tables.py, now about 90 MB whatever the page count.
+# Every limit can be changed in Render > Environment without a code change.
+MAX_WORD_PAGES = int(os.environ.get("MAX_WORD_PAGES", "200"))
+MAX_WORD_SCANNED_PAGES = int(os.environ.get("MAX_WORD_SCANNED_PAGES", "10"))
+MAX_WORD_SECONDS = int(os.environ.get("MAX_WORD_SECONDS", "150"))         # estimated time
+MAX_WORD_PICTURE_MB = int(os.environ.get("MAX_WORD_PICTURE_MB", "500"))   # estimated memory
+MAX_EXCEL_PAGES = int(os.environ.get("MAX_EXCEL_PAGES", "200"))
+
+_SHOW_TEXT_OPS = ("Tj", "TJ", "'", '"')
+_PAINT_OPS = ("S", "s", "f", "F", "f*", "B", "B*", "b", "b*")
+_PROFILE_OPS = " ".join(_SHOW_TEXT_OPS + _PAINT_OPS)
+_PROFILE_SAMPLE_PAGES = 20      # content of at most this many pages is read
+_TEXT_BYTES_MIN = 50            # less text than this on a page = no real text
+_PICTURE_MIN_PIXELS = 500_000   # an image this big makes a page a "picture page"
+
+SPLIT_PDF_HINT = "Split it with Split PDF (/tools/split-pdf) and convert it in parts."
+
+
+def _shown_text_bytes(operands) -> int:
+    n = 0
+    for x in operands:
+        if isinstance(x, pikepdf.String):
+            n += len(bytes(x))
+        elif isinstance(x, pikepdf.Array):
+            n += sum(len(bytes(y)) for y in x if isinstance(y, pikepdf.String))
+    return n
+
+
+def pdf_profile(path: str):
+    """Cheap look at a PDF's structure (Release 6, Nov 2026).
+
+    Returns a dict -- pages; scanned (most sampled pages are a picture with
+    no real text); est_seconds (PDF to Word time estimate) and picture_mb
+    (PDF to Word memory estimate for its pictures) -- or None if the PDF
+    can't be analysed, in which case the conversion simply goes ahead as
+    before. Image sizes come from each image's own width/height entries
+    (nothing is decoded); text and drawing operators are counted on up to
+    _PROFILE_SAMPLE_PAGES pages spread over the document.
+    """
+    try:
+        with pikepdf.open(path) as pdf:
+            pages = pdf.pages
+            n = len(pages)
+            if n == 0:
+                return None
+            images = {}  # image object -> pixels (one used on every page counts once)
+            has_picture = []
+            for page in pages:
+                big = False
+                for im in page.images.values():
+                    px = int(im.get("/Width", 0)) * int(im.get("/Height", 0))
+                    images[im.objgen] = px
+                    big = big or px >= _PICTURE_MIN_PIXELS
+                has_picture.append(big)
+            if n <= _PROFILE_SAMPLE_PAGES:
+                sample = list(range(n))
+            else:
+                last = _PROFILE_SAMPLE_PAGES - 1
+                sample = sorted({round(i * (n - 1) / last) for i in range(_PROFILE_SAMPLE_PAGES)})
+            work = picture_pages = 0
+            for i in sample:
+                shapes = text = 0
+                for operands, op in pikepdf.parse_content_stream(pages[i], _PROFILE_OPS):
+                    shapes += 1
+                    if str(op) in _SHOW_TEXT_OPS:
+                        text += _shown_text_bytes(operands)
+                work += shapes * shapes
+                if text < _TEXT_BYTES_MIN and has_picture[i]:
+                    picture_pages += 1
+    except MemoryError:
+        raise
+    except Exception:
+        return None
+    scale = n / len(sample)
+    largest_mp = max(images.values(), default=0) / 1e6
+    total_mp = sum(images.values()) / 1e6
+    # Fitted to the measurements above: about 0.00005 s x (text pieces +
+    # painted shapes on a page) squared, plus 0.15 s per page and 2 s per
+    # scanned page; pictures need about 9 MB per megapixel of the largest
+    # one plus 1.5 MB per megapixel of all of them together.
+    return {
+        "pages": n,
+        "scanned": picture_pages * 2 >= len(sample),
+        "est_seconds": 0.00005 * work * scale + 0.15 * n + 2.0 * picture_pages * scale,
+        "picture_mb": 9 * largest_mp + 1.5 * total_mp,
+    }
+
+
+def check_pdf_page_limit(path: str, max_pages: int, tool_label: str) -> None:
+    """Refuse a PDF with more than max_pages pages, before converting (Release 6)."""
+    try:
+        with pikepdf.open(path) as pdf:
+            n = len(pdf.pages)
+    except Exception:
+        return  # ensure_pdf_unlocked has already checked that it opens
+    if n > max_pages:
+        raise ConversionError(
+            f"This PDF has {n} pages -- {tool_label} converts up to {max_pages} "
+            f"pages at a time. {SPLIT_PDF_HINT}"
+        )
+
+
+def check_pdf_to_word(path: str) -> None:
+    """Refuse, straight away, a PDF that PDF to Word can't finish (Release 6)."""
+    check_pdf_page_limit(path, MAX_WORD_PAGES, "PDF to Word")
+    prof = pdf_profile(path)
+    if not prof:
+        return
+    n = prof["pages"]
+    if prof["scanned"] and n > MAX_WORD_SCANNED_PAGES:
+        raise ConversionError(
+            "This PDF looks scanned -- its pages are pictures, so they can't become "
+            "editable Word text (KuickKonvert doesn't do OCR). Try PDF to JPG "
+            "(/tools/pdf-to-jpg) to get the pages as images. PDF to Word takes "
+            f"scanned PDFs of up to {MAX_WORD_SCANNED_PAGES} pages; this one has {n}."
+        )
+    if prof["picture_mb"] > MAX_WORD_PICTURE_MB:
+        raise ConversionError(
+            "The pictures in this PDF are too big for PDF to Word on our server. "
+            "Make them smaller with Compress PDF (/tools/compress-pdf) and convert "
+            "the compressed file -- or use PDF to JPG (/tools/pdf-to-jpg) to get "
+            "the pages as images."
+        )
+    if prof["est_seconds"] > MAX_WORD_SECONDS:
+        per_part = int(n * MAX_WORD_SECONDS * 0.8 / prof["est_seconds"])
+        if n > 1 and per_part >= 1:
+            raise ConversionError(
+                "This PDF's pages are very detailed (lots of table lines, boxes or "
+                f"separate bits of text), so converting all {n} pages to Word would "
+                "take longer than our server allows. Split it with Split PDF "
+                f"(/tools/split-pdf) and convert about {per_part} "
+                f"{'page' if per_part == 1 else 'pages'} at a time."
+            )
+        raise ConversionError(
+            "This PDF's pages are very detailed (lots of table lines, boxes or "
+            "separate bits of text), so converting it to Word would take longer "
+            "than our server allows."
+        )
+
+
 def _open_reader(path):
     try:
         reader = PdfReader(path)

@@ -18,6 +18,7 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 from .office import ConversionError
+from .isolate import is_out_of_memory
 
 _INVALID_SHEET_CHARS = re.compile(r"[\[\]:\\/?*]")
 
@@ -36,6 +37,18 @@ def _write_text_block(ws, text: str) -> bool:
     return bool(lines)
 
 
+def _pages_one_at_a_time(pdf):
+    """Yield pdf.pages, freeing each page's cached content once the next one is
+    requested (Release 6, Nov 2026). pdfplumber otherwise keeps every page it
+    has read in memory: measured 447 MB for a 100-page text PDF, and a
+    200-page one failed at the memory cap; with this, about 90 MB for both."""
+    for page in pdf.pages:
+        try:
+            yield page
+        finally:
+            page.close()
+
+
 def convert_pdf_to_excel(input_path: str, out_dir: str) -> str:
     import os
 
@@ -49,7 +62,7 @@ def convert_pdf_to_excel(input_path: str, out_dir: str) -> str:
             if len(pdf.pages) == 0:
                 raise ConversionError("This PDF has no pages to convert.")
 
-            for page_num, page in enumerate(pdf.pages, start=1):
+            for page_num, page in enumerate(_pages_one_at_a_time(pdf), start=1):
                 found_tables = page.find_tables()
 
                 if not found_tables:
@@ -114,6 +127,11 @@ def convert_pdf_to_excel(input_path: str, out_dir: str) -> str:
     except ConversionError:
         raise
     except Exception as exc:
+        # Release 6: running out of memory used to show "Could not read this
+        # PDF ... scanned image" -- let converters/isolate.py report it as
+        # "too large" instead (same as PDF to Word in office.py).
+        if is_out_of_memory(exc):
+            raise MemoryError() from None
         raise ConversionError(
             "Could not read this PDF. It may be corrupted, password-protected, "
             "or a scanned image without extractable text."
