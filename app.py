@@ -21,7 +21,9 @@ for _var in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",
 import hashlib
 import re
 import secrets
+import unicodedata
 import zipfile
+from urllib.parse import quote
 
 from flask import (
     Flask, render_template, request, send_file, abort, jsonify, url_for, Response, g,
@@ -40,7 +42,7 @@ from config import (
     ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
 )
 from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_temp
-from converters.isolate import run_isolated, JobFailed
+from converters.isolate import run_isolated, JobFailed, TOO_LARGE_MESSAGE, IMAGE_TOO_LARGE_MESSAGE
 from converters.office import (
     ConversionError, convert_office_to_pdf, convert_pdf_to_word, convert_pdf_to_ppt,
     convert_word_format,
@@ -49,7 +51,7 @@ from converters.tables import convert_pdf_to_excel
 from converters.images import images_to_pdf, pdf_to_images, convert_images
 from converters.pdf_tools import (
     merge_pdfs, split_pdf, rotate_pdf, watermark_pdf, protect_pdf, compress_pdf,
-    ensure_pdf_unlocked,
+    ensure_pdf_unlocked, check_pdf_to_word, check_pdf_page_limit, MAX_EXCEL_PAGES,
 )
 
 app = Flask(__name__)
@@ -505,7 +507,13 @@ def _display_stem(filename):
     stem = "".join(
         "_" if (c in _FORBIDDEN_IN_FILENAMES or ord(c) < 32) else c for c in stem
     ).strip().strip(".")
-    return stem[:150] or "file"
+    # Release 6 (Nov 2026), D19: also at most 200 bytes in UTF-8. Most disks
+    # allow 255 BYTES per file name, and an Urdu/Arabic letter takes 2 bytes
+    # (Chinese 3), so 150 such letters were too long: the image tools write
+    # their output under this name and failed with "couldn't be read -- it may
+    # be damaged"; a downloaded file could not be saved under its full name.
+    stem = stem[:150].encode("utf-8")[:200].decode("utf-8", "ignore").rstrip(" .")
+    return stem or "file"
 
 
 def _save_uploads(files, job_dir, allowed_exts):
@@ -580,6 +588,9 @@ def h_ppt_to_pdf(files, form, job_dir):
 
 def h_pdf_to_word(files, form, job_dir):
     [src] = _save_uploads(files, job_dir, {"pdf"})
+    # Release 6 (Nov 2026): refuse at once a PDF that can't finish in time or
+    # memory (too many pages, scanned, very detailed) -- see pdf_tools.py.
+    check_pdf_to_word(src)
     out = convert_pdf_to_word(src, job_dir)
     return out, change_ext(os.path.basename(src), "docx"), (
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -588,6 +599,7 @@ def h_pdf_to_word(files, form, job_dir):
 
 def h_pdf_to_excel(files, form, job_dir):
     [src] = _save_uploads(files, job_dir, {"pdf"})
+    check_pdf_page_limit(src, MAX_EXCEL_PAGES, "PDF to Excel")  # Release 6
     out = convert_pdf_to_excel(src, job_dir)
     return out, change_ext(os.path.basename(src), "xlsx"), (
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -705,6 +717,9 @@ def h_protect_pdf(files, form, job_dir):
 # size limits (65 MP per image, 150 MB of output per conversion).
 MAX_IMAGES_PER_CONVERSION = 20
 IMAGE_TO_IMAGE_SLUGS = frozenset({"heic-to-jpg", "webp-to-jpg", "png-to-jpg", "jpg-to-png"})
+# Release 6 (Nov 2026), D18: every tool that takes images, for the image
+# wording of the memory-cap message (converters/isolate.py).
+IMAGE_INPUT_SLUGS = IMAGE_TO_IMAGE_SLUGS | {"jpg-to-pdf", "png-to-pdf"}
 
 
 def _image_to_image(files, job_dir, accepted_exts, out_format, same_exts, same_label):
@@ -914,6 +929,11 @@ def _maybe_sweep_temp():
 # converters/ had to change. Codes never contain file names or content.
 # Order matters: the first matching phrase wins.
 _ERROR_CODE_RULES = (
+    # Release 6 (Nov 2026): the PDF to Word / PDF to Excel pre-check.
+    ("looks scanned", "pdf_scanned"),
+    ("pages are very detailed", "pdf_too_complex"),
+    ("pictures in this pdf are too big", "pdf_pictures_too_big"),
+    ("too large to save as jpg", "image_too_big"),
     ("add at least two pdfs", "merge_needs_two"),
     ("usage restrictions", "pdf_restricted"),
     ("is password-protected", "pdf_locked"),
@@ -947,6 +967,10 @@ _ERROR_CODE_RULES = (
 )
 
 
+_PRECHECK_CODES = frozenset({"pdf_scanned", "pdf_too_complex", "pdf_pictures_too_big",
+                             "too_many_pages"})
+
+
 def _error_code(message):
     m = (message or "").lower()
     for phrase, code in _ERROR_CODE_RULES:
@@ -975,7 +999,9 @@ def convert(slug):
     try:
         with job_workspace() as job_dir:
             out_path, download_name, mimetype = run_isolated(
-                handler, (files, request.form, job_dir), ConversionError
+                handler, (files, request.form, job_dir), ConversionError,
+                too_large_message=(IMAGE_TOO_LARGE_MESSAGE if slug in IMAGE_INPUT_SLUGS
+                                   else TOO_LARGE_MESSAGE),
             )
             # Give the download the user's original file name. Handlers build
             # download_name from the safe storage name of the first upload;
@@ -991,7 +1017,12 @@ def convert(slug):
             with open(out_path, "rb") as fh:
                 data = fh.read()
     except ConversionError as exc:
-        return jsonify({"error": str(exc), "code": _error_code(str(exc))}), 400
+        code = _error_code(str(exc))
+        if code in _PRECHECK_CODES:
+            # Release 6: count the pre-check refusals (tool and code only --
+            # never the file name).
+            app.logger.warning("Pre-check refused %s (%s)", slug, code)
+        return jsonify({"error": str(exc), "code": code}), 400
     except JobFailed as exc:
         # Memory cap or time limit hit in the child process. Logged without
         # the file name (privacy); the visitor gets a clear message.
@@ -1006,12 +1037,26 @@ def convert(slug):
         _CONVERT_SLOTS.release()
 
     import io
-    return send_file(
+    response = send_file(
         io.BytesIO(data),
         mimetype=mimetype,
         as_attachment=True,
         download_name=download_name,
     )
+    # Release 6 (Nov 2026), D19: for a non-Latin name Werkzeug sends the real
+    # name as filename*=UTF-8''... (what browsers and static/js/main.js use)
+    # plus a plain-ASCII filename= copy for old programs -- which, for a name
+    # with no Latin letters at all, was just ".docx" or spaces. Give that
+    # copy a readable name instead, e.g. "pdf-to-word.docx".
+    stem, ext = os.path.splitext(download_name)
+    ascii_stem = unicodedata.normalize("NFKD", stem).encode("ascii", "ignore").decode("ascii")
+    if not download_name.isascii() and not ascii_stem.strip(" ._-"):
+        response.headers.set(
+            "Content-Disposition", "attachment",
+            **{"filename": f"{slug}{ext}",
+               "filename*": "UTF-8''" + quote(download_name, safe="!#$&+-.^_`|~")},
+        )
+    return response
 
 
 @app.route("/privacy")
