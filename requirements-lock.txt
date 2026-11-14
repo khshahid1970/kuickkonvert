@@ -46,7 +46,7 @@ pdfminer-six==20260107
 pdfplumber==0.11.10
 pi-heif==1.4.0
 pikepdf==9.3.0
-pillow==12.3.0
+pillow==13.0.0
 pycparser==3.11
 pymupdf==1.28.2
 pypdf==6.19.0
