@@ -1,12 +1,17 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: "[Bug]"
 labels: ''
 assignees: ''
 
 ---
 
+**Which tool?** (e.g. PDF to Word)
+**File type and size:** (e.g. .pdf, 3 MB)
+**Browser and device:** (e.g. Chrome on Windows)
+
+⚠️ Please don't attach private or confidential files. Describe the file instead, or attach a harmless sample.
 **Describe the bug**
 A clear and concise description of what the bug is.
 
