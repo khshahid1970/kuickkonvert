@@ -3528,3 +3528,39 @@ for _k, (_id, _sec, _up, _tr) in _R7_83.items():
     if _tr is not None:
         VIDEOS[_k]["transcript"] = _tr
         VIDEO_TRANSCRIPTS[_k] = _tr
+
+
+# R7-95 (Shahid, 19 Nov 2026): each page shows its video in a smaller card
+# after the tool content, just above the footer. The video name on the page,
+# in the VideoObject markup and on YouTube is the same text: the YouTube
+# title without the " | KuickKonvert #..." suffix (checked live 19 Nov 2026).
+# merge-pdf and split-pdf carry the R7-87 keywords ("join", "separate PDF
+# pages"); their YouTube titles (hzr82e6NkqY, I2xbhWO4xMI) were changed to
+# match in YouTube Studio on 19 Nov 2026.
+R7_95_VIDEO_TITLES = {
+    "home": "Free PDF Converter Online \u2013 Word, Excel, Images & PDF, No Sign-Up",
+    "all-tools": "All 21 Free File Tools in 2 Minutes \u2013 PDF, Word, Excel & Image Converter",
+    "word-to-pdf": "Word to PDF Converter Free \u2013 DOC & DOCX to PDF, No Sign-Up",
+    "pdf-to-word": "PDF to Word Converter Online Free \u2013 Editable DOCX, No Sign-Up",
+    "doc-to-docx": "DOC to DOCX Converter Online Free \u2013 Old Word Files to DOCX",
+    "excel-to-pdf": "Excel to PDF Converter Free \u2013 XLS & XLSX to PDF, No Sign-Up",
+    "pdf-to-excel": "PDF to Excel Converter Online Free \u2013 PDF Tables to XLSX",
+    "ppt-to-pdf": "PPT to PDF Converter Free \u2013 PowerPoint (PPTX) to PDF, No Sign-Up",
+    "pdf-to-ppt": "PDF to PPT Converter Free \u2013 PDF to PowerPoint (PPTX), No Sign-Up",
+    "jpg-to-pdf": "JPG to PDF Converter Free \u2013 Combine Photos into One PDF",
+    "png-to-pdf": "PNG to PDF Converter Free \u2013 Screenshots into One PDF, No Sign-Up",
+    "pdf-to-jpg": "PDF to JPG Converter Free \u2013 PDF Pages to 300 DPI Images",
+    "pdf-to-png": "PDF to PNG Converter Free \u2013 Sharp 300 DPI PNG Pages, No Sign-Up",
+    "heic-to-jpg": "HEIC to JPG Converter Free \u2013 iPhone Photos to JPG, No Sign-Up",
+    "webp-to-jpg": "WEBP to JPG Converter Free \u2013 Open Images Saved from Websites",
+    "png-to-jpg": "PNG to JPG Converter Free \u2013 Change PNG to JPG, No Sign-Up",
+    "jpg-to-png": "JPG to PNG Converter Free \u2013 Save JPG as PNG, No Sign-Up",
+    "merge-pdf": "Merge PDF Online Free \u2013 Combine or Join PDF Files into One",
+    "split-pdf": "Split PDF Online Free \u2013 Separate PDF Pages into Single Files",
+    "compress-pdf": "Compress PDF Online Free \u2013 Reduce PDF File Size, No Sign-Up",
+    "rotate-pdf": "Rotate PDF Pages Online Free \u2013 Fix Sideways Scans, No Sign-Up",
+    "watermark-pdf": "Add Watermark to PDF Online Free \u2013 DRAFT or CONFIDENTIAL",
+    "protect-pdf": "Password Protect PDF Online Free \u2013 AES-256, No Sign-Up",
+}
+for _k, _title in R7_95_VIDEO_TITLES.items():
+    VIDEOS[_k]["title"] = _title

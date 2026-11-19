@@ -220,3 +220,12 @@ def test_r7_93_privacy_sitemap_lastmod_matches_notice(client):
     assert m and m.group(1) == config.RELEASE7_DATE
     d = date.fromisoformat(m.group(1))
     assert f"Last updated: {d.day} {d.strftime('%B %Y')}" in _visible(_get(client, "/privacy"))
+
+
+def test_r7_94_video_link_version_keeps_360px_cap():
+    # The consent-region link version (<a class="kk-video kk-video--link">) must not
+    # stretch to the column width; it keeps the same 360px cap as the click-to-play box.
+    css = Path(kk.__file__).resolve().parent.joinpath("static/css/style.css").read_text()
+    assert re.search(r"\.kk-video\.kk-video--link\s*\{[^}]*width:\s*360px;[^}]*max-width:\s*100%", css)
+    # the rule must come after the shared width:100% rule so it wins the cascade
+    assert css.index(".kk-video.kk-video--link") > css.index(".kk-video-play, .kk-video--link")

@@ -3,8 +3,6 @@
 {% block description %}Free PDF converter and PDF maker: convert PDF, Word, Excel, PowerPoint and images to and from PDF online. No sign-up, no watermark; files deleted automatically.{% endblock %}
 {% block structured_data %}
 {% set video = videos.get('home') %}
-{% set video_name = 'KuickKonvert, free file tools' %}
-{% set video_heading = 'Watch: KuickKonvert in 30 seconds' %}
 {% include "_video_jsonld.html" %}
 {% endblock %}
 {% block content %}
@@ -133,15 +131,6 @@
   </div>
 </section>
 
-<section class="home-video">
-  <div class="wrap">
-    {% set video = videos.get('home') %}
-    {% set video_name = 'KuickKonvert, free file tools' %}
-    {% set video_heading = 'Watch: KuickKonvert in 30 seconds' %}
-    {% include "_video.html" %}
-  </div>
-</section>
-
 {% for cat in categories %}
 <section class="tool-section" id="{{ cat|lower|replace(' ', '-') }}">
   <div class="wrap">
@@ -259,6 +248,13 @@
         <p>No. You use KuickKonvert from your web browser -- no software installation, plugins, browser extensions, or sign-up required. Your file is uploaded, converted on our server and deleted automatically after conversion. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
       </details>
     </div>
+  </div>
+</section>
+
+<section class="home-video">
+  <div class="wrap wrap-narrow">
+    {% set video = videos.get('home') %}
+    {% include "_video.html" %}
   </div>
 </section>
 <script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/faq.js') }}"></script>

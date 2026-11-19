@@ -1,5 +1,6 @@
 {#- Release 7, WP8 video block (lawyer's final advice, 10 Nov 2026).
-    Needs: video (from VIDEOS), video_heading, video_name.
+    R7-95 (19 Nov 2026): a smaller card after the tool content, above the footer.
+    Needs: video (from VIDEOS, with "title" = the YouTube title).
     EEA/UK/CH visitors (consent_required): Option B, a still image from our
     own server that links to the video on YouTube; no player is loaded.
     Everyone else: Option A, click-to-play; static/js/video.js loads the
@@ -7,28 +8,32 @@
     Nothing is requested from YouTube or Google before the visitor acts. -#}
 {% if video %}
 <section class="kk-video-block" aria-labelledby="kk-video-heading">
-  <h2 id="kk-video-heading">{{ video_heading }}</h2>
+  <div class="kk-video-media">
   {% if consent_required %}
   <a class="kk-video kk-video--link" href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">
-    <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="360" height="640" loading="lazy" alt="Still from the KuickKonvert video: {{ video_name }}">
-    <span class="kk-video-cta">Watch this video on YouTube</span>
+    <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="180" height="320" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
+    <span class="kk-video-cta">Watch on YouTube</span>
   </a>
-  <p class="kk-video-note">Opens YouTube (Google) in a new tab.</p>
   {% else %}
-  <div class="kk-video" data-yt="{{ video.id }}" data-title="{{ video_name }}">
+  <div class="kk-video" data-yt="{{ video.id }}" data-title="{{ video.title }}">
     <button type="button" class="kk-video-play">
-      <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="360" height="640" loading="lazy" alt="Still from the KuickKonvert video: {{ video_name }}">
+      <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="180" height="320" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
       <span class="kk-video-label">{{ video_play_label }}</span>
     </button>
   </div>
-  <p class="kk-video-note"><a href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">Watch this video on YouTube</a></p>
   <script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/video.js') }}" defer></script>
   {% endif %}
-  {% if video.transcript %}
-  <details class="kk-video-transcript">
-    <summary>Read the transcript</summary>
-    <p>{{ video.transcript }}</p>
-  </details>
-  {% endif %}
+  </div>
+  <div class="kk-video-text">
+    <p class="kk-video-kicker">Video &middot; {{ video.seconds // 60 ~ ' min ' ~ video.seconds % 60 ~ ' s' if video.seconds >= 60 else video.seconds ~ ' seconds' }}</p>
+    <h2 id="kk-video-heading">{{ video.title }}</h2>
+    <p class="kk-video-note"><a href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">Watch this video on YouTube</a>{% if consent_required %} (opens YouTube, Google, in a new tab){% endif %}</p>
+    {% if video.transcript %}
+    <details class="kk-video-transcript">
+      <summary>Read the transcript</summary>
+      <p>{{ video.transcript }}</p>
+    </details>
+    {% endif %}
+  </div>
 </section>
 {% endif %}

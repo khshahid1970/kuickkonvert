@@ -3,8 +3,6 @@
 {% block description %}All {{ tool_count }} free KuickKonvert tools on one page: Word, Excel, PowerPoint, image and PDF converters. No sign-up; files are deleted automatically.{% endblock %}
 {% block structured_data %}
 {% set video = videos.get('all-tools') %}
-{% set video_name = 'all ' ~ tool_count ~ ' free tools' %}
-{% set video_heading = 'Watch: all ' ~ tool_count ~ ' free tools in 2 minutes' %}
 {% include "_video_jsonld.html" %}
 <script type="application/ld+json">
 {
@@ -70,12 +68,10 @@
     </div>
     {% endfor %}
 
-    {% set video = videos.get('all-tools') %}
-    {% set video_name = 'all ' ~ tool_count ~ ' free tools' %}
-    {% set video_heading = 'Watch: all ' ~ tool_count ~ ' free tools in 2 minutes' %}
-    {% include "_video.html" %}
-
     <p>Want to know more about the formats? Read our <a href="{{ url_for('guides_index') }}">plain-English guides</a>.</p>
+
+    {% set video = videos.get('all-tools') %}
+    {% include "_video.html" %}
   </div>
 </section>
 {% endblock %}

@@ -6,8 +6,8 @@
 {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  "name": {{ video_heading|tojson }},
-  "description": {{ ("Short KuickKonvert video: " ~ video_name ~ ", free on kuickkonvert.com.")|tojson }},
+  "name": {{ video.title|tojson }},
+  "description": {{ ("Short KuickKonvert video: " ~ video.title ~ ". Free on kuickkonvert.com.")|tojson }},
   "thumbnailUrl": ["{{ site_url }}{{ url_for('static', filename='img/video/' ~ video.thumb) }}"],
   "uploadDate": {{ video.uploaded|tojson }},
   "duration": {{ video.duration|tojson }},

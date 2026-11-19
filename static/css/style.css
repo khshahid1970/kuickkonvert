@@ -1236,6 +1236,9 @@ body {
 .kk-video { position: relative; width: 360px; max-width: 100%; }
 .kk-video img, .kk-video-frame { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; border-radius: 12px; border: 0; }
 .kk-video-play, .kk-video--link { display: block; position: relative; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-decoration: none; color: inherit; }
+/* R7-94: the link version (EEA/UK/CH and unknown-country visitors) is itself the
+   .kk-video box, so it must keep the 360px cap; width:100% above made it fill the column. */
+.kk-video.kk-video--link { width: 360px; max-width: 100%; }
 .kk-video-label, .kk-video-cta { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 8px; background: rgba(46, 16, 70, 0.92); color: #fff; font-size: 0.85rem; line-height: 1.35; text-align: left; }
 .kk-video-play:focus-visible, .kk-video--link:focus-visible { outline: 3px solid #d4a72c; outline-offset: 3px; }
 .kk-video-note { font-size: 0.85rem; margin-top: 0.5rem; }
@@ -1246,3 +1249,22 @@ body {
 .guide-steps { margin: 4px 0 16px; padding-left: 22px; color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6; }
 .guide-steps li { margin-bottom: 6px; }
 .guide-steps a { color: var(--color-primary); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+/* R7-95: smaller video card after the tool content, above the footer.
+   Horizontal 16:9 box (320 x 180, like a YouTube thumbnail) on the left with the
+   whole vertical Short shown inside it on a brand-purple background; title and
+   links on the right; stacked on narrow screens. When played, the player opens
+   at 270 x 480 so the vertical video is not shrunk to a 100 px strip. */
+.kk-video-block { display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; align-items: start; max-width: 760px; margin: 2.5rem 0 1rem; padding: 1rem; border: 1px solid #e6e0ee; border-radius: 14px; background: #faf8fc; }
+.kk-video-block .kk-video, .kk-video-block .kk-video.kk-video--link { width: 320px; max-width: 100%; aspect-ratio: 16 / 9; background: #5f2585; border-radius: 12px; overflow: hidden; }
+.kk-video-block .kk-video-play { height: 100%; }
+.kk-video-block .kk-video img { width: 100%; height: 100%; aspect-ratio: auto; object-fit: contain; border-radius: 0; }
+.kk-video-block .kk-video:has(iframe) { width: 270px; aspect-ratio: auto; background: none; overflow: visible; }
+.kk-video-block .kk-video-label, .kk-video-block .kk-video-cta { left: 0.4rem; right: 0.4rem; bottom: 0.4rem; padding: 0.35rem 0.45rem; font-size: 0.7rem; }
+.kk-video-text h2 { font-size: 1.05rem; line-height: 1.35; margin: 0.15rem 0 0.5rem; }
+.kk-video-kicker { margin: 0; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #5f2585; }
+.home-video .kk-video-block { margin-left: auto; margin-right: auto; }
+.home-video { padding-bottom: 80px; } /* R7-95: same space above the footer as the tool pages */
+@media (max-width: 560px) {
+  .kk-video-block { grid-template-columns: 1fr; }
+}

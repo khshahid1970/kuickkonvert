@@ -17,8 +17,6 @@
 }
 </script>
     {% set video = videos.get(tool.slug) %}
-    {% set video_name = tool.name %}
-    {% set video_heading = 'Watch: ' ~ tool.name ~ ' in ' ~ (video.seconds if video else '') ~ ' seconds' %}
     {% include "_video_jsonld.html" %}
 {# SoftwareApplication JSON-LD removed 19 Oct 2026: Google's Software App
     rich result requires aggregateRating or review, and KuickKonvert does
@@ -118,11 +116,6 @@
     </div>
     {% endif %}
 
-    {% set video = videos.get(tool.slug) %}
-    {% set video_name = tool.name %}
-    {% set video_heading = 'Watch: ' ~ tool.name ~ ' in ' ~ (video.seconds if video else '') ~ ' seconds' %}
-    {% include "_video.html" %}
-
     <section class="tool-info">
       <h2>{{ tool.get('how_to_heading') or ('How to convert ' ~ tool.name) }}</h2>
       {% set fmts = accepted_formats %}
@@ -188,6 +181,9 @@
       </ul>
       {% endif %}
     </section>
+
+    {% set video = videos.get(tool.slug) %}
+    {% include "_video.html" %}
   </div>
 </section>
 <script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/main.js') }}"></script>

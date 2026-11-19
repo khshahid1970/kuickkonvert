@@ -16,8 +16,8 @@
       f.title = box.getAttribute("data-title") || "KuickKonvert video";
       f.allow = "autoplay; encrypted-media; picture-in-picture";
       f.setAttribute("allowfullscreen", "");
-      f.width = "360";
-      f.height = "640";
+      f.width = "270";
+      f.height = "480";
       f.className = "kk-video-frame";
       btn.replaceWith(f);
     });
