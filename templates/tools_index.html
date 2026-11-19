@@ -2,6 +2,10 @@
 {% block title %}All {{ tool_count }} Free File Conversion Tools | KuickKonvert{% endblock %}
 {% block description %}All {{ tool_count }} free KuickKonvert tools on one page: Word, Excel, PowerPoint, image and PDF converters. No sign-up; files are deleted automatically.{% endblock %}
 {% block structured_data %}
+{% set video = videos.get('all-tools') %}
+{% set video_name = 'all ' ~ tool_count ~ ' free tools' %}
+{% set video_heading = 'Watch: all ' ~ tool_count ~ ' free tools in 2 minutes' %}
+{% include "_video_jsonld.html" %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -9,6 +13,19 @@
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
     {"@type": "ListItem", "position": 2, "name": "All tools", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": {{ ('All ' ~ tool_count ~ ' free KuickKonvert tools')|tojson }},
+  "numberOfItems": {{ ordered_tools|length }},
+  "itemListElement": [
+    {%- for t in ordered_tools %}
+    {"@type": "ListItem", "position": {{ loop.index }}, "name": {{ t.name|tojson }}, "url": {{ (site_url ~ '/tools/' ~ t.slug)|tojson }}}{{ "," if not loop.last }}
+    {%- endfor %}
   ]
 }
 </script>
@@ -27,24 +44,36 @@
     <h1>All {{ tool_count }} free conversion tools</h1>
     <p class="tool-page-desc">Every KuickKonvert tool on one page. All of them are free, need no sign-up and work from your browser on any device. Uploaded files are processed on our server and deleted automatically after conversion.</p>
 
+    {% set headings = {'Documents': 'Document converters', 'Images': 'Image converters', 'PDF Tools': 'PDF tools'} %}
+    {% set out_map = {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'} %}
     {% for cat in categories %}
-    <h2>{{ cat }}</h2>
-    <div class="tool-grid">
-      {% for t in by_category[cat] %}
-      <a class="tool-card" href="{{ url_for('tool_page', slug=t.slug) }}">
-        {% if t.get('from_fmt') and t.get('to_fmt') %}
-        <span class="tool-card-formats">
-          <span class="format-badge {{ badge_class.get(t.from_fmt, '') }}">{{ t.from_fmt }}</span>
-          <span class="format-badge-arrow">&rarr;</span>
-          <span class="format-badge {{ badge_class.get(t.to_fmt, '') }}">{{ t.to_fmt }}</span>
-        </span>
-        {% endif %}
-        <span class="tool-card-name">{{ t.name }}</span>
-        <span class="tool-card-desc">{{ t.description }}</span>
-      </a>
-      {% endfor %}
+    <h2 id="{{ cat|lower|replace(' ', '-') }}">{{ headings.get(cat, cat) }}</h2>
+    {#- R7-92 (L16): one line per table linking its pillar guide. -#}
+    {% if cat == 'Documents' %}<p>Not sure which Word format to use? Read our guide <a href="{{ url_for('guide_page', slug='docx-vs-doc') }}">DOC vs DOCX: what's actually different</a>.</p>
+    {% elif cat == 'Images' %}<p>Choosing an image format? Read our guide <a href="{{ url_for('guide_page', slug='jpg-vs-png') }}">JPG vs PNG for documents</a>.</p>
+    {% elif cat == 'PDF Tools' %}<p>Need a smaller PDF? Read our guide <a href="{{ url_for('guide_page', slug='pdf-compression-levels-explained') }}">PDF compression explained: Screen vs eBook vs Printer</a>.</p>
+    {% endif %}
+    <div class="guide-table-wrap">
+      <table class="format-table tools-table">
+        <thead><tr><th scope="col">Tool</th><th scope="col">You upload</th><th scope="col">You get</th><th scope="col">Several files at once</th></tr></thead>
+        <tbody>
+          {% for t in by_category[cat] %}
+          <tr>
+            <th scope="row"><a href="{{ url_for('tool_page', slug=t.slug) }}">{{ t.name }}</a></th>
+            <td>{{ t.accept|replace('.', '')|upper|replace(',', ', ') }}</td>
+            <td>{{ t.get('out_label') or out_map.get(t.to_fmt, t.to_fmt) }}{{ ' (ZIP when there are several)' if t.get('zip_output') else '' }}</td>
+            <td>{{ 'Yes' if t.multi else 'No' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     {% endfor %}
+
+    {% set video = videos.get('all-tools') %}
+    {% set video_name = 'all ' ~ tool_count ~ ' free tools' %}
+    {% set video_heading = 'Watch: all ' ~ tool_count ~ ' free tools in 2 minutes' %}
+    {% include "_video.html" %}
 
     <p>Want to know more about the formats? Read our <a href="{{ url_for('guides_index') }}">plain-English guides</a>.</p>
   </div>

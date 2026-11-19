@@ -208,7 +208,7 @@ TOOLS = [
         "slug": "pdf-to-word",
         "name": "PDF to Word",
         "category": "Documents",
-        "description": "Convert PDF to Word: an editable DOCX file. Best results with text-based PDFs.",
+        "description": "Convert PDF to Word: an editable DOCX file. Text-based PDFs give the cleanest result.",
         "accept": ".pdf",
         "multi": False,
         "from_fmt": "PDF",
@@ -393,7 +393,7 @@ TOOLS = [
                 "options": [
                     ("screen", "Smallest file (screen quality)"),
                     ("ebook", "Balanced (recommended)"),
-                    ("printer", "Best quality, larger file"),
+                    ("printer", "Highest quality, larger file"),
                 ],
                 "default": "ebook",
             }
@@ -477,7 +477,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-word", "doc-to-docx", "excel-to-pdf", "ppt-to-pdf"],
         "seo_title": "Word to PDF Converter - DOC & DOCX to PDF | KuickKonvert",
-        "meta_description": "Free online DOC to PDF converter: convert Word files (DOC and DOCX) to PDF with no sign-up or installation. Files are deleted automatically.",
+        "meta_description": "Free online DOC to PDF converter: convert Word files (DOC and DOCX) to PDF with no sign-up, no installation and no watermark. Files are deleted automatically.",
         # 19 Oct 2026: new related-tool link to DOC to DOCX.
         "lastmod": DOC_DOCX_RELEASE_DATE,
     },
@@ -497,13 +497,14 @@ TOOL_CONTENT = {
         ],
         "related": ["word-to-pdf", "doc-to-docx", "pdf-to-excel", "pdf-to-ppt", "compress-pdf"],
         "seo_title": "PDF to Word Converter Online Free (DOCX) | KuickKonvert",
-        "meta_description": "Free online PDF to Word converter: turn a PDF into an editable Word (DOCX) file with no sign-up. Best results with text-based PDFs.",
+        "how_to_heading": "How to convert a PDF to Word document format",
+        "meta_description": "Free online PDF to Word converter: turn a PDF into an editable Word (DOCX) document with no sign-up and no watermark. Text-based PDFs give the cleanest result.",
         # 19 Oct 2026: new related-tool link and FAQ mention of DOC to DOCX.
         "lastmod": DOC_DOCX_RELEASE_DATE,
     },
     "doc-to-docx": {
         "intro": "DOC to DOCX converts old Word 97-2003 documents (.doc) into DOCX, the format every version of Word since 2007 uses by default and the one Google Docs and LibreOffice handle best. It also works the other way: upload a .docx and you get a .doc back, for someone who still uses Word 2003 or earlier.",
-        "good_to_know": "The direction is set by the file you upload: a .doc comes back as a .docx, and a .docx comes back as a .doc. The conversion runs through LibreOffice on our server; text, headings, tables and pictures carry over, but a document with a complex layout can come out slightly differently, so give the result a quick look before you send it. Pictures linked from other websites (rather than stored in the file) are removed from a DOCX before conversion, for security. Password-protected files can't be converted.",
+        "good_to_know": "The direction is set by the file you upload: a .doc comes back as a .docx, and a .docx comes back as a .doc. The conversion runs through LibreOffice on our server; text, headings, tables and pictures carry over, but a document with a complex layout can come out slightly differently, so give the result a quick look before you send it. Pictures linked from other websites (rather than stored in the file) are removed from a DOCX before conversion, so the server never fetches anything from another website. Password-protected files can't be converted.",
         "use_cases": [
             "Uploading an old .doc to a form or portal that only accepts .docx.",
             "Opening an old Word 97-2003 file in Google Docs or a current program without Compatibility Mode.",
@@ -540,7 +541,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-excel", "word-to-pdf", "compress-pdf"],
         "seo_title": "Excel to PDF Converter - XLS & XLSX to PDF | KuickKonvert",
-        "meta_description": "Convert XLS and XLSX spreadsheets to PDF online for free. No installation or sign-up — fast, private Excel to PDF conversion.",
+        "meta_description": "Convert Excel to PDF online free: turn XLS and XLSX spreadsheets into PDF files without Excel installed. No sign-up; files are deleted automatically.",
     },
     "pdf-to-excel": {
         "intro": "PDF to Excel extracts tables from a PDF and rebuilds them as an editable XLSX file, so you can sort, filter, or recalculate data that arrived as a static document.",
@@ -557,7 +558,8 @@ TOOL_CONTENT = {
         ],
         "related": ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
         "seo_title": "PDF to Excel Converter Online Free | KuickKonvert",
-        "meta_description": "Convert PDF tables into editable Excel XLSX files online. Free PDF to Excel converter with no sign-up or installation.",
+        "how_to_heading": "How to convert PDF to Excel for free",
+        "meta_description": "Convert PDF to Excel free: turn tables in a PDF into an editable XLSX spreadsheet online, with no sign-up or software. Files are deleted automatically.",
         # 16 Oct 2026: new "Further reading" guide link (see LINK_GAPS_LASTMOD).
         "lastmod": LINK_GAPS_LASTMOD,
     },
@@ -575,7 +577,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-ppt", "word-to-pdf", "compress-pdf"],
         "seo_title": "PPT to PDF Converter - PowerPoint to PDF Free | KuickKonvert",
-        "meta_description": "Convert PPT and PPTX presentations to PDF online for free. Fast, simple, private — no sign-up or software required.",
+        "meta_description": "Convert PowerPoint to PDF online free: turn PPT and PPTX slides into a PDF with one slide per page. No sign-up or software; files deleted automatically.",
     },
     "pdf-to-ppt": {
         "intro": "PDF to PPT turns each page of a PDF into a slide in a PowerPoint file, keeping each page exactly as it looks in the PDF.",
@@ -611,7 +613,7 @@ TOOL_CONTENT = {
         ],
         "related": ["png-to-pdf", "pdf-to-jpg", "merge-pdf"],
         "seo_title": "JPG to PDF - Image to PDF Converter Free | KuickKonvert",
-        "meta_description": "Free image to PDF converter: convert JPG or PNG photos and pictures to PDF online, or combine several images into one PDF. No sign-up.",
+        "meta_description": "Free image to PDF converter: convert JPG or PNG photos to PDF online, or combine several images into one PDF. No sign-up and no watermark on the result.",
         # Own date (fix release): "Good to know" wording corrected and sideways
         # phone photos now kept upright. Only this tool page changes, so
         # TOOLS_LASTMOD (shared by every tool page) is left alone.
@@ -632,7 +634,7 @@ TOOL_CONTENT = {
         ],
         "related": ["jpg-to-pdf", "pdf-to-png", "merge-pdf"],
         "seo_title": "PNG to PDF Converter Online Free | KuickKonvert",
-        "meta_description": "Convert PNG images to PDF online for free. Combine multiple PNG files into a single PDF with no sign-up or installation.",
+        "meta_description": "Free PNG to PDF converter: turn one PNG, or several at once, into a single PDF online. No sign-up and no watermark; files are deleted automatically.",
     },
     "pdf-to-jpg": {
         "h1": "PDF to JPG - PDF to Image Converter",
@@ -646,11 +648,12 @@ TOOL_CONTENT = {
         "faq": [
             ("What resolution are the images?", "Pages are rendered at 300 DPI, which is sharp enough for most printing and screen use."),
             ("What do I get for a multi-page PDF?", "A ZIP file containing one JPG image per page."),
+            ("How do I convert PDF to JPG without losing quality?", "JPG always drops a little detail, because it uses lossy compression, but KuickKonvert keeps that small: each page is rendered at 300 DPI before it is saved. In our test of three A4 pages, the JPGs stayed very close to lossless PNG copies (37 to 48 dB PSNR), and fine text showed the most change. For text, forms and diagrams that must stay sharp, use PDF to PNG, which saves the page without lossy compression. For photo pages JPG is far smaller: 413 KB against 4,165 KB in the same test."),
             ("Is converting PDF to JPG online free?", "Yes -- there's no charge or sign-up, and nothing to install: you upload from your browser and the images are created on our server. The limits are the 50MB upload cap, 50 pages per conversion, and fair-use limits on how many conversions can run per minute."),
         ],
         "related": ["pdf-to-png", "jpg-to-pdf", "compress-pdf"],
         "seo_title": "PDF to JPG Converter - PDF to Image Free | KuickKonvert",
-        "meta_description": "Convert PDF to JPG images online for free: every page becomes a 300 DPI JPG (one JPG, or a ZIP for multi-page PDFs). No sign-up.",
+        "meta_description": "Convert PDF to JPG online free: every page becomes a 300 DPI JPG image, with multi-page PDFs delivered as one ZIP. No sign-up; files deleted automatically.",
     },
     "pdf-to-png": {
         "intro": "PDF to PNG turns every page of a PDF into its own PNG image -- a good choice when you need a crisp image of a page with sharp text or line art, such as a diagram or a form.",
@@ -666,7 +669,7 @@ TOOL_CONTENT = {
         ],
         "related": ["pdf-to-jpg", "png-to-pdf", "compress-pdf"],
         "seo_title": "PDF to PNG Converter Online Free | KuickKonvert",
-        "meta_description": "Convert PDF pages to PNG images online for free. Fast, private PDF to PNG conversion with no sign-up.",
+        "meta_description": "Convert PDF to PNG online free: each page becomes a lossless 300 DPI PNG, sharp for text, forms and diagrams. No sign-up; files are deleted automatically.",
     },
     # ---- Image to image (added 9 Oct 2026). Claims match convert_images() in
     # converters/images.py: quality 90 JPG / lossless PNG, full size, turned
@@ -725,7 +728,7 @@ TOOL_CONTENT = {
             "Turning PNG photos or screenshots into JPGs for an online album or print order that asks for JPG.",
         ],
         "faq": [
-            ("Will my PNG get smaller as a JPG?", "Usually, if it's a photo -- JPG is built for photos and can make them several times smaller. Screenshots, logos and text pages may not shrink and can even grow, because JPG struggles with sharp edges. We don't promise a particular file size."),
+            ("Will my PNG get smaller as a JPG?", "Usually, if it's a photo -- JPG is built for photos and can make them several times smaller. Screenshots, logos and text pages may not shrink and can even grow, because JPG struggles with sharp edges. In our test (November 2026, A4 pages at 300 DPI), a photo page went from 4,165 KB as PNG to 660 KB as JPG, while a page of text grew from 710 KB to 1,706 KB and a simple diagram from 129 KB to 247 KB. A 512 x 512 logo with a transparent background stayed about the same size (18 KB to 17 KB) and its transparent areas became white. We don't promise a particular file size."),
             ("What happens to a transparent background?", "It becomes white, because JPG doesn't support transparency. Keep the PNG if you need the see-through background."),
             ("Is there any quality loss?", "Very little on photos: images are saved at quality 90, where the difference is hard to see. Sharp text and thin lines can look slightly softer, as with any JPG."),
             ("How many PNG files can I convert at once?", "Up to 20 at a time, with a combined upload of up to 50 MB. Several images download together in one ZIP file."),
@@ -733,6 +736,7 @@ TOOL_CONTENT = {
         ],
         "related": ["jpg-to-png", "png-to-pdf", "webp-to-jpg"],
         "seo_title": "PNG to JPG Converter Online Free | KuickKonvert",
+        "how_to_heading": "How to change PNG to JPG",
         "meta_description": "Change PNG to JPG online for free, up to 20 images at once. Photos usually get much smaller; transparent areas turn white. No sign-up.",
         "lastmod": RELEASE_DATE,
     },
@@ -758,7 +762,7 @@ TOOL_CONTENT = {
     },
     "merge-pdf": {
         "h1": "Merge PDF Files - PDF Combiner",
-        "how_to_heading": "How to combine PDF files",
+        "how_to_heading": "How to merge PDF files for free",
         "intro": "Merge PDF combines multiple PDF files into a single document, in the order you add them. It's a free online PDF merger (some call it a PDF joiner) -- handy for putting together a report from separate sections or combining scanned pages into one file.",
         "good_to_know": "Files are combined in the order you add them. You can remove a file from the list before merging if you added the wrong one; there's no drag-to-reorder option, so remove and re-add files in your preferred order if needed.",
         "use_cases": [
@@ -769,16 +773,17 @@ TOOL_CONTENT = {
         "faq": [
             ("Can I change the order after adding files?", "Not directly -- files merge in the order you add them. Remove the files and re-add them in your preferred order if needed."),
             ("Is there a limit on how many files I can merge?", "There's no fixed file-count limit, but the combined upload must stay under the 50MB size limit."),
-            ("Can I merge PDF files without sign-up?", "Yes -- Merge PDF is free with no account or email needed. Add your files, merge them, and download the combined PDF."),
+            ("Can I merge PDF files without sign-up?", "Yes -- Merge PDF is free with no account or email needed, and no watermark is added. Add your files, merge them, and download the combined PDF."),
+            ("Can I merge Word files or images with my PDFs?", "Not in one step -- Merge PDF only accepts PDF files. Convert the other files first: Word documents with Word to PDF, and JPG or PNG images with JPG to PDF, which can combine several images into one PDF. Then add all the PDFs here and merge them."),
         ],
         "related": ["split-pdf", "compress-pdf", "pdf-to-word"],
         "seo_title": "Merge PDF Online Free - Combine PDF Files | KuickKonvert",
-        "meta_description": "Merge PDF files online for free: combine PDF documents into one file, in the order you add them. A simple PDF merger with no sign-up or installation.",
+        "meta_description": "Merge PDF files free online: combine PDF documents into one file, in the order you add them. No sign-up, no installation and no watermark on the merged PDF.",
         # 16 Oct 2026: new "Further reading" guide link (see LINK_GAPS_LASTMOD).
         "lastmod": LINK_GAPS_LASTMOD,
     },
     "split-pdf": {
-        "how_to_heading": "How to split a PDF into separate pages",
+        "how_to_heading": "How to split PDF files into single pages",
         "intro": "Split PDF is a free online PDF splitter: it breaks every page of a PDF into its own single-page PDF file, delivered as a ZIP -- useful when you only need to send someone one page out of a longer document.",
         "good_to_know": "This splits every page of the PDF into a separate file -- there's currently no option to choose a specific page range. If you only need a few pages, split the whole file and keep just the ones you want.",
         "use_cases": [
@@ -793,7 +798,7 @@ TOOL_CONTENT = {
         ],
         "related": ["merge-pdf", "rotate-pdf", "compress-pdf"],
         "seo_title": "Split PDF Online Free - PDF Splitter | KuickKonvert",
-        "meta_description": "Split a PDF into separate pages online for free. Download individual PDF pages in a ZIP file with no sign-up.",
+        "meta_description": "Split PDF pages online free: separate every page of a PDF into its own single-page PDF file, delivered together in one ZIP. No sign-up or software needed.",
     },
     "compress-pdf": {
         "h1": "Compress PDF - Reduce PDF Size",
@@ -808,7 +813,7 @@ TOOL_CONTENT = {
         "faq": [
             ("Which compression level should I choose?", "Ebook is a good default balance. Choose Screen for the smallest possible file if quality matters less, or Printer if quality matters most."),
             ("Will text quality be affected?", "Text stays sharp at every level -- compression mainly targets embedded images, so an image-heavy PDF will shrink more than a text-only one."),
-            ("Can I compress a PDF without losing quality?", "Partly. Text and vector graphics stay sharp at every level, because compression only works on images. To keep images as close to the original as possible, choose \"Best quality, larger file\" (the Printer preset): it keeps image resolution and uses a gentler JPEG setting, but it usually shrinks the file only a little. A noticeably smaller file always means some loss of image detail -- our PDF compression guide shows real test results."),
+            ("Can I compress a PDF without losing quality?", "Partly. Text and vector graphics stay sharp at every level, because compression only works on images. To keep images as close to the original as possible, choose \"Highest quality, larger file\" (the Printer preset): it keeps image resolution and uses a gentler JPEG setting, but it usually shrinks the file only a little. A noticeably smaller file always means some loss of image detail -- our PDF compression guide shows real test results."),
             ("Can I reduce a PDF's file size online for free?", "Yes -- use Compress PDF without sign-up or payment. Upload your PDF, choose a compression level, and our server returns the smaller file."),
             ("Can I compress a PDF to 1MB or a few hundred KB?", "There's no exact-size setting, so we can't promise a specific size. For the biggest reduction, choose \"Smallest file (screen quality)\": image-heavy and scanned PDFs usually shrink a lot, while a text-only PDF may already be close to its smallest size. Check the result's size before uploading it to a form with a limit."),
             ("Is this a PDF resize tool?", "It resizes the file, not the pages. Compress PDF makes the file smaller (fewer KB or MB) by reducing embedded images; the page dimensions -- for example A4 or Letter -- stay exactly the same."),
@@ -833,7 +838,7 @@ TOOL_CONTENT = {
         ],
         "related": ["split-pdf", "merge-pdf", "compress-pdf"],
         "seo_title": "Rotate PDF Pages Online Free | KuickKonvert",
-        "meta_description": "Rotate PDF pages by 90°, 180° or 270° online for free. Simple, fast, private PDF rotation with no installation.",
+        "meta_description": "Rotate PDF pages online free by 90, 180 or 270 degrees and download the turned file with no loss of quality. No sign-up; files are deleted automatically.",
     },
     "watermark-pdf": {
         "how_to_heading": "How to add a watermark to a PDF",
@@ -850,7 +855,7 @@ TOOL_CONTENT = {
         ],
         "related": ["protect-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Add Watermark to PDF Online | KuickKonvert",
-        "meta_description": "Add a text watermark to every page of a PDF online for free. Fast and private, with no sign-up required.",
+        "meta_description": "Add a text watermark to a PDF online free: stamp your own words, such as DRAFT or CONFIDENTIAL, across every page. No sign-up; files deleted automatically.",
     },
     "protect-pdf": {
         "how_to_heading": "How to password protect a PDF",
@@ -863,13 +868,13 @@ TOOL_CONTENT = {
         ],
         "faq": [
             ("What encryption does this use?", "256-bit AES encryption, applied with the password you choose. This is the method the current PDF standard (PDF 2.0) specifies for password-protected PDFs, and Adobe Acrobat and Reader have supported it since version 9."),
-            ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or store securely."),
+            ("What if I forget the password?", "There's no way to recover it -- we don't keep a copy of your file or password after the conversion finishes, so choose a password you'll remember or keep it somewhere safe."),
             ("Is password-protecting a PDF online really free here?", "Yes -- Protect PDF, like every tool on KuickKonvert, is completely free with no sign-up or subscription. The limits are a 50MB upload cap and fair-use limits on how many conversions can run per minute."),
             ("Do I need to install anything to password-protect a PDF?", "No -- upload your PDF from your browser, choose a password, and download the protected file. The encryption runs on our server; nothing is installed on your device."),
         ],
         "related": ["watermark-pdf", "compress-pdf", "merge-pdf"],
         "seo_title": "Protect PDF with Password Online | KuickKonvert",
-        "meta_description": "Password protect a PDF online for free. No sign-up or installation — add a password so only people who know it can open the file.",
+        "meta_description": "Password protect a PDF online free: add an open password with 256-bit AES encryption so only people who know it can open the file. No sign-up or install.",
     },
 }
 
@@ -922,14 +927,16 @@ ALLOWED_EXTENSIONS = {
 GUIDES = [
     {
         "slug": "docx-vs-doc",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Microsoft Support: Open XML Formats and file name extensions', 'https://support.microsoft.com/en-us/office/open-xml-formats-and-file-name-extensions-5200d93c-3449-4380-8e11-31ef14555b18')],
         # 19 Oct 2026: title, SEO title, meta description and opening rewritten
         # "DOC vs DOCX" first and answer-first (SEO report 19 Oct 2026); new
         # "How to convert DOC to DOCX (and back)" section; DOC to DOCX tool
         # added to related_tools. The slug stays the same.
         "title": "DOC vs DOCX: What's Actually Different (and When It Matters)",
-        "seo_title": "DOC vs DOCX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "seo_title": "DOC vs DOCX: What's the Difference? (Tested) | KuickKonvert",
         "meta_description": "What's the difference between DOC and DOCX? A side-by-side table, a real file-size test and a simple answer: use DOCX unless an old Word needs DOC.",
-        "dek": "DOCX is Word's modern format (Word 2007 onwards): a ZIP archive of XML files. DOC is the older binary format used by Word 97 to 2003. Use DOCX for almost everything, and DOC only when someone has a very old version of Word. Below: what that changes for you, and one common claim our own test didn't bear out.",
+        "dek": "DOCX is Word's modern format (Word 2007 onwards): a ZIP archive of XML files. DOC is the older binary format used by Word 97 to 2003. Use DOCX for almost everything, and DOC only when someone has a very old version of Word. Below: what that changes for you, and one common claim our own test didn't bear out. To switch a file, use our [[doc-to-docx|DOC to DOCX converter]].",
         "published": "2026-09-14",
         # 15 Oct 2026: quick-comparison table and three short question
         # sections added (the doc/docx query group is this site's largest
@@ -1015,7 +1022,7 @@ GUIDES = [
                 ],
             },
             {
-                "heading": "How to convert DOC to DOCX (and back)",
+                "heading": "Switching a file between DOC and DOCX",
                 "paragraphs": [
                     "In Microsoft Word: open the .doc file, choose File → Save As, and pick Word Document (*.docx). To go the other way, pick Word 97-2003 Document (*.doc) instead.",
                     "Without Word: upload the file to our [[doc-to-docx|DOC to DOCX converter]]. A .doc comes back as a .docx, and a .docx comes back as a .doc. It is free, needs no sign-up, and your upload and the converted file are deleted from our server as soon as your download is ready.",
@@ -1044,10 +1051,12 @@ GUIDES = [
     },
     {
         "slug": "why-pdf-layout-shifts",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Microsoft Learn: Aptos font family', 'https://learn.microsoft.com/en-us/typography/font-list/aptos')],
         "title": "Why a PDF's Layout Sometimes Shifts After Conversion (and How to Avoid It)",
         "seo_title": "Why PDF Layout Shifts After Conversion | KuickKonvert",
         "meta_description": "Converted a Word document to PDF and the fonts or page count changed? Our test shows exactly why — and why Word's newer default font, Aptos, is affected.",
-        "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution. Our test shows how much difference it can make.",
+        "dek": "It's almost never a bug. In the overwhelming majority of cases it comes down to one specific, well-understood cause: font substitution. Our test shows how much difference it can make. To check your own file, try our [[word-to-pdf|Word to PDF converter]].",
         "published": "2026-09-14",
         "updated": "2026-10-05",
         "related_tools": ["word-to-pdf", "excel-to-pdf", "ppt-to-pdf"],
@@ -1112,10 +1121,12 @@ GUIDES = [
     },
     {
         "slug": "pdf-compression-levels-explained",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Ghostscript documentation: High Level Devices (PDF output presets)', 'https://ghostscript.readthedocs.io/en/latest/VectorDevices.html')],
         "title": "PDF Compression Explained: Screen vs eBook vs Printer (With Real Test Results)",
         "seo_title": "PDF Compression Levels Explained (Tested) | KuickKonvert",
         "meta_description": "What Screen, eBook and Printer PDF compression really change, why some PDFs barely shrink, and our own test results on photos, scans and text-only files.",
-        "dek": "Compressing a PDF makes it smaller mainly by shrinking the pictures inside it: lowering their resolution and storing them with stronger JPEG compression. Text stays sharp at every level. Screen shrinks photos the most, eBook is the balanced choice, and Printer keeps the most detail -- while a text-only PDF may hardly shrink at all. Below: what each level does, and our own test results.",
+        "dek": "Compressing a PDF makes it smaller mainly by shrinking the pictures inside it: lowering their resolution and storing them with stronger JPEG compression. Text stays sharp at every level. Screen shrinks photos the most, eBook is the balanced choice, and Printer keeps the most detail -- while a text-only PDF may hardly shrink at all. Below: what each level does, and our own test results. To shrink a file now, use our [[compress-pdf|Compress PDF tool]].",
         "published": "2026-09-14",
         "updated": NEW_GUIDES_RELEASE_DATE,  # 24 Oct 2026: answer-first opening (was: "2026-10-02")
         "related_tools": ["compress-pdf", "merge-pdf"],
@@ -1192,7 +1203,7 @@ GUIDES = [
                 "heading": "Can you compress a PDF without losing quality?",
                 "paragraphs": [
                     "It depends on what is in the file. Text and vector graphics never lose quality: they stay as real text at every level. What can lose quality is images, because making a PDF smaller mostly means storing its images with fewer pixels or stronger JPEG compression.",
-                    "If you want to compress a PDF without losing quality you can see, choose Printer (\"Best quality, larger file\" in our tool). It keeps every image at its original resolution and uses the gentler JPEG setting. The trade-off, as our test showed, is that the file usually gets only slightly smaller, if at all.",
+                    "If you want to compress a PDF without losing quality you can see, choose Printer (\"Highest quality, larger file\" in our tool). It keeps every image at its original resolution and uses the gentler JPEG setting. The trade-off, as our test showed, is that the file usually gets only slightly smaller, if at all.",
                     "To reduce a PDF's file size without losing quality that matters on screen, eBook is the practical middle ground: photos are reduced to 150 dpi, which still looks sharp on a phone or laptop and generally prints acceptably at normal size, while the text is untouched.",
                     "Whichever level you choose, open the compressed file, zoom in on the smallest text and on any photos, and keep your original until you're happy with the result.",
                 ],
@@ -1216,10 +1227,12 @@ GUIDES = [
     },
     {
         "slug": "jpg-vs-png",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('W3C: Portable Network Graphics (PNG) Specification', 'https://www.w3.org/TR/png/')],
         "title": "JPG vs PNG for Documents: Which Format to Use (With Real Test Results)",
         "seo_title": "JPG vs PNG for Documents and Scans | KuickKonvert",
         "meta_description": "JPG or PNG for scans, screenshots and document pages? What each format does to text and photos, our own size tests, and how our converters handle both.",
-        "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call.",
+        "dek": "JPG is built for photos, PNG for sharp edges. For pages full of text, our own test found PNG was both sharper and smaller -- here's why, and when JPG is still the right call. To turn PDF pages into images, use [[pdf-to-png|PDF to PNG]] or [[pdf-to-jpg|PDF to JPG]].",
         "published": "2026-09-14",
         "updated": FIX_RELEASE_DATE,  # JPG to PDF wording: no re-compression, metadata removed (was RELEASE_DATE: links to PNG to JPG / JPG to PNG added)
         "related_tools": ["jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png", "png-to-jpg", "jpg-to-png"],
@@ -1301,7 +1314,7 @@ GUIDES = [
                     "PDF to JPG renders every page at 300 dpi and saves it as a standard-quality JPG (quality 75). That keeps photo-heavy pages compact, but as our test shows, text-heavy pages are often smaller and sharper as PNG.",
                     "[[jpg-to-pdf|JPG to PDF]] copies the compressed photo data from your JPG files into the PDF without re-compressing it, so there's no second round of compression and no extra quality loss -- only hidden metadata such as the location is removed. It also accepts PNG images, so photos and screenshots can go into one PDF.",
                     "PNG to PDF embeds your images without any lossy compression and keeps greyscale images in greyscale. Transparent areas are placed on a white background, the same as a logo printed on paper.",
-                    "[[png-to-jpg|PNG to JPG]] saves each image as a quality-90 JPG -- the right move for photos stored as PNG. Transparent areas become white, and screenshots or text pages may not get any smaller.",
+                    "[[png-to-jpg|Our PNG to JPG converter]] saves each image as a quality-90 JPG -- the right move for photos stored as PNG. Transparent areas become white, and screenshots or text pages may not get any smaller.",
                     "JPG to PNG saves a lossless copy of each JPG for sites and apps that require PNG. It can't restore detail the JPG already lost, and the file gets bigger.",
                     "Every uploaded image and every result is deleted from our server as soon as your download is ready.",
                 ],
@@ -1377,12 +1390,14 @@ GUIDES = [
     },
     {
         "slug": "pdf-password-protection-explained",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('PDF Association: ISO 32000-2 (PDF 2.0)', 'https://pdfa.org/resource/iso-32000-2/')],
         "title": "Password-Protecting a PDF: What AES-256 Encryption Protects (and What It Doesn't)",
         "seo_title": "PDF Password Protection Explained (AES-256) | KuickKonvert",
         "meta_description": "What our Protect PDF tool's AES-256 encryption hides, what stays visible, why your password still matters most, and our own test results.",
         "dek": "A password-protected PDF hides its contents from anyone without the password. But some details stay visible, and in practice the strength of your password decides how safe the file is.",
         "published": "2026-10-05",
-        "related_tools": ["protect-pdf"],
+        "related_tools": ["protect-pdf", "watermark-pdf"],
         "sections": [
             {
                 "heading": "What our Protect PDF tool actually does",
@@ -1458,7 +1473,7 @@ GUIDES = [
         "title": "How to Make a Spreadsheet Fit on One Page When You Save It as a PDF",
         "seo_title": "How to Fit a Spreadsheet on One PDF Page | KuickKonvert",
         "meta_description": "Why spreadsheets split across pages in a PDF, what our Excel to PDF tool does automatically, our measured results, and how to keep the text readable.",
-        "dek": "To fit a whole sheet on one PDF page in Excel, open Page Layout > Page Setup, choose Fit to 1 page wide by 1 tall, then save as PDF. Our Excel to PDF tool does the width part automatically: every column is fitted across the page, and long sheets continue onto further pages. The real question is how small the text becomes -- and that is something you can control before you upload.",
+        "dek": "To fit a whole sheet on one PDF page in Excel, open Page Layout > Page Setup, choose Fit to 1 page wide by 1 tall, then save as PDF. Our Excel to PDF tool does the width part automatically: every column is fitted across the page, and long sheets continue onto further pages. The real question is how small the text becomes -- and that is something you can control before you upload. To convert a sheet, use our [[excel-to-pdf|Excel to PDF converter]].",
         "published": "2026-10-05",
         "updated": NEW_GUIDES_RELEASE_DATE,  # 24 Oct 2026: answer-first opening (was: "2026-10-10")
         "related_tools": ["excel-to-pdf"],
@@ -1748,13 +1763,13 @@ GUIDES = [
         "title": "PowerPoint and PDF, Both Ways: What Carries Over (With Test Results)",
         "seo_title": "PowerPoint and PDF: What Carries Over | KuickKonvert",
         "meta_description": "What happens to hidden slides, speaker notes, links and fonts when you convert PowerPoint to PDF — and why PDF to PowerPoint gives picture slides. Our tests.",
-        "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found.",
+        "dek": "Converting a presentation to PDF keeps what the audience sees and drops what only the presenter sees. Converting back gives you slides you can show, but not edit. Here's exactly what our tests found. To convert a deck now, use our [[ppt-to-pdf|PowerPoint to PDF converter]].",
         "published": "2026-10-05",
         "updated": "2026-10-10",
         "related_tools": ["ppt-to-pdf", "pdf-to-ppt"],
         "sections": [
             {
-                "heading": "What PowerPoint to PDF does",
+                "heading": "What carries over into the PDF",
                 "paragraphs": [
                     "Our [[ppt-to-pdf|PPT to PDF converter]] turns .ppt and .pptx files into PDF with LibreOffice, one PDF page per slide. The page has the same shape as your slides, so a widescreen 16:9 deck gives widescreen 13.33 x 7.5 inch pages, not A4 or Letter.",
                     "The result is a fixed copy of the deck: it looks the same on any device, and nobody needs PowerPoint to open it -- which is why PDF is the usual way to send slides to a client or attach them to an application.",
@@ -1794,7 +1809,7 @@ GUIDES = [
                 "paragraphs": [
                     "Our [[pdf-to-ppt|PDF to PPT converter]] makes one slide per PDF page (up to 50 pages at a time), and each slide holds a single picture of that page, rendered at 200 dpi. When we converted our four-page test PDF back, we got four slides of the same 13.33 x 7.5 inch size, each containing one picture -- with no text boxes and no speaker notes.",
                     "The slide size follows your PDF's first page as it appears on screen -- its crop box and any rotation -- so the slides match what you see in a PDF reader. If later pages are a different size, each is fitted onto the slide with its proportions kept, so nothing is stretched (improved 10 October 2026).",
-                    "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is a guaranteed, exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
+                    "That is a deliberate choice. When we built the tool, LibreOffice's own PDF-to-PowerPoint route reported success but produced presentations with no slides at all for every test file we tried. A picture of each page is an exact copy of how the page looks, which is more useful than an \"editable\" file that is silently empty.",
                     "Pictures take more space than text, so expect a bigger file: our 20.5 KB PDF became a 170.5 KB presentation.",
                 ],
             },
@@ -1957,7 +1972,7 @@ GUIDES = [
         "title": "What Carries Over from Word to a PDF: Links, Headings, Comments and Photos (With Test Results)",
         "seo_title": "What Carries Over from Word to a PDF (Tested) | KuickKonvert",
         "meta_description": "Do links, headings, headers, comments and photos survive Word to PDF conversion? Our test results, including how photos are resized, and what to check first.",
-        "dek": "A Word document holds more than the words on the page: links, heading structure, comments, full-size photos. We tested which of these make it into the PDF our tool creates.",
+        "dek": "A Word document holds more than the words on the page: links, heading structure, comments, full-size photos. We tested which of these make it into the PDF our tool creates. To convert a document, use our [[word-to-pdf|Word to PDF converter]].",
         "published": "2026-10-05",
         "updated": PACKAGE2_RELEASE_DATE,   # Package 2: font-substitution table added
         "related_tools": ["word-to-pdf"],
@@ -2041,10 +2056,12 @@ GUIDES = [
     },
     {
         "slug": "what-is-a-heic-file",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Apple Support: Using HEIF or HEVC media on Apple devices', 'https://support.apple.com/en-us/116944'), ('Microsoft Store: HEIF Image Extension', 'https://apps.microsoft.com/detail/9pmmsr1cgpwg')],
         "title": "What Is a HEIC File, and How Do You Open iPhone Photos Everywhere?",
         "seo_title": "What Is a HEIC File? Open iPhone Photos | KuickKonvert",
         "meta_description": "HEIC is the format iPhones use for photos. Why it won't open on some PCs, forms and Android phones, how to switch it off, and how to convert HEIC to JPG.",
-        "dek": "If your iPhone photos arrive as .HEIC and won't open on a Windows PC, an Android phone or an upload form, here is what the format is, why Apple uses it, and the simplest ways to view or convert it.",
+        "dek": "If your iPhone photos arrive as .HEIC and won't open on a Windows PC, an Android phone or an upload form, here is what the format is, why Apple uses it, and the simplest ways to view or convert it. To convert photos you already have, use our [[heic-to-jpg|HEIC to JPG converter]].",
         "published": "2026-10-10",
         "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added
         "related_tools": ["heic-to-jpg", "jpg-to-pdf"],
@@ -2060,7 +2077,7 @@ GUIDES = [
                 "heading": "Why it won't open everywhere",
                 "paragraphs": [
                     "HEIC is efficient but not as widely supported as JPEG, which almost everything has understood for decades. Older versions of Windows and Android, many website upload forms, and some older photo apps simply don't read .heic files.",
-                    "On Windows 10 and 11 you can add support by installing Microsoft's free HEIF Image Extensions from the Microsoft Store, after which Photos will open HEIC files. But an upload form that only accepts JPG or PNG will still reject a .heic file no matter what your own PC can open -- which is when you need to convert.",
+                    "On Windows 10 and 11 you can add support by installing Microsoft's HEIF Image Extension from the Microsoft Store; its Store page says the HEVC Video Extensions package must also be installed to view .heic files. But an upload form that only accepts JPG or PNG will still reject a .heic file no matter what your own PC can open -- which is when you need to convert.",
                 ],
             },
             {
@@ -2199,10 +2216,12 @@ GUIDES = [
     },
     {
         "slug": "what-is-a-webp-image",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Google for Developers: WebP, an image format for the Web', 'https://developers.google.com/speed/webp')],
         "title": "What Is a WEBP Image, and Why Won't It Open Everywhere?",
-        "seo_title": "What Is a WEBP Image? Convert WEBP to JPG | KuickKonvert",
+        "seo_title": "What Is a WEBP Image? Why It Won't Open | KuickKonvert",
         "meta_description": "WEBP is Google's web image format. Why pictures saved from websites are often .webp, what it does well, and how to convert WEBP to JPG — tested October 2026.",
-        "dek": "Saved a picture from a website and got a .webp file that won't open in your photo app or upload to a form? Here is what WEBP is, why sites use it, and how to convert it.",
+        "dek": "Saved a picture from a website and got a .webp file that won't open in your photo app or upload to a form? Here is what WEBP is, why sites use it, and how to convert it. To get a JPG copy, use our [[webp-to-jpg|WEBP to JPG converter]].",
         "published": "2026-10-10",
         "updated": FIX_RELEASE_DATE,  # test results tables + "How we tested" added
         "related_tools": ["webp-to-jpg", "jpg-to-pdf"],
@@ -2222,7 +2241,7 @@ GUIDES = [
                 ],
             },
             {
-                "heading": "Converting WEBP to JPG",
+                "heading": "Getting a JPG copy of a WEBP picture",
                 "paragraphs": [
                     "Our [[webp-to-jpg|WEBP to JPG converter]] turns WEBP files into standard JPGs, up to 20 at a time, at full size and quality 90. From our tests in October 2026: a still WEBP becomes an ordinary JPG with the same width and height; if the WEBP had transparent areas (JPG has no transparency) they are placed on a white background; and an animated WEBP is turned into a single still picture of its first frame.",
                     "Hidden photo details are handled the same way as in our other image converters. A test WEBP carrying GPS location came out without it, while the date taken and the camera make and model were kept.",
@@ -2365,11 +2384,11 @@ GUIDES = [
         #   "Singapore (Southeast Asia)" (checked 10 Oct 2026).
         "slug": "what-happens-to-your-file",
         "title": "What Happens to Your File When You Use KuickKonvert",
-        "seo_title": "What Happens to Your File on KuickKonvert | KuickKonvert",
+        "seo_title": "What Happens to Your File After Upload | KuickKonvert",
         "meta_description": "Where your upload goes, how long it exists and when it is deleted: each conversion runs in its own temporary folder on our server and is then deleted.",
         "dek": "KuickKonvert converts files on our server, not in your browser. Here is, step by step, where your file goes, how long it exists there, and how it is deleted.",
         "published": PACKAGE2_RELEASE_DATE,
-        "related_tools": [],
+        "related_tools": ["jpg-to-pdf", "pdf-to-word", "word-to-pdf", "compress-pdf"],
         "sections": [
             {
                 "heading": "Where your file is converted",
@@ -2394,25 +2413,27 @@ GUIDES = [
             {
                 "heading": "Size limits",
                 "paragraphs": [
-                    "Each upload can be up to 50 MB, counting all the files in it together. The image converters (HEIC, WEBP and PNG to JPG, and JPG to PNG) take up to 20 images at a time.",
+                    "Each upload can be up to 50 MB, counting all the files in it together. The image converters ([[heic-to-jpg|HEIC to JPG]], [[webp-to-jpg|WEBP to JPG]], [[png-to-jpg|PNG to JPG]] and [[jpg-to-png|JPG to PNG]]) take up to 20 images at a time.",
                 ],
             },
             {
                 "heading": "What our logs record",
                 "paragraphs": [
-                    "Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one. Our hosting providers also see basic request details, such as the page or tool requested, as described in our Privacy notice.",
+                    "Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one. Our hosting providers also see basic request details, such as the page or tool requested, as described in our [[page:privacy|Privacy notice]].",
                 ],
             },
             {
                 "heading": "What this means for you",
                 "paragraphs": [
-                    "Keep your original file: we don't keep a copy, so once the folder is deleted there is nothing we can send you again. Download the result when it is ready, and open it to check it before you rely on it. If a file contains information you are not allowed to share, don't upload it. Our Privacy notice has the full details.",
+                    "Keep your original file: we don't keep a copy, so once the folder is deleted there is nothing we can send you again. Download the result when it is ready, and open it to check it before you rely on it. If a file contains information you are not allowed to share, don't upload it. Our [[page:privacy|Privacy notice]] has the full details.",
                 ],
             },
         ],
     },
     {
         "slug": "xls-vs-xlsx",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Microsoft Support: Use Excel with earlier versions of Excel', 'https://support.microsoft.com/en-us/office/use-excel-with-earlier-versions-of-excel-2fd9ffcb-6fce-485b-85af-fecfd651a5ac'), ('Microsoft Support: Open XML Formats and file name extensions', 'https://support.microsoft.com/en-us/office/open-xml-formats-and-file-name-extensions-5200d93c-3449-4380-8e11-31ef14555b18')],
         # 24 Oct 2026 (AI-visibility plan, Google step 5): mirrors the DOC vs
         # DOCX guide, the site's largest source of search impressions. Facts:
         # Microsoft support "Use Excel with earlier versions of Excel" (row and
@@ -2420,9 +2441,9 @@ GUIDES = [
         # Formats and file name extensions" (.xlsm, 75 percent). Test figures:
         # measure_office.py, 24 Oct 2026, LibreOffice 24.2, converters/office.py.
         "title": "XLS vs XLSX: What's the Difference? (With Test Results)",
-        "seo_title": "XLS vs XLSX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "seo_title": "XLS vs XLSX: What's the Difference? (Tested) | KuickKonvert",
         "meta_description": "XLS vs XLSX explained: row limits, file size and macros, plus our own test. Use XLSX unless an old Excel needs XLS -- and why rows can go missing.",
-        "dek": "XLSX is Excel's modern format (Excel 2007 onwards): a ZIP archive of XML files that holds up to 1,048,576 rows. XLS is the older binary format of Excel 97 to 2003, limited to 65,536 rows and 256 columns. Use XLSX for almost everything -- saving a big sheet as XLS drops whatever doesn't fit, as our test shows.",
+        "dek": "XLSX is Excel's modern format (Excel 2007 onwards): a ZIP archive of XML files that holds up to 1,048,576 rows. XLS is the older binary format of Excel 97 to 2003, limited to 65,536 rows and 256 columns. Use XLSX for almost everything -- saving a big sheet as XLS drops whatever doesn't fit, as our test shows. To make a PDF of either format, use our [[excel-to-pdf|Excel to PDF converter]].",
         "published": NEW_GUIDES_RELEASE_DATE,
         "related_tools": ["excel-to-pdf", "pdf-to-excel"],
         "sections": [
@@ -2516,15 +2537,17 @@ GUIDES = [
     },
     {
         "slug": "ppt-vs-pptx",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Library of Congress: PowerPoint 97-2003 Binary File Format (.ppt)', 'https://www.loc.gov/preservation/digital/formats/fdd/fdd000511.shtml'), ('Microsoft Support: Open XML Formats and file name extensions', 'https://support.microsoft.com/en-us/office/open-xml-formats-and-file-name-extensions-5200d93c-3449-4380-8e11-31ef14555b18')],
         # 24 Oct 2026 (AI-visibility plan, Google step 5). Facts: Library of
         # Congress format description fdd000511 (PPTX the default from
         # PowerPoint 2007; ISO/IEC 29500) and Microsoft "Open XML Formats and
         # file name extensions" (.pptm). Test figures: measure_office.py,
         # 24 Oct 2026, LibreOffice 24.2, converters/office.py.
         "title": "PPT vs PPTX: What's the Difference? (With Test Results)",
-        "seo_title": "PPT vs PPTX: What's the Difference? (Tested 2026) | KuickKonvert",
+        "seo_title": "PPT vs PPTX: What's the Difference? (Tested) | KuickKonvert",
         "meta_description": "PPT vs PPTX explained: what changed, file size, macros and PDF conversion, with our own test results. Use PPTX unless an old PowerPoint needs PPT.",
-        "dek": "PPTX is PowerPoint's modern format (PowerPoint 2007 onwards): a ZIP archive of XML files. PPT is the older binary format of PowerPoint 97 to 2003. Use PPTX for almost everything; in our tests it was the smaller file, and both formats gave the same PDF.",
+        "dek": "PPTX is PowerPoint's modern format (PowerPoint 2007 onwards): a ZIP archive of XML files. PPT is the older binary format of PowerPoint 97 to 2003. Use PPTX for almost everything; in our tests it was the smaller file, and both formats gave the same PDF. To make a PDF of either format, use our [[ppt-to-pdf|PowerPoint to PDF converter]].",
         "published": NEW_GUIDES_RELEASE_DATE,
         "related_tools": ["ppt-to-pdf", "pdf-to-ppt"],
         "sections": [
@@ -2607,9 +2630,9 @@ GUIDES = [
         "title": "PDF or Word: Which Should You Send? (With Test Results)",
         "seo_title": "PDF or Word: Which Should You Send? (Tested) | KuickKonvert",
         "meta_description": "Should you send a PDF or a Word file? When each is right, what changes when you convert, and our test: a 6 MB Word file became a 1.8 MB PDF.",
-        "dek": "Send a PDF when the document is finished and must look the same for everyone -- a CV, an invoice, a form or a report. Send Word (DOCX) when the other person needs to edit it, or when they ask for Word. Here is why, with what we measured when converting.",
+        "dek": "Send a PDF when the document is finished and must look the same for everyone -- a CV, an invoice, a form or a report. Send Word (DOCX) when the other person needs to edit it, or when they ask for Word. Here is why, with what we measured when converting. To convert, use [[word-to-pdf|Word to PDF]] or [[pdf-to-word|PDF to Word]].",
         "published": NEW_GUIDES_RELEASE_DATE,
-        "related_tools": ["word-to-pdf", "pdf-to-word"],
+        "related_tools": ["word-to-pdf", "pdf-to-word", "watermark-pdf"],
         "sections": [
             {
                 "heading": "The quick answer",
@@ -2683,7 +2706,7 @@ GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 # Edit freely; a misspelt slug stops the app at start-up (check below), so
 # a broken link can never reach the live site.
 RELATED_GUIDES = {
-    "docx-vs-doc": ["word-to-pdf-what-carries-over", "why-pdf-layout-shifts", "pdf-to-word-text-vs-scanned"],
+    "docx-vs-doc": ["word-to-pdf-what-carries-over", "why-pdf-layout-shifts", "pdf-to-word-text-vs-scanned", "ppt-vs-pptx"],
     "why-pdf-layout-shifts": ["word-to-pdf-what-carries-over", "docx-vs-doc", "powerpoint-to-pdf-and-back"],
     "pdf-compression-levels-explained": ["photos-to-one-pdf-jpg-to-pdf-tips", "submitting-coursework-as-a-pdf", "jpg-vs-png"],
     "jpg-vs-png": ["photos-to-one-pdf-jpg-to-pdf-tips", "what-is-a-heic-file", "pdf-compression-levels-explained"],
@@ -2693,7 +2716,7 @@ RELATED_GUIDES = {
     "pdf-to-excel-table-conversion-results": ["pdf-to-word-text-vs-scanned", "excel-to-pdf-fit-on-one-page"],
     "photos-to-one-pdf-jpg-to-pdf-tips": ["what-is-a-heic-file", "pdf-compression-levels-explained", "submitting-coursework-as-a-pdf"],
     "pdf-to-word-text-vs-scanned": ["pdf-to-excel-table-conversion-results", "docx-vs-doc", "pdf-or-word-which-to-send"],
-    "powerpoint-to-pdf-and-back": ["why-pdf-layout-shifts", "word-to-pdf-what-carries-over", "excel-to-pdf-fit-on-one-page"],
+    "powerpoint-to-pdf-and-back": ["why-pdf-layout-shifts", "word-to-pdf-what-carries-over", "ppt-vs-pptx"],
     "watermark-pdf-what-it-protects": ["pdf-password-protection-explained", "split-and-rotate-pdf-pages"],
     "split-and-rotate-pdf-pages": ["merge-pdf-in-the-right-order", "pdf-compression-levels-explained"],
     "word-to-pdf-what-carries-over": ["why-pdf-layout-shifts", "docx-vs-doc", "submitting-coursework-as-a-pdf"],
@@ -2721,3 +2744,784 @@ GUIDES_BY_TOOL = _defaultdict(list)
 for _g in GUIDES:
     for _slug in _g.get("related_tools", []):
         GUIDES_BY_TOOL[_slug].append(_g)
+
+
+# Release 7 (2026-11-19): structured data (@id, breadcrumbs), tool-page
+# facts table and headings, descriptions, guide links. Every tool page, every
+# guide's markup and /tools, /about, /link-to-us changed significantly, so
+# their sitemap <lastmod> moves to the release day (this also feeds IndexNow).
+RELEASE7_DATE = "2026-11-19"
+TOOLS_LASTMOD = RELEASE7_DATE
+HOME_LASTMOD = RELEASE7_DATE
+GUIDES_MARKUP_LASTMOD = RELEASE7_DATE
+for _t in TOOLS:
+    _t["lastmod"] = RELEASE7_DATE
+for _k in ("tools", "about", "link-to-us"):
+    STATIC_LASTMOD[_k] = RELEASE7_DATE
+# R7-28 (Shahid, 11 Nov 2026: yes): the 12 guides whose visible text changed
+# in Release 7 (dek links R7-26; H2 renames R7-27 are in three of them) show
+# "Updated" with the release day. Only these 12: a date moves only with a
+# real change (compliance rule N5).
+RELEASE7_UPDATED_GUIDES = (
+    "docx-vs-doc", "why-pdf-layout-shifts", "pdf-compression-levels-explained",
+    "jpg-vs-png", "excel-to-pdf-fit-on-one-page", "powerpoint-to-pdf-and-back",
+    "what-is-a-heic-file", "what-is-a-webp-image", "word-to-pdf-what-carries-over",
+    "xls-vs-xlsx", "ppt-vs-pptx", "pdf-or-word-which-to-send",
+)
+for _g in GUIDES:
+    if _g["slug"] in RELEASE7_UPDATED_GUIDES:
+        _g["updated"] = RELEASE7_DATE
+
+# ---- Release 7: three new guides (WP12 / R7-48, R7-49, R7-50) -------------
+# Drafted 12 Nov 2026 (G12) and approved by Shahid the same day "without the
+# photo figures": the size results that needed real iPhone HEIC photos and a
+# real photo PDF are left out. Every number below comes from KuickKonvert's
+# own converter code run on computer-made test files (results.json, G12), or
+# from the providers' help pages checked on 12 Nov 2026. Each guide owns one
+# query family and links to the older guide that explains the detail, so no
+# explanation is repeated (checked by test_release7_new_guides).
+RELEASE7_NEW_GUIDES = [
+    {
+        "slug": "how-to-split-pdf-files",
+        "title": "How to Split a PDF on Windows, Mac, iPhone or Android",
+        "seo_title": "How to Split PDF Files on Any Device (Tested) | KuickKonvert",
+        "meta_description": "Split a PDF into one file per page on Windows, Mac, iPhone or Android, open the ZIP on each device, and see what our split test did to file size.",
+        "dek": "Splitting a PDF gives you every page as a separate PDF file. It works in any web browser, on a computer or a phone, with nothing to install. Here are the steps, how to open the result on each kind of device, and what we found when we split a file of text and photos. Our [[split-pdf|Split PDF tool]] is free, with no sign-up.",
+        "published": RELEASE7_DATE,
+        "related_tools": ["split-pdf", "merge-pdf", "compress-pdf"],
+        "sections": [
+            {
+                "heading": "Split a PDF in your browser",
+                "paragraphs": [
+                    "The steps are the same in Chrome, Edge, Safari and Firefox, on a computer or a phone:",
+                ],
+                "steps": [
+                    "Open [[split-pdf|Split PDF]] on kuickkonvert.com.",
+                    "Choose your PDF (up to 50 MB). On a phone, tap Choose file and pick the PDF from Files or Downloads.",
+                    "Press Convert. A PDF with several pages comes back as one ZIP file holding a one-page PDF for each page, numbered in page order.",
+                ],
+            },
+            {
+                "heading": "Opening the ZIP on each device",
+                "paragraphs": [
+                    "Windows: in File Explorer, double-click the ZIP to look inside it, or right-click it and choose Extract All to copy the page files into an ordinary folder.",
+                    "Mac: double-click the ZIP in Finder and macOS unpacks it into a folder beside it.",
+                    "iPhone and iPad: in the Files app, tap the ZIP and Files unpacks it into a folder in the same place.",
+                    "Android: on many phones, open the Files app, tap the ZIP and choose Extract. Menus differ between phone makers.",
+                ],
+            },
+            {
+                "heading": "What splitting did to file size in our test",
+                "paragraphs": [
+                    "We split a 10-page, 1,250 KB test PDF with six pages of text and four pages that each held one photo. Every photo page came out at 309 to 314 KB, carrying its picture at full size, while each text page was about 1 KB. Together the ten files came to 1,253 KB, slightly more than the original, because each new file has its own small header and page structure.",
+                    "Splitting never makes a picture smaller. If a single page is still too large to send, put that page through [[compress-pdf|Compress PDF]].",
+                    "The text in this test used a standard font that was not stored inside the file. When a PDF embeds its font, each split page needs its own copy, and the pages can add up to several times the original. Our guide to what splitting and rotating do inside a PDF shows that test.",
+                ],
+                "table": {
+                    "caption": "Splitting a 10-page text-and-photo test PDF with our Split PDF code (November 2026)",
+                    "headers": ["Pages", "Size of each page file"],
+                    "rows": [
+                        ["6 text pages", "About 1 KB"],
+                        ["4 pages with a photo", "309 to 314 KB"],
+                        ["All 10 page files together", "1,253 KB (original 1,250 KB)"],
+                    ],
+                    "note": "A test file made on a computer, not a real document; sizes from your own PDFs will differ.",
+                },
+            },
+            {
+                "heading": "Keeping only the pages you want",
+                "paragraphs": [
+                    "Split PDF always gives you every page; there is no page-range setting. Delete the page files you don't need. If you want a few of the remaining pages back in a single document, add them in order to [[merge-pdf|Merge PDF]].",
+                    "A PDF that asks for a password when you open it can't be split until you have saved a copy without the password.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. We made a 10-page A4 test PDF of 1,250 KB: six pages of text in a standard font that was not embedded, and four pages each with one 1800 x 1200 JPEG photo. It was split by the same code our Split PDF tool runs, in a test copy of the site, and the sizes were read from the output files.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "heic-to-jpg-on-windows",
+        # Release 7, R7-78: official sources (each URL checked 13 Nov 2026).
+        "sources": [('Apple Support: Transfer photos and videos from your iPhone or iPad to your Mac or PC', 'https://support.apple.com/en-us/120267')],
+        "title": "How to Convert iPhone HEIC Photos to JPG on Windows",
+        "seo_title": "How to Convert HEIC to JPG on Windows | KuickKonvert",
+        "meta_description": "Three ways to handle iPhone HEIC photos on a Windows PC: view them with Microsoft's extensions, switch the iPhone to JPG, or convert online for free.",
+        "dek": "Photos copied from an iPhone often reach a Windows PC as .heic files that some apps and most upload forms won't take. You can get Windows to show them, stop the iPhone saving new photos as HEIC, or turn the ones you have into JPGs with our [[heic-to-jpg|HEIC to JPG converter]].",
+        "published": RELEASE7_DATE,
+        "related_tools": ["heic-to-jpg", "jpg-to-pdf", "webp-to-jpg"],
+        "sections": [
+            {
+                "heading": "Getting the photos onto your PC",
+                "paragraphs": [
+                    "Apple's support page on transferring photos to a Mac or PC (checked 12 November 2026) gives these steps for Windows:",
+                ],
+                "steps": [
+                    "Install the Apple Devices app from the Microsoft Store.",
+                    "Connect the iPhone to the PC with a USB cable and unlock it if asked.",
+                    "If the iPhone asks whether to trust this computer, tap Trust or Allow.",
+                    "Import the photos with the Microsoft Photos app.",
+                ],
+            },
+            {
+                "heading": "If iCloud Photos is turned on",
+                "paragraphs": [
+                    "Apple notes that with iCloud Photos on, you must first download the original, full-resolution photos to the iPhone before importing them to a PC.",
+                ],
+            },
+            {
+                "heading": "Way 1: let Windows show HEIC photos",
+                "paragraphs": [
+                    "Microsoft's Store listing for the HEIF Image Extension says it lets Windows read HEIF files, and that the separate HEVC Video Extensions package is also needed to view .heic photos. With both installed, the Photos app can display them.",
+                    "This only helps on that PC. The files are still .heic, so a website or form that asks for JPG will still refuse them.",
+                ],
+            },
+            {
+                "heading": "Way 2: switch the iPhone to JPG for new photos",
+                "paragraphs": [
+                    "To make photos work well with Windows, Apple suggests Settings > Camera > Formats > Most Compatible. From then on the camera saves photos as JPEG; photos already on the phone are not changed.",
+                ],
+            },
+            {
+                "heading": "Way 3: convert the HEIC photos you already have",
+                "paragraphs": [
+                    "This is the route for photos you need to upload or send now:",
+                ],
+                "steps": [
+                    "Find the imported .heic photos in File Explorer.",
+                    "Open [[heic-to-jpg|HEIC to JPG]] and add up to 20 photos at a time: up to 65 megapixels each and 50 MB per upload in total.",
+                    "Press Convert. One photo downloads as a JPG; several come back together in a ZIP. To unpack it, right-click the ZIP in File Explorer and choose Extract All.",
+                ],
+            },
+            {
+                "heading": "What our batch test showed",
+                "paragraphs": [
+                    "We ran a batch of five test HEIC photos through the converter's code. Each JPG kept its file name, its full 4032 x 3024 size, the date taken and the camera name, and none kept the GPS location that every HEIC contained. What else the converter keeps or drops, and why the JPG usually comes out larger than the HEIC, is in our guide to HEIC files.",
+                ],
+                "table": {
+                    "caption": "Converting 5 HEIC test photos with our HEIC to JPG code (November 2026)",
+                    "headers": ["What we checked", "Result"],
+                    "rows": [
+                        ["File names", "Kept: test-photo-1.heic became test-photo-1.jpg"],
+                        ["Picture size", "Kept: 4032 x 3024 pixels"],
+                        ["Date taken and camera name", "Kept in all 5"],
+                        ["GPS location (in all 5 HEIC files)", "Removed from all 5 JPGs"],
+                    ],
+                    "note": "Test photos made on a computer, not taken on an iPhone.",
+                },
+            },
+            {
+                "heading": "Which way to choose",
+                "paragraphs": [
+                    "If you only want to look at the photos on your own PC, Way 1 is enough. If you want future photos to work everywhere without converting, use Way 2. If you need to upload or send photos you already have, use Way 3; the JPGs you get back carry no GPS location.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. Five 4032 x 3024 HEIC files were made on a computer, each with a date, a camera name and GPS coordinates, and converted together by the same code our HEIC to JPG tool runs, in a test copy of the site. The EXIF data in each JPG was read back with Pillow. The Windows and iPhone steps come from Apple's and Microsoft's own support and Store pages, checked on 12 November 2026.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "reduce-pdf-size-for-email",
+        "title": "How to Reduce a PDF's Size for Email (With Our Test Results)",
+        "seo_title": "How to Reduce PDF Size for Email (Tested) | KuickKonvert",
+        "meta_description": "Email attachment limits for Gmail and Outlook, which compression level suits scans, photos or text, and what to do when a PDF is still too big to send.",
+        "dek": "Gmail and Outlook.com stop at 25 MB of attachments, and the Outlook app can stop at 20 MB. A PDF made of scans or photos can usually be made much smaller; a PDF of typed text is normally small already. Our [[compress-pdf|Compress PDF tool]] is free, with no sign-up.",
+        "published": RELEASE7_DATE,
+        "related_tools": ["compress-pdf", "split-pdf", "jpg-to-pdf"],
+        "sections": [
+            {
+                "heading": "Attachment limits (checked 12 November 2026)",
+                "paragraphs": [
+                    "Aim for a file comfortably under the limit. Email carries attachments as text using Base64 encoding, which turns every 3 bytes into 4 characters, so the message is about a third bigger than the file on your disk.",
+                ],
+                "table": {
+                    "caption": "Limits stated on each provider's own help page",
+                    "headers": ["Service", "Limit"],
+                    "rows": [
+                        ["Gmail (personal accounts)", "25 MB of attachments (Google: Send attachments with your Gmail message)"],
+                        ["Outlook.com", "25 MB for file attachments (Microsoft: Sending limits in Outlook.com)"],
+                        ["Outlook app with an internet account such as Outlook.com or Gmail", "20 MB per email (Microsoft: Reduce attachment size to send large files with Outlook)"],
+                    ],
+                },
+            },
+            {
+                "heading": "Compress a PDF before you attach it",
+                "paragraphs": [
+                    "This works in any browser, on a computer or a phone:",
+                ],
+                "steps": [
+                    "Open [[compress-pdf|Compress PDF]] on kuickkonvert.com and choose your PDF (up to 50 MB).",
+                    "Choose a level using the table below, then press Convert.",
+                    "Look at the size of the downloaded file before you attach it, and open it to check it still reads well.",
+                ],
+            },
+            {
+                "heading": "Pick the level by what is in your PDF",
+                "paragraphs": [
+                    "On our scan, Balanced (4,286 KB) and Highest quality (4,288 KB) hardly helped, because the pages were scanned at 200 dpi, below the resolution at which those levels start reducing pictures. Smallest file cut it to under a tenth of its size. Why the levels behave like this is explained in our guide to PDF compression levels.",
+                    "Before you send a scan compressed at screen quality, zoom in on the smallest print: small text on a scanned page can blur at that setting.",
+                ],
+                "table": {
+                    "caption": "Compressing two test PDFs with our Compress PDF code (November 2026)",
+                    "headers": ["What is in your PDF", "Level to try", "Our test"],
+                    "rows": [
+                        ["Scanned pages", "Smallest file (screen quality)", "3-page scan: 5,355 KB became 501 KB"],
+                        ["Photos", "Balanced (recommended) first, then Smallest file if it is still too big", "Depends on the photos' resolution; see our compression levels guide"],
+                        ["Typed text only", "Usually no need to compress", "5-page report: stayed at 5 KB at every level"],
+                    ],
+                    "note": "When the result isn't smaller, the tool gives you back your original file.",
+                },
+            },
+            {
+                "heading": "If it is still too big",
+                "paragraphs": [
+                    "Split it: [[split-pdf|Split PDF]] gives every page as its own file, so you can send the pages over two or more emails. Check the total size of the files you attach to each one.",
+                    "Or send a link: Google's and Microsoft's help pages both point to Google Drive or OneDrive for files over their limits. Upload the PDF there and email the link instead.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. We made two test PDFs on a computer: a 3-page scan of 5,355 KB (each page a 200-dpi greyscale picture of text, with no text layer) and a 5-page typed report of 5 KB. Each was compressed at all three levels by the same code our Compress PDF tool runs (Ghostscript 10.02.1), in a test copy of the site; the live server's version may differ. The attachment limits come from Google's and Microsoft's own help pages, checked on 12 November 2026.",
+                ],
+            },
+        ],
+    },
+]
+GUIDES.extend(RELEASE7_NEW_GUIDES)
+for _g in RELEASE7_NEW_GUIDES:
+    GUIDES_BY_SLUG[_g["slug"]] = _g
+    for _slug in _g["related_tools"]:
+        GUIDES_BY_TOOL[_slug].append(_g)
+RELATED_GUIDES.update({
+    "how-to-split-pdf-files": ["split-and-rotate-pdf-pages", "merge-pdf-in-the-right-order", "reduce-pdf-size-for-email"],
+    "heic-to-jpg-on-windows": ["what-is-a-heic-file", "location-data-in-photos", "photos-to-one-pdf-jpg-to-pdf-tips"],
+    "reduce-pdf-size-for-email": ["pdf-compression-levels-explained", "how-to-split-pdf-files", "submitting-coursework-as-a-pdf"],
+})
+RELATED_GUIDES["split-and-rotate-pdf-pages"] = RELATED_GUIDES["split-and-rotate-pdf-pages"] + ["how-to-split-pdf-files"]
+for _src, _targets in RELATED_GUIDES.items():
+    for _t in _targets:
+        if _t not in GUIDES_BY_SLUG or _t == _src:
+            raise ValueError(f"RELATED_GUIDES[{_src!r}]: bad target {_t!r}")
+TOOLS_BY_SLUG["word-to-pdf"]["faq"] = list(TOOLS_BY_SLUG["word-to-pdf"]["faq"]) + [
+    ("Is Word to PDF free, and does it add a watermark?",
+     "It's free with no sign-up, and no watermark is added: the PDF contains only your document. "
+     "Uploads can be up to 50MB, and fair-use limits apply to how many conversions can run per minute. "
+     "Your file is deleted automatically after conversion."),
+]
+# Release 7, WP14 R7-62 (Package 2, 11 Nov 2026): shown in the upload box,
+# before anything is sent, on the tools whose refusals were most common
+# (pdf_locked, pdf_scanned, pdf_too_complex in the 30 Oct-8 Nov review).
+# Plain statements of what the tool can't take; no numbers that may change.
+UPLOAD_NOTES = {
+    "pdf-to-word": "Can't be converted: password-protected PDFs, scanned PDFs whose pages are pictures of text (KuickKonvert doesn't do OCR), and PDFs with very detailed pages.",
+    "pdf-to-excel": "Can't be converted: password-protected PDFs, and scanned PDFs whose pages are pictures of text, with no tables to extract (KuickKonvert doesn't do OCR).",
+    "pdf-to-ppt": "Can't be converted: password-protected PDFs. Open the file with its password and save a copy without one first.",
+}
+TOOLS_BY_SLUG["png-to-pdf"]["faq"] = list(TOOLS_BY_SLUG["png-to-pdf"]["faq"]) + [
+    ("Is this PNG to PDF converter free?",
+     "Yes. It is free with no sign-up, and KuickKonvert adds no watermark to your PDF. Fair-use limits apply."),
+]
+
+
+# ---------------------------------------------------------------------------
+# Release 7, WP8: professional videos on the website (lawyer's advice, 10 Nov
+# 2026). IDs, lengths and upload times were read from YouTube and the master
+# MP4s on 10 Nov 2026. Professional versions only; never the Gen-Z cuts.
+# Thumbnails are frames from the master files, stored in static/img/video/.
+# ---------------------------------------------------------------------------
+VIDEO_PLAY_LABEL = ("Play Video \u2014 Loads player from YouTube (Google). "
+                    "Connects to external servers and processes device details.")
+
+
+def _video(vid, seconds, iso, uploaded, thumb):
+    return {"id": vid, "seconds": seconds, "duration": iso,
+            "uploaded": uploaded, "thumb": thumb}
+
+
+VIDEOS = {
+    "home": _video("pRmhhN1kfP0", 29, "PT29S", "2026-11-12T04:16:58-08:00", "home.jpg"),
+    "all-tools": _video("aouHgA5mJR4", 129, "PT2M9S", "2026-11-10T03:30:33-08:00", "all-tools.jpg"),
+    "word-to-pdf": _video("t4MdCZw2SaQ", 13, "PT13S", "2026-11-12T04:22:13-08:00", "word-to-pdf.jpg"),
+    "pdf-to-word": _video("VLyY6sAZ5qg", 14, "PT14S", "2026-11-04T08:19:52-08:00", "pdf-to-word.jpg"),
+    "excel-to-pdf": _video("pwrFytJwBd8", 16, "PT16S", "2026-11-04T08:21:04-08:00", "excel-to-pdf.jpg"),
+    "pdf-to-excel": _video("wjHNfb-S99Q", 16, "PT16S", "2026-11-04T08:21:59-08:00", "pdf-to-excel.jpg"),
+    "ppt-to-pdf": _video("JG--gxZvDq8", 14, "PT14S", "2026-11-12T04:24:09-08:00", "ppt-to-pdf.jpg"),
+    "pdf-to-ppt": _video("n__r7wUNHhg", 10, "PT10S", "2026-11-04T08:23:41-08:00", "pdf-to-ppt.jpg"),
+    "jpg-to-pdf": _video("wCl7aVKRXF8", 13, "PT13S", "2026-11-04T08:24:49-08:00", "jpg-to-pdf.jpg"),
+    "png-to-pdf": _video("XzBztET4xug", 12, "PT12S", "2026-11-12T04:31:28-08:00", "png-to-pdf.jpg"),
+    "pdf-to-jpg": _video("DpSO6gciYNA", 14, "PT14S", "2026-11-04T08:26:11-08:00", "pdf-to-jpg.jpg"),
+    "pdf-to-png": _video("YA3Nv2bdhdc", 13, "PT13S", "2026-11-04T09:48:14-08:00", "pdf-to-png.jpg"),
+    "heic-to-jpg": _video("YPpm3srHRZw", 19, "PT19S", "2026-11-04T09:48:32-08:00", "heic-to-jpg.jpg"),
+    "webp-to-jpg": _video("_p23V4wmO08", 14, "PT14S", "2026-11-04T09:48:38-08:00", "webp-to-jpg.jpg"),
+    "png-to-jpg": _video("VHItHcqkhkc", 9, "PT9S", "2026-11-12T04:33:55-08:00", "png-to-jpg.jpg"),
+    "jpg-to-png": _video("eeRqcbrzmgc", 13, "PT13S", "2026-11-12T04:36:30-08:00", "jpg-to-png.jpg"),
+    "merge-pdf": _video("F0snv-p1_is", 13, "PT13S", "2026-11-12T04:39:37-08:00", "merge-pdf.jpg"),
+    "split-pdf": _video("mFyvkxM1hL8", 14, "PT14S", "2026-11-04T09:49:02-08:00", "split-pdf.jpg"),
+    "compress-pdf": _video("DZFSWepaqlI", 14, "PT14S", "2026-11-04T09:49:09-08:00", "compress-pdf.jpg"),
+    "rotate-pdf": _video("Tfi_y3-JTHg", 10, "PT10S", "2026-11-12T04:44:00-08:00", "rotate-pdf.jpg"),
+    "watermark-pdf": _video("VYEUpopBP6k", 14, "PT14S", "2026-11-04T09:49:21-08:00", "watermark-pdf.jpg"),
+    "protect-pdf": _video("GVHzA9hSlZM", 16, "PT16S", "2026-11-04T09:49:27-08:00", "protect-pdf.jpg"),
+    "doc-to-docx": _video("ruRe-nX3WWs", 19, "PT19S", "2026-11-04T09:49:33-08:00", "doc-to-docx.jpg"),
+}
+
+# G13 (12 Nov 2026): transcripts of the professional voice-overs, from the
+# YouTube auto-captions (V03-V22, read 12 Nov 2026) corrected for recognition
+# errors ("quickconvert.com" -> kuickkonvert.com, "H EIC" -> HEIC ...), and
+# for V23 from the v3 FINAL script (Cut Y). Shahid to vet against the audio.
+# Square brackets mark words added for clarity that are not spoken (standard
+# transcription practice): the voice-over says "deleted after"; the end card
+# of the corrected videos reads "Files deleted after conversion".
+#
+# V01, V02, V06, V09, V14, V15, V16 and V19: the published videos' audio
+# contains claims the site copy rules don't allow. Corrected cuts were made on
+# 12 Nov 2026 (files *_R7fix.mp4). Their transcripts are below in
+# VIDEO_TRANSCRIPTS_AFTER_REUPLOAD and are NOT applied: only after a corrected
+# video is uploaded and its new YouTube ID (and thumbnail) is set in VIDEOS,
+# move its entry into VIDEO_TRANSCRIPTS, so the page never shows a transcript
+# that differs from the video it embeds.
+VIDEO_TRANSCRIPTS = {
+    'pdf-to-word': "Got a PDF you need to edit, but no original file? Turn it back into an editable Word document. Fix the text, change a number, and you're done. Free at kuickkonvert.com. Your file's deleted right after [conversion].",
+    'excel-to-pdf': 'Sending an Excel sheet that spills onto six messy pages? Convert it to a clean PDF that holds its layout. Easy to read, easy to share, opens for everyone. Free at kuickkonvert.com. No sign-up, file deleted after [conversion].',
+    'pdf-to-excel': 'Someone sent the report as a PDF, and now you need those numbers in Excel. Convert the PDF to Excel and get your tables back as rows and columns you can actually work with. Free at kuickkonvert.com. File deleted after converting.',
+    'pdf-to-ppt': 'Only have the slides as a PDF? Convert the PDF back into PowerPoint slides, free at kuickkonvert.com. File deleted after [conversion].',
+    'jpg-to-pdf': "Upload form wants one PDF, but you've got a pile of photos? Drop your JPGs in, put them in order, and get one neat PDF, free at kuickkonvert.com. Files deleted after [conversion].",
+    'pdf-to-jpg': 'Want to grab an image or a page out of a PDF? Convert the PDF to JPG and get each page as an image you can post, send or save, free at kuickkonvert.com. File deleted after [conversion].',
+    'pdf-to-png': 'Need sharp, high-quality images out of a PDF? Convert it to PNG. Crisp edges, perfect for pages with text or logos. Free at kuickkonvert.com. [Files] deleted after [conversion].',
+    'heic-to-jpg': "Sent an iPhone photo and it just won't open on their computer? That's HEIC. Convert it to JPG and it opens anywhere. And we strip the hidden GPS location from your photo while we're at it. Free at kuickkonvert.com. Up to 20 at once. [Files] deleted after [conversion].",
+    'webp-to-jpg': "Saved a picture from a website and now nothing will open it? It's a WEBP. Convert it to JPG, the normal format every app and device understands. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+    'split-pdf': 'Only need one page out of a big PDF? Split it, and every page becomes its own PDF. Keep the one you need, leave the rest behind. Free at kuickkonvert.com. [Files] deleted after [conversion].',
+    'compress-pdf': 'That annoying "file too large" message again? Compress your PDF down to a size that actually uploads, without turning it into mush. Free at kuickkonvert.com. [Files] deleted after [conversion].',
+    'watermark-pdf': "Sending out a draft you don't want passed off as final? Stamp a watermark on it: DRAFT, CONFIDENTIAL or your name, on every page. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+    'protect-pdf': 'About to email a sensitive PDF with no protection? Add a password first. Locked with strong AES-256 encryption, so only the right person can open it. Free at kuickkonvert.com. File deleted after [conversion].',
+    'doc-to-docx': 'Got an old Word file that ends in .doc? Upload portals and Google Docs often want DOCX instead. Convert DOC to DOCX free at kuickkonvert.com. Text, headings, tables and pictures carry over. Free, no sign-up. Your file is deleted after [conversion].',
+    'all-tools': "You've got the right file, just in the wrong format. Let's fix that. Meet KuickKonvert: twenty-one free tools for Word, Excel, PowerPoint, images and PDF, all in one place. Follow us for practical file tips. Under Documents, turn Word, Excel and PowerPoint files into PDFs that are ready to share or print. Old and new Office formats both work. Need to make changes? Convert a PDF into an editable Word file, pull its tables into Excel, or turn every page into a PowerPoint slide. You can even switch Word files between DOC and DOCX. Under Images, combine photos and scans into one PDF, or save PDF pages as JPG or PNG. Open iPhone HEIC photos as JPG, convert WEBP images saved from websites, and switch between PNG and JPG whenever a form asks for a specific type. PDF Tools handle the everyday jobs. Merge files into one, in the order you add them. Split a PDF so every page becomes its own file. Compress a PDF that's too big to send. Rotate pages that come out sideways. Add a text watermark across every page. And lock a PDF with a password. Prefer to browse? The All Conversion Tools page shows all twenty-one on one screen. How it works is simple: choose a tool, upload your file, and your result downloads straight away. It's free, with no sign-up, no watermark and nothing to install. Your file is processed in a temporary workspace and deleted automatically after conversion. Questions about file size or formats? The FAQ has quick answers. Uploads can be up to fifty megabytes. And the Guides explain, in plain English, what really changes when you convert a file, based on our own tests. Want to know more, or have a suggestion? Visit About, or reach us through Contact. Try it today at kuickkonvert.com. If this helped, hit like, subscribe to KuickKonvert, and tap the bell so you're the first to see every new tip.",
+}
+VIDEO_TRANSCRIPTS_AFTER_REUPLOAD = {
+    'home': "Still paying or signing up just to convert one file? Watch this. KuickKonvert does it all. Word, Excel and PowerPoint to and from PDF. Turn iPhone HEIC and web WEBP photos into JPG. Merge, split, compress, rotate, watermark or password-protect your PDFs. Twenty-one tools, right in your browser. All free, no sign-up, and every file is deleted. kuickkonvert.com.",
+    'word-to-pdf': "Ever sent a Word file and the layout fell apart on their screen? Convert it to PDF first. Do it free at kuickkonvert.com. Nothing to install, and your file's deleted after [conversion].",
+    'ppt-to-pdf': "Need to share a slide deck with someone who doesn't have PowerPoint? Turn it into a PDF. Your slides open on any phone or laptop, no app needed. Free at kuickkonvert.com. Your file's deleted after [conversion].",
+    'png-to-pdf': "Got a bunch of PNG screenshots you need to send as one file? Turn your PNGs into a single clean PDF. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+    'png-to-jpg': "Your PNG too heavy to email or upload? Convert it to JPG. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+    'jpg-to-png': "App or website only accepting PNG files? Convert your JPG to a clean, lossless PNG, ready to upload. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+    'merge-pdf': "Trying to send five separate PDFs in one email? Merge them into one file. Add them in the order you want. Free at kuickkonvert.com. Files deleted after [conversion].",
+    'rotate-pdf': "Scanned a document and it came out sideways? Rotate it the right way up. Free at kuickkonvert.com. [Files] deleted after [conversion].",
+}
+
+# 12 Nov 2026: the 8 corrected videos were uploaded (new IDs above), so their
+# transcripts now match the embedded videos and are switched on. Drafts from
+# offline recognition: Shahid is vetting them by ear (vetting sheet in
+# Downloads\KuickKonvert video vetting 12112026).
+VIDEO_TRANSCRIPTS.update(VIDEO_TRANSCRIPTS_AFTER_REUPLOAD)
+VIDEO_TRANSCRIPTS_AFTER_REUPLOAD = {}
+
+for _k, _t in VIDEO_TRANSCRIPTS.items():
+    VIDEOS[_k]["transcript"] = _t
+
+
+
+# ---- AdSense script (R7-66) withdrawn, 12 Nov 2026 -------------------------
+# Shahid's decision (12 Nov 2026), after the adviser called loading AdSense
+# with no ad inventory "NOT RECOMMENDED": do not load the AdSense script until
+# the site is approved. The site stays connected to AdSense through the
+# <meta name="google-adsense-account"> tag and /ads.txt, which Google's help
+# page "Connect your site to AdSense" lists as alternatives to the code
+# snippet (checked 12 Nov 2026). Neither contacts Google from the visitor's
+# browser. After approval: set True, update the Privacy Notice first (adviser
+# wording), add a certified CMP for the Consent-Controlled Locations if ads
+# are to be shown there, and re-run the network test.
+ADSENSE_SCRIPT_ENABLED = False
+
+
+# Final legal opinion, 12 Nov 2026 (deployment stages 3-7): Release 7 deploys the
+# GPC / Consent Mode controls first; the Consent Mode paragraph of the Privacy
+# Notice ("Advertising on this site") is published only after the production
+# tests pass (GPC browser, Google Tag Assistant, HAR files). Then set True and
+# redeploy. If a live test fails, leave False and keep advertising disabled.
+PRIVACY_CONSENT_MODE_DISCLOSURE = False
+
+
+# ---- R7-82: internal linking for topical authority (Shahid, 13 Nov 2026: yes) ----
+# Source: internal linking plan, 13 Nov 2026 (P1). Lists and one anchor only,
+# no new URLs and no new sentences. Rules applied:
+#   * Every tool keeps the first two items of its "related" list, because
+#     main.js shows related[:2] as "You might also need" after a conversion.
+#     New links are appended (at most 5 related tools per page).
+#   * A pillar guide is added to a tool page only where it is about that
+#     tool's task. Excel and PowerPoint tools already show their own format
+#     guides (xls-vs-xlsx, ppt-vs-pptx). Rotate, Watermark and Protect show
+#     guides on exactly their task, so the compression guide is not forced
+#     onto them.
+# The anchor change (L1) is in the JPG vs PNG guide text above: "Our PNG to
+# JPG converter" (was "PNG to JPG"). L2 (location-data-in-photos) is left
+# as it is: its PNG to JPG link sits in a list of four tool names, and
+# changing one name would read badly.
+R7_82_RELATED_ADD = {
+    "pdf-to-png": ["png-to-jpg"],                # L3
+    "png-to-pdf": ["png-to-jpg", "jpg-to-png"],  # L4, L10
+    "png-to-jpg": ["heic-to-jpg"],               # L5 (jpg-to-png, png-to-pdf, webp-to-jpg already, in that order)
+    "pdf-to-jpg": ["rotate-pdf"],                # L7
+    "compress-pdf": ["protect-pdf"],             # L9
+}
+for _slug, _add in R7_82_RELATED_ADD.items():
+    _rel = TOOLS_BY_SLUG[_slug]["related"]
+    TOOLS_BY_SLUG[_slug]["related"] = _rel + [s for s in _add if s not in _rel]
+# L7, L8, L9 on Merge PDF: rotate, protect and watermark are the usual
+# "finish the document" steps after merging. They replace PDF to Word,
+# which is not a merging task (the Merge FAQ still names Word to PDF).
+TOOLS_BY_SLUG["merge-pdf"]["related"] = [
+    "split-pdf", "compress-pdf", "rotate-pdf", "protect-pdf", "watermark-pdf"]
+
+# Pillar guides link their cluster tools (shown in the guide's "Related tools")
+# and so appear under "Guides for {Tool}" on those tool pages.
+R7_82_GUIDE_TOOLS_ADD = {
+    "jpg-vs-png": ["heic-to-jpg", "webp-to-jpg"],          # L13 + pillar on 2 tools
+    "pdf-compression-levels-explained": ["split-pdf"],     # L14: split a large file before emailing
+    "what-is-a-webp-image": ["png-to-jpg"],                # L5: guides on the PNG to JPG page
+    # L11: the same "old Office format" problem; DOC to DOCX had only 5 in-links.
+    "xls-vs-xlsx": ["doc-to-docx"],
+    "ppt-vs-pptx": ["doc-to-docx"],
+}
+for _gslug, _add in R7_82_GUIDE_TOOLS_ADD.items():
+    _g = GUIDES_BY_SLUG[_gslug]
+    _g["related_tools"] = _g["related_tools"] + [s for s in _add if s not in _g["related_tools"]]
+
+# Rebuild the tool -> guides index in place (app.py holds a reference to this
+# dict) with the cluster pillar guide listed first.
+R7_82_PILLAR = {}
+for _s in ("png-to-jpg", "jpg-to-png", "heic-to-jpg", "webp-to-jpg",
+           "jpg-to-pdf", "png-to-pdf", "pdf-to-jpg", "pdf-to-png"):
+    R7_82_PILLAR[_s] = "jpg-vs-png"
+for _s in ("doc-to-docx", "word-to-pdf", "pdf-to-word"):
+    R7_82_PILLAR[_s] = "docx-vs-doc"
+for _s in ("compress-pdf", "merge-pdf", "split-pdf"):
+    R7_82_PILLAR[_s] = "pdf-compression-levels-explained"
+GUIDES_BY_TOOL.clear()
+for _g in GUIDES:
+    for _slug in _g.get("related_tools", []):
+        GUIDES_BY_TOOL[_slug].append(_g)
+for _slug, _pillar in R7_82_PILLAR.items():
+    _lst = GUIDES_BY_TOOL[_slug]
+    _lst.sort(key=lambda g, p=_pillar: g["slug"] != p)  # stable: pillar first, rest unchanged
+
+
+# ---- R7-84: guide text gaps from the GSC regex exports (Shahid, 13 Nov 2026: Release 7) ----
+# Source: claude/gsc-regex-summary-and-analysis-13112026.md, actions Q1-Q4.
+# Each new section answers a question that Search Console shows people
+# asking, in words that match our own tests and code. No new numbers except
+# the A4 test (Q2), which was run on 13 Nov 2026 with the converter code
+# in this build.
+def _r7_84_insert(slug, after_heading, section):
+    secs = GUIDES_BY_SLUG[slug]["sections"]
+    if any(s.get("heading") == section["heading"] for s in secs):
+        return
+    idx = next(i for i, s in enumerate(secs) if s.get("heading") == after_heading)
+    secs.insert(idx + 1, section)
+
+
+# Q1: "what does compressing a PDF do" (5 query variants) and "is PDF lossless".
+_r7_84_insert("pdf-compression-levels-explained", "What actually makes a PDF big", {
+    "heading": "What does compressing a PDF do?",
+    "paragraphs": [
+        "Compressing a PDF makes the file smaller by shrinking the pictures inside it. Our tool lowers the resolution of images that are sharper than the chosen level needs and re-saves photos with JPEG compression. Typed text and vector graphics stay as real, sharp text, and no pages, words or layout are removed.",
+        "Because a text-only PDF has no images to shrink, compressing it may not make it smaller. In that case our tool gives you your original file back instead of a bigger one.",
+    ],
+})
+_r7_84_insert("pdf-compression-levels-explained", "Can you compress a PDF without losing quality?", {
+    "heading": "Is a PDF lossless?",
+    "paragraphs": [
+        "A PDF is a container, so it depends on what is inside. Text and vector graphics are stored exactly and never lose quality. Images can be stored losslessly, with Flate compression (the same method PNG uses), or with lossy JPEG compression, depending on how the file was made.",
+        "Compressing with our tool re-saves photographic images as JPEG, which is lossy: fine detail is discarded to save space, more at Screen than at Printer. If you need an image-perfect copy, keep the original PDF.",
+    ],
+})
+
+# Q2: "how to fit excel sheet in a4 size pdf". Verified 13 Nov 2026: the
+# converter keeps the paper size saved in the workbook (A4 in, A4 out), with
+# and without pictures in the sheet (office.py fix, also R7-84).
+_r7_84_insert("excel-to-pdf-fit-on-one-page", "What our tool does automatically", {
+    "heading": "Fitting a sheet on one A4 page",
+    "paragraphs": [
+        "Our tool keeps the paper size saved in your workbook. To get A4 pages, choose Page Layout > Size > A4 in Excel and save before converting. The columns are then fitted to the width of an A4 page, turned to landscape if the sheet is wide.",
+        "In our test (November 2026), a 12-column workbook saved as A4 came out on A4 pages, both with and without a picture in the sheet. A workbook with no paper size saved came out as US Letter, so set A4 yourself if you need it.",
+        "Fitting works on the width. A long sheet still continues onto further A4 pages; to keep it to a single page, reduce the rows, for example with a print area.",
+    ],
+})
+
+# Q3: "pdf to excel without losing formatting" -- answered honestly
+# (converters/tables.py writes values as text and copies no styles).
+_r7_84_insert("pdf-to-excel-table-conversion-results", "Scanned PDFs need OCR first", {
+    "heading": "Can you convert PDF to Excel without losing formatting?",
+    "paragraphs": [
+        "Not fully. Our tool brings across the content: the text and numbers of each table in their rows and columns, with the text found around the table. It does not copy the look. Fonts, bold, colours, cell borders and merged cells are not carried over, every value arrives as text, and the tool sets the column widths.",
+        "Plan to reapply number formats, styling and any formulas in Excel after converting. If you need the original formatting, ask for the spreadsheet the PDF was made from.",
+    ],
+})
+GUIDES_BY_SLUG["pdf-to-excel-table-conversion-results"]["updated"] = RELEASE7_DATE
+RELEASE7_UPDATED_GUIDES = RELEASE7_UPDATED_GUIDES + ("pdf-to-excel-table-conversion-results",)
+
+# Q4: "what is a pptx file" (low priority).
+_r7_84_insert("ppt-vs-pptx", "Is PPT the same as PPTX?", {
+    "heading": "What is a PPTX file?",
+    "paragraphs": [
+        "A PPTX file is a PowerPoint presentation saved in the Office Open XML format, PowerPoint's default since PowerPoint 2007. Inside, it is a ZIP archive of XML files plus the pictures and other media used on the slides, which is one reason it was the smaller file in our test. It opens in current PowerPoint and in most other presentation programs.",
+    ],
+})
+
+# ---- R7-86: PDF to Word guide, three new sections (Shahid, 15 Nov 2026: Release 7) ----
+# From the Ahrefs AI Content Helper review of this guide (document 258083,
+# keyword "how to convert PDF to Word without losing formatting"; content
+# score 53 -> 78 with this text). Weak topics were choosing a method, source
+# file preparation and preserving formatting. Every statement comes from this
+# guide's own October 2026 test, the PDF to Word tool page, the converter's
+# messages (converters/pdf_tools.py: password, split hint) or the two help
+# pages listed in "sources" (both checked 15 Nov 2026). No competitor names,
+# no OCR claim, no promise that formatting is always kept.
+# The old last section "Getting the best result from a text-based PDF" is
+# replaced: its two points (simple layouts; password; deletion) are carried
+# into the new sections, and "best" leaves the heading.
+_r7_86_g = GUIDES_BY_SLUG["pdf-to-word-text-vs-scanned"]
+_r7_86_g["sections"] = [s for s in _r7_86_g["sections"]
+                        if s.get("heading") != "Getting the best result from a text-based PDF"]
+_r7_84_insert("pdf-to-word-text-vs-scanned", "What we measured", {
+    "heading": "Which method to use",
+    "paragraphs": [
+        "There are three common ways to turn a PDF into a Word document. Which one suits you depends on what kind of PDF you have and where you're happy for the file to go.",
+        "An online converter, such as our [[pdf-to-word|PDF to Word tool]], needs no software and no account, and works in a phone or computer browser. It suits text-based PDFs up to 50 MB. Your upload and the Word file are deleted from our server as soon as your download is ready.",
+        "Microsoft Word can also open a PDF itself. According to Microsoft's help page, go to File > Open and choose the PDF: Word makes a copy and converts it, and the original PDF isn't changed. Microsoft says this suits PDFs that are mostly text, and warns that lines and pages may break in different places from the original. Because the file stays on your computer, it's a sensible choice for confidential documents if you have Word installed.",
+        "For a scanned PDF you need OCR, which turns the picture of the text back into letters. Our tool doesn't do OCR, so a scan comes out as a picture (see our test above). Google Docs can do it for free, as described in the next section.",
+    ],
+})
+_r7_84_insert("pdf-to-word-text-vs-scanned", "What to do with a scanned PDF", {
+    "heading": "Before you convert: prepare the PDF",
+    "paragraphs": [
+        "Check that it has real text. Use the highlight or Ctrl+F test above. If it's a scan, our tool will give you a picture, not editable text.",
+        "Remove the password. Our tool can't open a password-protected PDF. Open it in your PDF reader with its password, save or print a copy without one, and upload that copy.",
+        "Use the original export where you can. A PDF saved directly from Word or another program converts much more cleanly than one that has been printed and scanned. If someone sent you the PDF, ask whether they still have the Word file.",
+        "Split very long files. Long PDFs, and pages packed with ruled table cells such as bank statements, take much longer to convert. If our tool says a file is too long, split it with [[split-pdf|Split PDF]] and convert it in parts.",
+        "Keep it under 50 MB. If it's larger, [[compress-pdf|Compress PDF]] may bring it down. Text stays text when a PDF is compressed, but zoom in afterwards to check that small print in any images is still readable.",
+    ],
+})
+_r7_84_insert("pdf-to-word-text-vs-scanned", "Before you convert: prepare the PDF", {
+    "heading": "Keeping the formatting: what carries over to Word",
+    "paragraphs": [
+        "No converter can promise to turn every PDF into Word without losing formatting, because a PDF stores where things sit on the page, not how the document was built. The converter has to rebuild paragraphs, tables and lists from those positions.",
+        "Simple layouts such as letters, contracts and reports come through most cleanly. In our test, the text-based PDF became editable Word text with a real Word table: 140 words, and the rent table's cells could be edited.",
+        "Some things need a little work afterwards. Bulleted and numbered lists come through as plain lines of text rather than a live Word list, so you may need to reapply the list formatting. Multi-column layouts, text placed over images and heavily designed pages can need tidying in Word.",
+        "Before you rely on the Word file, compare it with the PDF: check the number of pages, every table, any lists, and the headers and footers. Fix anything that has moved before you send or print it.",
+    ],
+})
+_r7_86_g["sources"] = [
+    ("Microsoft Support: Edit a PDF (open a PDF in Word)", "https://support.microsoft.com/en-gb/word/training/edit-a-pdf"),
+    ("Google Drive Help: Convert PDF and photo files to text", "https://support.google.com/drive/answer/176692?hl=en"),
+]
+_r7_86_g["updated"] = RELEASE7_DATE
+RELEASE7_UPDATED_GUIDES = RELEASE7_UPDATED_GUIDES + ("pdf-to-word-text-vs-scanned",)
+
+
+# ===========================================================================
+# Release 7 final fix (19 Nov 2026): items approved 15-16 Nov 2026 for the
+# 19 Nov build. R7-83 videos, R7-87 + spec section 9, R7-88, R7-89, R7-92
+# (internal linking P2: L12, L14, L15, L16 and 10 dek links).
+# Spec: claude/r7-87-keyword-placement-spec-15112026.md (project notes).
+# ===========================================================================
+
+def _r7f_faq_replace(slug, old_q, new_q, new_a=None):
+    faq = list(TOOLS_BY_SLUG[slug]["faq"])
+    idx = [i for i, (q, a) in enumerate(faq) if q == old_q]
+    assert len(idx) == 1, (slug, old_q)
+    q, a = faq[idx[0]]
+    faq[idx[0]] = (new_q, a if new_a is None else new_a)
+    TOOLS_BY_SLUG[slug]["faq"] = faq
+
+
+def _r7f_faq_add(slug, q, a):
+    TOOLS_BY_SLUG[slug]["faq"] = list(TOOLS_BY_SLUG[slug]["faq"]) + [(q, a)]
+
+
+# ---- R7-87 section 1 + section 9: PNG to JPG (title stays frozen) ----------
+_t = TOOLS_BY_SLUG["png-to-jpg"]
+_t["meta_description"] = "Convert PNG to JPG online for free, up to 20 images at once. Photos usually get much smaller; transparent areas turn white. No sign-up."
+_t["intro"] = "Convert PNG to JPG (JPEG) online for free. JPG is the most widely accepted image format, and usually a much smaller file when the picture is a photo. Change one PNG or up to 20 at a time."
+_t["how_to_heading"] = "How to convert PNG to JPG"
+_t["h1"] = "PNG to JPG - Convert PNG Images to JPG"
+_r7f_faq_replace("png-to-jpg", "Is there any quality loss?",
+                 "Can I convert PNG to JPG without losing quality?",
+                 "Almost, on photos: images are saved at quality 90, where the difference is hard to see. Sharp text and thin lines can look slightly softer, as with any JPG.")
+
+# ---- R7-87 section 2: Protect PDF (title + H1 exception approved) ----------
+_t = TOOLS_BY_SLUG["protect-pdf"]
+_t["seo_title"] = "Password Protect PDF Online Free - Lock PDF | KuickKonvert"
+_t["h1"] = "Password Protect PDF - Lock PDF Files with a Password"
+_t["meta_description"] = "Password protect a PDF online free: lock it with a password and 256-bit AES encryption so only people who know it can open it. No sign-up or install."
+_t["intro"] = "Password protect a PDF online for free: Protect PDF locks the file with a password you choose and encrypts it with 256-bit AES, so only someone who has the password can open it -- useful before emailing a document with sensitive information."
+_r7f_faq_replace("protect-pdf", "What encryption does this use?",
+                 "How does Protect PDF encrypt the PDF?",
+                 "With 256-bit AES encryption, applied with the password you choose. This is the method the current PDF standard (PDF 2.0) specifies for password-protected PDFs, and Adobe Acrobat and Reader have supported it since version 9.")
+
+# ---- R7-87 section 3: Compress PDF FAQ (figures from the compression guide) -
+_r7f_faq_replace("compress-pdf", "Can I compress a PDF to 1MB or a few hundred KB?",
+                 "Can I compress a PDF to 100 KB, 200 KB, 500 KB or 1 MB?",
+                 "There's no exact-size setting, so we can't promise 100 KB, 200 KB, 500 KB, 1 MB or any other size -- the result depends on what's inside your PDF. For the biggest reduction, choose \"Smallest file (screen quality)\". In our test (September 2026), a 3.2 MB PDF holding one photo came out at 50 KB on Screen and 127 KB on Ebook, and a 93 KB one-page scan came out at 24 KB on Screen -- but a text-only PDF didn't get smaller at all. If your PDF was made from phone photos, Compress PDF may not shrink it at all -- resize the photos before converting them (our guide on putting photos into one PDF shows how). Check the result's size before uploading it to a form with a limit.")
+
+# ---- R7-87 section 4: Merge PDF ("join pdf") --------------------------------
+_t = TOOLS_BY_SLUG["merge-pdf"]
+_t["intro"] = "Merge PDF combines multiple PDF files into a single document, in the order you add them. It's a free online PDF merger that can also join PDF files such as separate sections of a report or scanned pages into one file."
+_t["meta_description"] = "Merge PDF files free online: combine or join PDFs into one file, in the order you add them. No sign-up, no installation and no watermark on the merged PDF."
+
+# ---- R7-87 section 5: PDF to PPT ("pdf to pptx"); output is .pptx -----------
+_t = TOOLS_BY_SLUG["pdf-to-ppt"]
+_t["h1"] = "PDF to PPT Converter - PDF to PowerPoint (PPTX)"
+_t["intro"] = "PDF to PPT turns each page of a PDF into a slide in a PowerPoint (PPTX) file, keeping each page exactly as it looks in the PDF."
+_t["meta_description"] = "Convert PDF to PowerPoint online for free: PDF to PPTX, with each PDF page as a slide and the layout kept exactly. No sign-up or install."
+_r7f_faq_add("pdf-to-ppt", "Is this PDF to PPTX or PDF to PPT?",
+             "PDF to PPTX: you get a .pptx file, the PowerPoint format used since PowerPoint 2007. It also opens in Google Slides, Keynote and LibreOffice Impress. If you need the older .ppt format, open the file in PowerPoint and use Save As.")
+
+# ---- R7-87 section 6: Split PDF ("separate pdf pages") ----------------------
+_t = TOOLS_BY_SLUG["split-pdf"]
+_t["h1"] = "Split PDF - Separate PDF Pages into Single Files"
+_t["intro"] = "Split PDF is a free online PDF splitter: it separates PDF pages into individual files, saving every page as its own single-page PDF, delivered as a ZIP -- useful when you only need to send someone one page out of a longer document."
+_r7f_faq_add("split-pdf", "How do I separate PDF pages into separate files?",
+             "Upload the PDF and press Convert: every page is saved as its own single-page PDF, and all of them download together in one ZIP file. Open the ZIP and keep the pages you need.")
+
+# ---- R7-87 section 7: PDF to Excel ("pdf to xlsx") --------------------------
+_t = TOOLS_BY_SLUG["pdf-to-excel"]
+_t["h1"] = "PDF to Excel Converter - PDF to XLSX"
+_t["intro"] = "PDF to Excel (PDF to XLSX) extracts tables from a PDF and rebuilds them as an editable XLSX file, so you can sort, filter, or recalculate data that arrived as a static document."
+
+# ---- R7-87 section 8 + section 9: "JPG (JPEG)" once per image intro ---------
+TOOLS_BY_SLUG["heic-to-jpg"]["intro"] = "HEIC to JPG is a free HEIC converter: it turns the HEIC photos taken by iPhones and iPads into ordinary JPG (JPEG) files that open on any computer, phone or website. Convert one photo or up to 20 at a time -- several photos come back together in one ZIP file."
+TOOLS_BY_SLUG["webp-to-jpg"]["intro"] = "WEBP to JPG turns WEBP images -- the format many websites now use for their pictures -- into ordinary JPG (JPEG) files that open in any photo viewer or editor and upload anywhere. Convert one image or up to 20 at a time."
+TOOLS_BY_SLUG["pdf-to-jpg"]["intro"] = "PDF to JPG turns every page of a PDF into its own JPG (JPEG) image, useful when you need to drop a page into a slide, a website, or a chat message rather than share the whole PDF."
+TOOLS_BY_SLUG["jpg-to-pdf"]["intro"] = "Convert images to PDF online for free: turn a single JPG (JPEG) photo into a PDF, or merge JPG to PDF to combine several photos into one file. It's a quick way to turn pictures of documents, receipts, or whiteboards into one shareable PDF -- and PNG images work too."
+
+# ---- R7-88: "converted on our server" unmistakable --------------------------
+_r7f_faq_replace("webp-to-jpg", "Do I need special software to open WEBP files as JPG?",
+                 "Do I need special software to open WEBP files as JPG?",
+                 "No -- you use it from your browser on Windows, Mac, Android or iPhone. Upload your WEBP images, they're converted on our server, and you download the JPGs. There's no sign-up.")
+_g = GUIDES_BY_SLUG["how-to-split-pdf-files"]
+_hits = [s for s in _g["sections"] if s.get("heading") == "Split a PDF in your browser"]
+assert len(_hits) == 1
+_hits[0]["heading"] = "Split a PDF online, in any browser"
+
+# ---- R7-89: form-size limits in the photos-to-one-PDF guide -----------------
+# Measured 15 Nov 2026 with KuickKonvert's own converter (photo 1920 x 3413);
+# readability checked on a phone photo of a printed A4 form (15 Nov 2026).
+_r7_84_insert("photos-to-one-pdf-jpg-to-pdf-tips", "The reliable fix: resize the photos first", {
+    "heading": "Meeting a form's size limit (100 KB, 200 KB or 500 KB)",
+    "paragraphs": [
+        "If a form sets a limit such as 100 KB, 200 KB or 500 KB, the photo's pixel size decides the result. In our test (November 2026) with a real phone photo, resized copies saved as JPG came to:",
+    ],
+    "table": {
+        "caption": "One phone photo, resized and saved as JPG (our test, November 2026)",
+        "headers": ["Long side", "JPG quality", "Photo / one-page PDF"],
+        "rows": [
+            ["1,600 px", "85", "253 KB / 254 KB"],
+            ["1,200 px", "80", "134 KB / 135 KB"],
+            ["1,000 px", "75", "87 KB / 89 KB"],
+            ["800 px", "70", "55 KB / 56 KB"],
+        ],
+        "note": "Combine them with JPG to PDF: a one-page PDF is about 1 KB larger than the photo, and three pages at 1,200 pixels came to 404 KB. In our test with a phone photo of a printed A4 form, normal-size text was still readable at 1,000 pixels; at 800 pixels it was only just readable and small print was hard to read. Check every page before you submit.",
+    },
+})
+
+# ---- R7-92 (internal linking P2) --------------------------------------------
+# L15: pillar guides first in the home "Guides" block (used in app.py index()).
+HOME_PILLAR_GUIDES = ("docx-vs-doc", "jpg-vs-png", "pdf-compression-levels-explained")
+
+# L12: docx-vs-doc links the other Office tools and the sibling format guides.
+_r7_84_insert("docx-vs-doc", "Switching a file between DOC and DOCX", {
+    "heading": "Converting other Office files",
+    "paragraphs": [
+        "The same old-versus-new format question applies to Excel (XLS and XLSX) and PowerPoint (PPT and PPTX). Our guides [[guide:xls-vs-xlsx|XLS vs XLSX]] and [[guide:ppt-vs-pptx|PPT vs PPTX]] explain the differences.",
+        "For spreadsheets, [[excel-to-pdf|Excel to PDF]] accepts both XLS and XLSX, and [[pdf-to-excel|PDF to Excel]] turns tables in a PDF into an XLSX file. For presentations, [[ppt-to-pdf|PowerPoint to PDF]] accepts both PPT and PPTX, and [[pdf-to-ppt|PDF to PowerPoint]] turns each PDF page into a slide in a PPTX file.",
+    ],
+})
+
+# L14: the compression pillar links the rest of the PDF tools cluster (body
+# text only, so the guide is not added to those tools' "Guides for" lists).
+_g = GUIDES_BY_SLUG["pdf-compression-levels-explained"]
+_g["sections"] = list(_g["sections"]) + [{
+    "heading": "Other PDF tools",
+    "paragraphs": [
+        "Compress PDF is one of six free PDF tools on KuickKonvert. To combine files or take pages out, use [[merge-pdf|Merge PDF]] or [[split-pdf|Split PDF]]; to turn sideways pages, use [[rotate-pdf|Rotate PDF]]; and to label or lock the finished file, use [[watermark-pdf|Watermark PDF]] or [[protect-pdf|Protect PDF]].",
+    ],
+}]
+
+# Dek tool links on the 10 guides that had none.
+_R7_92_DEK_LINKS = {
+    "merge-pdf-in-the-right-order": " To combine your files, use our [[merge-pdf|Merge PDF tool]].",
+    "pdf-password-protection-explained": " To add a password to a PDF, use our [[protect-pdf|Protect PDF tool]].",
+    "pdf-to-excel-table-conversion-results": " To try it on your own file, use our [[pdf-to-excel|PDF to Excel converter]].",
+    "photos-to-one-pdf-jpg-to-pdf-tips": " To combine your photos, use our [[jpg-to-pdf|JPG to PDF converter]].",
+    "pdf-to-word-text-vs-scanned": " To convert a text-based PDF, use our [[pdf-to-word|PDF to Word converter]].",
+    "watermark-pdf-what-it-protects": " To add one, use our [[watermark-pdf|Watermark PDF tool]].",
+    "split-and-rotate-pdf-pages": " To try them, use our [[split-pdf|Split PDF]] and [[rotate-pdf|Rotate PDF]] tools.",
+    "location-data-in-photos": " For iPhone photos, our [[heic-to-jpg|HEIC to JPG converter]] removes the GPS location as it converts.",
+    "submitting-coursework-as-a-pdf": " For a Word file, start with our [[word-to-pdf|Word to PDF converter]].",
+    "what-happens-to-your-file": " The same steps apply to every tool, for example our [[pdf-to-word|PDF to Word converter]].",
+}
+for _s, _extra in _R7_92_DEK_LINKS.items():
+    assert "[[" not in GUIDES_BY_SLUG[_s]["dek"], _s
+    GUIDES_BY_SLUG[_s]["dek"] = GUIDES_BY_SLUG[_s]["dek"] + _extra
+
+# Guides whose body changed in this fix carry the release date.
+for _s in ("photos-to-one-pdf-jpg-to-pdf-tips", "docx-vs-doc", "pdf-compression-levels-explained"):
+    GUIDES_BY_SLUG[_s]["updated"] = RELEASE7_DATE
+    if _s not in RELEASE7_UPDATED_GUIDES:
+        RELEASE7_UPDATED_GUIDES = RELEASE7_UPDATED_GUIDES + (_s,)
+
+# ---- R7-83: new-voice professional videos (uploaded 13 Nov 2026) ------------
+# IDs from claude/youtube-new-voice-links-13112026.md. Lengths and upload
+# times read from YouTube (video details, 19 Nov 2026). Transcripts = the
+# round-2 spoken text in claude/professional-videos-new-voice-13112026.md.
+# Thumbnails (static/img/video/) are unchanged: same opening frames.
+_R7_83 = {
+    # key: (id, seconds, uploaded, transcript)
+    "home": ("p8tYDhRRQHc", 29, "2026-11-13T06:54:34-08:00", "Still paying or signing up just to convert one file? Watch this. KuickKonvert does it all. Word, Excel and PowerPoint to and from PDF. Turn iPhone HEIC and WEBP photos into JPG. Merge, split, compress, rotate, watermark or password-protect your PDFs. Twenty-one tools, right in your browser. All free, no sign-up. Files deleted after conversion. kuickkonvert.com."),
+    "word-to-pdf": ("4Y2JCxaA9T8", 14, "2026-11-13T06:54:33-08:00", "Ever sent a Word file and the layout fell apart on their screen? Convert it to PDF first. Do it free at kuickkonvert.com. Free, no sign-up. Nothing to install. Files deleted after conversion."),
+    "pdf-to-word": ("UqK4o4H9yT8", 15, "2026-11-13T06:54:33-08:00", "Got a PDF you need to edit, but no original file? Turn it back into an editable Word document. Fix the text, change a number, and you're done. Free at kuickkonvert.com. Free, no sign-up. Files deleted after conversion."),
+    "excel-to-pdf": ("BwiQh7pkv6w", 16, "2026-11-13T06:54:33-08:00", "Sending an Excel sheet that spills onto six messy pages? Convert it to a clean PDF that holds its layout. Easy to read, easy to share, opens for everyone. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "pdf-to-excel": ("r8VSFnV1rMs", 17, "2026-11-13T06:54:33-08:00", "Someone sent the report as a PDF, and now you need those numbers in Excel. Convert the PDF to Excel and get your tables back as rows and columns you can actually work with. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "ppt-to-pdf": ("08v4gGONweo", 15, "2026-11-13T06:54:33-08:00", "Need to share a slide deck with someone who doesn't have PowerPoint? Turn it into a PDF. Your slides open on any phone or laptop, no app needed. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "pdf-to-ppt": ("PZ9rf1UKdq8", 12, "2026-11-13T06:54:33-08:00", "Only have the slides as a PDF? Convert the PDF back into PowerPoint slides, free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "jpg-to-pdf": ("1nxYETXA35Y", 15, "2026-11-13T06:54:33-08:00", "Upload form wants one PDF, but you've got a pile of photos? Drop your JPGs in, put them in order, and get one neat PDF, free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "png-to-pdf": ("M6R_SikPg0c", 14, "2026-11-13T06:17:18-08:00", "Got a bunch of PNG screenshots you need to send as one file? Turn your PNGs into a single clean PDF. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "pdf-to-jpg": ("KWbp5uIROk8", 15, "2026-11-13T06:54:33-08:00", "Want to grab an image or a page out of a PDF? Convert the PDF to JPG and get each page as an image you can post, send or save, free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "pdf-to-png": ("kFygV7CKyy0", 15, "2026-11-13T06:54:33-08:00", "Need sharp, high-quality images out of a PDF? Convert it to PNG. Crisp edges, perfect for pages with text or logos. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "heic-to-jpg": ("_6PwJwiU3Ic", 21, "2026-11-13T06:54:33-08:00", "Sent an iPhone photo and it just won't open on their computer? That's HEIC. Convert it to JPG and it opens anywhere. And we strip the hidden GPS location from your photo while we're at it. Free at kuickkonvert.com. No sign-up. Up to 20 at once. Files deleted after conversion."),
+    "webp-to-jpg": ("pSxJcICw1qY", 16, "2026-11-13T06:54:33-08:00", "Saved a picture from a website and now nothing will open it? It's a WEBP. Convert it to JPG, the normal format every app and device understands. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "png-to-jpg": ("e4lbRyCLLuA", 11, "2026-11-13T06:54:33-08:00", "Your PNG too heavy to email or upload? Convert it to JPG. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "jpg-to-png": ("IHPBh06crNk", 15, "2026-11-13T06:54:33-08:00", "App or website only accepting PNG files? Convert your JPG to a clean, lossless PNG, ready to upload. Free at kuickkonvert.com. No sign-up. Up to 20 at once. Files deleted after conversion."),
+    "merge-pdf": ("hzr82e6NkqY", 14, "2026-11-13T06:54:33-08:00", "Trying to send five separate PDFs in one email? Merge them into one file. Add them in the order you want. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "split-pdf": ("I2xbhWO4xMI", 15, "2026-11-13T06:54:34-08:00", "Only need one page out of a big PDF? Split it, and every page becomes its own PDF. Keep the one you need, leave the rest behind. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "compress-pdf": ("InIhMZl77y0", 14, "2026-11-13T06:54:33-08:00", "That annoying \"file too large\" message again? Compress your PDF down to a size that actually uploads, without turning it into mush. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "rotate-pdf": ("-dEMQIAoPuw", 11, "2026-11-13T06:54:33-08:00", "Scanned a document and it came out sideways? Rotate it the right way up. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "watermark-pdf": ("hvqWtyb8lq8", 15, "2026-11-13T06:58:11-08:00", "Sending out a draft you don't want passed off as final? Stamp a watermark on it: DRAFT, CONFIDENTIAL or your name, on every page. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "protect-pdf": ("BGB3Ae-KHh0", 17, "2026-11-13T06:54:33-08:00", "About to email a sensitive PDF with no protection? Add a password first. Locked with strong AES-256 encryption, so only the right person can open it. Free at kuickkonvert.com. No sign-up. Files deleted after conversion."),
+    "doc-to-docx": ("pljxa5C-ARk", 20, "2026-11-13T06:53:22-08:00", "Got an old Word file that ends in .doc? Upload portals and Google Docs often want DOCX instead. Convert DOC to DOCX free at kuickkonvert.com. Text, headings, tables and pictures carry over. Free, no sign-up. Nothing to install. Files deleted after conversion."),
+    # V23: the all-tools video's voice-over is unchanged; its transcript stays.
+    "all-tools": ("1E_AUIg4tZk", 129, "2026-11-13T06:56:36-08:00", None),
+}
+
+
+def _r7f_iso(sec):
+    m, s = divmod(sec, 60)
+    return f"PT{m}M{s}S" if m else f"PT{s}S"
+
+
+assert set(_R7_83) == set(VIDEOS), set(_R7_83) ^ set(VIDEOS)
+for _k, (_id, _sec, _up, _tr) in _R7_83.items():
+    VIDEOS[_k]["id"] = _id
+    VIDEOS[_k]["seconds"] = _sec
+    VIDEOS[_k]["duration"] = _r7f_iso(_sec)
+    VIDEOS[_k]["uploaded"] = _up
+    if _tr is not None:
+        VIDEOS[_k]["transcript"] = _tr
+        VIDEO_TRANSCRIPTS[_k] = _tr

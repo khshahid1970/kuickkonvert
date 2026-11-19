@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}About KuickKonvert - Free Online File Converter{% endblock %}
+{% block title %}About KuickKonvert - Who Runs It and How We Test{% endblock %}
 {% block description %}KuickKonvert offers {{ tool_count }} free online tools for Word, Excel, PowerPoint, PDF and images. No sign-up; files are deleted automatically after conversion.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -10,6 +10,19 @@
     {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
     {"@type": "ListItem", "position": 2, "name": "About", "item": "{{ canonical_url }}"}
   ]
+}
+</script>
+{#- Author identity (Shahid, 11 Nov 2026: yes). The guides' Article "author"
+    points to this @id. Only facts shown on this page: the name, and that he
+    runs KuickKonvert ("a production of Shahid Iqbal"). -#}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "{{ site_url }}/about#shahid-iqbal",
+  "name": "Shahid Iqbal",
+  "url": "{{ site_url }}/about",
+  "worksFor": {"@id": "{{ site_url }}/#organization"}
 }
 </script>
 {% endblock %}
@@ -24,7 +37,7 @@
     <h1>About KuickKonvert</h1>
 
     <h2>What KuickKonvert is</h2>
-    <p><strong>KuickKonvert — spelled with a K</strong></p>
+    <p><strong>KuickKonvert — spelled with two Ks: Kuick + Konvert, at kuickkonvert.com</strong></p>
     <p>KuickKonvert is a free online file conversion service covering Word, Excel, PowerPoint, PDF, and image formats -- {{ tool_count }} tools in total, from everyday conversions like Word to PDF through to PDF utilities like merging, splitting, compressing, and password-protecting. Every tool works in your web browser, with your file converted on our server and then deleted, so there's nothing to install and no account to create.</p>
     <p>Alongside the tools, our <a href="{{ url_for('guides_index') }}">guides</a> explain in plain English what actually changes when you convert a file -- fonts, page layout, file size, password protection and more -- based on our own tests.</p>
 
@@ -32,8 +45,8 @@
     <p>Three principles shape every tool on this site:</p>
     <ul class="why-list">
       <li><strong>No sign-up.</strong> Every tool is usable immediately -- there's no account, no email capture, and no login wall between you and your file.</li>
-      <li><strong>Nothing is kept.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
-      <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50MB limit per upload (all files together) to keep conversions fast for everyone.</li>
+      <li><strong>Files deleted automatically.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
+      <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50MB limit per upload (all files together).</li>
     </ul>
 
     <h2>How we test</h2>
@@ -51,10 +64,10 @@
     <p>This cloud application layer utilizes unmodified third-party open-source programs and utility packages (including LibreOffice, Ghostscript, Poppler, and PyMuPDF). Listing these components does not convey licensing permissions; their distinct license versions, explicit copyrights, and compliance obligations remain subject to verification under their respective license headers.</p>
 
     <h2>Who operates KuickKonvert</h2>
-    <p>KuickKonvert is a production of Shahid Iqbal. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+    <p id="shahid-iqbal">KuickKonvert is a production of Shahid Iqbal. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
 
     <h2>Where else to find KuickKonvert</h2>
-    <p>KuickKonvert is listed on <a href="https://www.producthunt.com/products/kuickkonvert" target="_blank" rel="noopener">Product Hunt</a>, <a href="https://peerpush.com/p/kuickkonvert" target="_blank" rel="noopener">PeerPush</a>, <a href="https://www.saashub.com/kuickkonvert" target="_blank" rel="noopener">SaaSHub</a> and <a href="https://peerlist.io/kuickkonvert/project/kuick-konvert" target="_blank" rel="noopener">Peerlist</a>. If KuickKonvert has helped you, an honest review on any of them helps other people find it.</p>
+    <p>KuickKonvert is listed on <a href="https://www.producthunt.com/products/kuickkonvert" target="_blank" rel="noopener">Product Hunt</a>, <a href="https://peerpush.com/p/kuickkonvert" target="_blank" rel="noopener">PeerPush</a>, <a href="https://www.saashub.com/kuickkonvert" target="_blank" rel="noopener">SaaSHub</a> and <a href="https://peerlist.io/kuickkonvert/project/kuickkonvert" target="_blank" rel="noopener">Peerlist</a>. If KuickKonvert has helped you, an honest review on any of them helps other people find it. To mention us on your own site, our <a href="{{ url_for('link_to_us') }}">Link to KuickKonvert page</a> has ready-made text links and a badge.</p>
   </div>
 </section>
 {% endblock %}

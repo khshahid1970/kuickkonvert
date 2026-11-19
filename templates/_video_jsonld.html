@@ -1,0 +1,21 @@
+{#- VideoObject for the page's video (Release 7, WP8). Google shows video
+    results only where the video is the main content, so expect "Video is not
+    the main content of the page" in Search Console; that is not an error. -#}
+{% if video %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": {{ video_heading|tojson }},
+  "description": {{ ("Short KuickKonvert video: " ~ video_name ~ ", free on kuickkonvert.com.")|tojson }},
+  "thumbnailUrl": ["{{ site_url }}{{ url_for('static', filename='img/video/' ~ video.thumb) }}"],
+  "uploadDate": {{ video.uploaded|tojson }},
+  "duration": {{ video.duration|tojson }},
+  "embedUrl": "https://www.youtube-nocookie.com/embed/{{ video.id }}",
+  {%- if video.transcript %}
+  "transcript": {{ video.transcript|tojson }},
+  {%- endif %}
+  "publisher": {"@id": "{{ site_url }}/#organization"}
+}
+</script>
+{% endif %}

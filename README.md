@@ -17,7 +17,7 @@
 | PDF tools (6) | [Merge](https://kuickkonvert.com/tools/merge-pdf), [Split](https://kuickkonvert.com/tools/split-pdf), [Compress](https://kuickkonvert.com/tools/compress-pdf), [Rotate](https://kuickkonvert.com/tools/rotate-pdf), [Watermark](https://kuickkonvert.com/tools/watermark-pdf), [Password-protect](https://kuickkonvert.com/tools/protect-pdf) |
 
 - **No account, no credit card** — open a tool and convert.
-- **Private by design** — each file is processed in a temporary workspace and deleted as soon as the converted file is returned (or immediately if a conversion fails).
+- **Files deleted after conversion** — each file is uploaded, converted on our server in a temporary workspace and deleted as soon as the converted file is returned (or immediately if a conversion fails).
 - **Works in any modern browser** — desktop or mobile, nothing to install.
 - **Free** — up to 50 MB per upload (all files together), and up to 20 images at a time in the image converters.
 

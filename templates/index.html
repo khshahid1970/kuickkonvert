@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}PDF Converter & PDF Maker Online Free | KuickKonvert{% endblock %}
-{% block description %}Free PDF converter and PDF maker: convert PDF, Word, Excel, PowerPoint and images to and from PDF online. No sign-up; files are deleted automatically.{% endblock %}
+{% block description %}Free PDF converter and PDF maker: convert PDF, Word, Excel, PowerPoint and images to and from PDF online. No sign-up, no watermark; files deleted automatically.{% endblock %}
+{% block structured_data %}
+{% set video = videos.get('home') %}
+{% set video_name = 'KuickKonvert, free file tools' %}
+{% set video_heading = 'Watch: KuickKonvert in 30 seconds' %}
+{% include "_video_jsonld.html" %}
+{% endblock %}
 {% block content %}
 {% set tool_count = by_category.values()|map('length')|sum %}
 <div class="hero-rail-zone">
@@ -49,7 +55,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Free Online PDF Converter - Convert to PDF</h1>
-    <p class="hero-sub">Convert files. Fast, free, private. This online file converter turns Word docs into PDF, converts Excel, PowerPoint and image files to PDF, or turns PDF back into Word, Excel, PowerPoint and images -- just upload from your browser, with nothing to install. No sign-up, and every file is deleted automatically after conversion.</p>
+    <p class="hero-sub">KuickKonvert is a free online file converter that turns Word docs into PDF, converts Excel, PowerPoint and image files to PDF, or turns PDF back into Word, Excel, PowerPoint and images -- just upload from your browser, with nothing to install. No sign-up, and every file is deleted automatically after conversion.</p>
 
     <ul class="trust-strip">
       <li>
@@ -68,7 +74,7 @@
         <span class="trust-icon">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
-        100% free
+        Free to use
       </li>
       <li>
         <span class="trust-icon">
@@ -97,8 +103,8 @@
          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     #}
     <div class="ad-slot-house">
-      <span class="ad-slot-house-line ad-slot-house-line--main">Deleted the moment your download is ready.</span>
-      <span class="ad-slot-house-line ad-slot-house-line--sub">Each upload is processed in its own temporary workspace &mdash; nothing is kept.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--main">Files are deleted automatically after conversion.</span>
+      <span class="ad-slot-house-line ad-slot-house-line--sub">Each upload is processed in its own temporary workspace.</span>
     </div>
   </div>
 </div>
@@ -124,6 +130,15 @@
         <p>Your converted file downloads straight away.</p>
       </li>
     </ol>
+  </div>
+</section>
+
+<section class="home-video">
+  <div class="wrap">
+    {% set video = videos.get('home') %}
+    {% set video_name = 'KuickKonvert, free file tools' %}
+    {% set video_heading = 'Watch: KuickKonvert in 30 seconds' %}
+    {% include "_video.html" %}
   </div>
 </section>
 
@@ -168,21 +183,21 @@
 <section class="why-section">
   <div class="wrap">
     <h2>Why KuickKonvert</h2>
-    <p class="section-sub">A file converter built to be fast and simple -- nothing to install, nothing to sign up for.</p>
+    <p class="section-sub">A file converter built to be simple -- nothing to install, nothing to sign up for.</p>
     <div class="why-grid">
       <div class="why-card">
         <span class="why-card-icon">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         </span>
-        <h3>Private by design</h3>
-        <p>Every uploaded file is processed and then deleted automatically after conversion -- we don't keep it or share it.</p>
+        <h3>Files deleted automatically</h3>
+        <p>Every uploaded file is used only for the conversion you asked for, and is deleted automatically after conversion.</p>
       </div>
       <div class="why-card">
         <span class="why-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>
         </span>
-        <h3>Fast conversions</h3>
-        <p>Most files convert in a few seconds.</p>
+        <h3>{{ tool_count }} tools in one place</h3>
+        <p>Documents, images and PDF tools on one site.</p>
       </div>
       <div class="why-card">
         <span class="why-card-icon">
@@ -196,7 +211,7 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </span>
         <h3>Completely free</h3>
-        <p>Every tool on KuickKonvert is free to use, with no subscriptions -- just a 50MB limit per upload to keep conversions fast.</p>
+        <p>Every tool on KuickKonvert is free to use, with no subscriptions -- just a 50MB limit per upload.</p>
       </div>
     </div>
   </div>
@@ -221,7 +236,7 @@
     <div class="faq-list">
       <details class="faq-item">
         <summary>Is KuickKonvert's PDF converter free?</summary>
-        <p>Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per upload (all files together). There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free.</p>
+        <p>Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per upload (all files together). There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free. KuickKonvert adds no watermark or logo of its own to your files (the Watermark PDF tool adds only the text you type).</p>
       </details>
       <details class="faq-item">
         <summary>Do you store my files?</summary>
@@ -241,10 +256,10 @@
       </details>
       <details class="faq-item">
         <summary>Do I need to install anything or create an account?</summary>
-        <p>No. You use KuickKonvert directly from your browser -- no software installation, plugins, browser extensions, or sign-up required. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
+        <p>No. You use KuickKonvert from your web browser -- no software installation, plugins, browser extensions, or sign-up required. Your file is uploaded, converted on our server and deleted automatically after conversion. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
       </details>
     </div>
   </div>
 </section>
-<script src="{{ url_for('static', filename='js/faq.js') }}"></script>
+<script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/faq.js') }}"></script>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Privacy Notice: How KuickKonvert Handles Your Files{% endblock %}
-{% block description %}How KuickKonvert handles your files: each upload is used only for its conversion and deleted automatically afterwards.{% endblock %}
+{% block description %}How KuickKonvert handles your files and personal data: each upload is used only for its conversion and deleted automatically afterwards.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -22,20 +22,25 @@
       <span aria-current="page">Privacy Notice</span>
     </nav>
     <h1>Privacy Notice</h1>
-    <p><em>Last updated: 13 November 2026</em></p>
-    <p>KuickKonvert ("we", "us", or "our") operates the website KuickKonvert.com, providing file conversion and PDF utility tools. We respect your privacy and are committed to protecting your personal data. This Privacy Notice explains how we collect, use, and safeguard information when you use our website.</p>
+    {# Release 7: set to the deploy day. #}
+    <p><em>Last updated: 19 November 2026</em></p>
+    <p>KuickKonvert ("we", "us", or "our") operates the website KuickKonvert.com, providing file conversion and PDF utility tools. This Privacy Notice explains how we collect, use, and safeguard information when you use our website.</p>
 
     <h2>What we do with your files</h2>
-    <p>Files you upload to KuickKonvert are used only to perform the conversion you requested. Each upload is processed in its own temporary, isolated workspace on our server -- including any working files the converter creates along the way -- and that workspace is automatically and permanently deleted as soon as your converted file is returned to you, or if the conversion fails. If a server process stops unexpectedly in the middle of a conversion, any workspace it leaves behind is removed automatically by a later clean-up. We do not review, copy, back up, or retain your files.</p>
+    <p>Files you upload to KuickKonvert are used only to perform the conversion you requested. Each upload is processed in its own temporary, isolated workspace on our server -- including any working files the converter creates along the way -- and our application automatically deletes that workspace as soon as your converted file is returned to you, or if the conversion fails. If a server process stops unexpectedly in the middle of a conversion, any workspace it leaves behind is removed automatically by a later clean-up. We do not manually review your uploaded files or retain them for purposes unrelated to providing the conversion service. Temporary copies and working files may be created automatically as part of the conversion process and are deleted through our file-cleanup procedures. This deletion is carried out by our application; we cannot guarantee that no trace remains at every layer of our hosting provider&rsquo;s infrastructure, such as storage hardware or backups that Render manages under its own policies.</p>
 
     <h2>What we don't do</h2>
-    <p>We do not store your files after conversion. We do not use uploaded file contents to train any model. We do not sell or share file contents with third parties.</p>
+    <p>Our application does not keep your files after conversion. We do not use uploaded file contents to train any model. We do not sell your uploaded files or disclose their contents to third parties for their independent commercial purposes. Our hosting and network service providers process data as necessary to operate and secure the service (see &ldquo;Our service providers and where data is processed&rdquo;).</p>
 
     <h2>Technical logs and IP addresses</h2>
-    <p>Like any website, our server and our hosting provider see your IP address and basic request details -- such as the page or tool requested, the time and the response code -- in order to deliver pages and protect the service; our hosting providers keep their own logs under their own policies. We use IP addresses to apply fair-use limits on how many pages and conversions can be requested per minute, per hour and per day; these counters are held in memory for no longer than 24 hours. Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one.</p>
+    <p>Like any website, our server and our hosting provider see your IP address and basic request details -- such as the page or tool requested, the time and the response code -- in order to deliver pages and protect the service. We use IP addresses to apply fair-use limits on how many pages and conversions can be requested per minute, per hour and per day; these counters are held in memory for no longer than 24 hours. Our own application logs record which tool was used and technical error details when a conversion fails. They never contain file contents, and they are designed to leave out file names, although a report of an unexpected error may occasionally include one. These application logs are kept in our hosting provider&rsquo;s log service, which on our current Render plan keeps them for 7 days. Cloudflare and Render may also keep network and request logs, including IP addresses, for their own security and operational purposes under their own retention policies.</p>
 
-    <h2>Where your files are processed</h2>
-    <p>KuickKonvert runs on servers operated by our hosting provider, Render, in its Singapore (Southeast Asia) region, and traffic reaches those servers through Cloudflare's network. When you upload a file, it is sent over an encrypted (HTTPS) connection to that server, converted there, and deleted as described above. If you are outside Singapore, this means your file is briefly processed in another country.</p>
+    <h2>Our service providers and where data is processed</h2>
+    <ul class="why-list">
+      <li><strong>Render (Render Services, Inc., United States)</strong> hosts KuickKonvert. Our server runs in Render&rsquo;s Singapore (Southeast Asia) region, and your uploaded files are converted there and deleted as described above. Render also receives the technical request information and application logs described in this notice.</li>
+      <li><strong>Cloudflare (Cloudflare, Inc., United States)</strong> provides the network that Render uses to deliver and protect traffic to our server. All website traffic, including the files you upload, travels over encrypted (HTTPS) connections through Cloudflare&rsquo;s network, usually through a Cloudflare data centre near you, before it reaches our server. To do this, Cloudflare processes your IP address and technical information about your requests, and your uploaded files pass through its network in transit.</li>
+    </ul>
+    <p>This means your file and request information may be processed in countries other than your own, including Singapore, where our server runs, the countries where Cloudflare&rsquo;s network handles your traffic, and the United States, where Render and Cloudflare are based. Render&rsquo;s Data Processing Addendum, which supplements its Terms of Service, provides that transfers of personal data from the EEA, the UK and Switzerland are made under the EU-U.S. Data Privacy Framework, its UK Extension or the Swiss-U.S. Data Privacy Framework or, where those do not apply, under the European Commission&rsquo;s Standard Contractual Clauses and the UK Addendum, and it requires Render to bind its sub-processors, including Cloudflare, to comparable data-protection obligations. Render and Cloudflare are both listed as active participants in those frameworks (Data Privacy Framework list, checked 13 November 2026). Participation in the Data Privacy Framework covers transfers to those companies in the United States; it does not by itself cover processing in other countries such as Singapore. We require our service providers to maintain appropriate contractual and other safeguards for international processing and onward transfers, as required by applicable data-protection law. We remain responsible for ensuring that our arrangements with these providers provide an appropriate level of protection for personal data. Google is described separately below.</p>
 
     <h2>Your responsibility</h2>
     <p>Please do not upload files containing information you are not authorised to share (e.g. third-party confidential data) unless you have the right to process it this way.</p>
@@ -68,7 +73,7 @@
     <p>If you consent to Analytics, we use Google Analytics 4 (GA4) to understand how visitors interact with our website so we can improve our conversion tools and user experience.</p>
     <p><strong>Automatically Generated Events:</strong> Google Analytics may record automatically generated events, such as page views, scrolling to a point near the end of a page, and user engagement. The specific events collected depend on our Google Analytics configuration.</p>
     <p><strong>Tool &amp; Form Interactions:</strong> GA4 may track custom interactions to help us measure tool utility (such as when a tool page is viewed or when a conversion utility is initiated).</p>
-    <p><strong>Absolute Privacy Assurance:</strong> Our Google Analytics events are designed not to include your uploaded files, their filenames, or their contents. We test our event payloads to check that this information is not transmitted. None of our analytics payloads include personal files, document text, or entered values.</p>
+    <p><strong>What our analytics events leave out:</strong> Our Google Analytics events are designed not to include your uploaded files, their file names or their contents, document text or values you type. We test our event payloads for this information, and our tests have not found it in them.</p>
 
     <h2>3. Google Ads</h2>
     <p>If you consent to Advertising, we use Google Ads tags to measure the effectiveness of our marketing campaigns and understand how visitors arrive at KuickKonvert.</p>
@@ -76,8 +81,8 @@
     <p><strong>Remarketing &amp; Personalisation:</strong> When permitted by your consent settings, Google Ads may utilize remarketing signals to deliver relevant advertising experiences.</p>
     <p><strong>Conversion Tracking:</strong> We use Google Ads conversion tracking to measure conversions attributed to eligible interactions with our ads, according to configured attribution settings.</p>
 
-    <h2>4. Visitors in the EEA, UK and Switzerland</h2>
-    <p>If you are accessing KuickKonvert from the European Economic Area (EEA), the United Kingdom, or Switzerland, no Google tags or third-party measurement scripts will load until you explicitly provide your consent via our consent banner.</p>
+    <h2>4. Visitors in the EEA, UK, Switzerland and other Consent-Controlled Locations</h2>
+    <p>If you are accessing KuickKonvert from the European Economic Area (EEA), the United Kingdom, Switzerland or another Consent-Controlled Location (defined below), no Google tags or third-party measurement scripts will load until you explicitly provide your consent via our consent banner.</p>
     <h3>Consent States &amp; Behavior</h3>
     <ul class="why-list">
       <li><strong>No Choice Yet / Reject All:</strong> Google tags are not loaded, and no Google network requests are sent.</li>
@@ -96,33 +101,108 @@
     </ul>
     <p>Please note: Our site cannot remove information that Google stores under its own domains or information Google has already received prior to withdrawal.</p>
     {# Visitors outside the consent regions: disclosure added 11 Oct 2026 (owner decision; text to be confirmed by counsel) #}
-    <h3>Visitors outside the EEA, the UK and Switzerland</h3>
-    <p>We do not currently show a consent banner to visitors from other regions. For these visitors, the Google Analytics and Google Ads tags load automatically a few seconds after a page opens, or when you first scroll, tap or press a key, and may set the cookies and storage entries listed above. You can block or delete cookies in your browser settings, opt out of Google Analytics with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>, and manage ad personalisation at <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">My Ad Center</a>.</p>
+    <h3>Visitors outside the Consent-Controlled Locations</h3>
+    <p>We do not currently show a consent banner to visitors from other regions. For these visitors, the Google Analytics and Google Ads tags load automatically a few seconds after a page opens, or when you first scroll, tap or press a key, and may set the cookies and storage entries listed above. You can block or delete cookies in your browser settings, opt out of Google Analytics with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>, and manage ad personalisation at <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">My Ad Center</a>. If your browser sends a Global Privacy Control signal, the Google Ads tag is not activated (see &ldquo;Advertising on this site&rdquo;).</p>
+
+    {# Definition approved in the final legal opinion of 12 Nov 2026 (verbatim). The list must match _CONSENT_REGIONS in app.py. #}
+    <h3 id="consent-controlled-locations">Consent-Controlled Locations</h3>
+    <p><strong>Consent-Controlled Locations:</strong> For the purposes of our third-party advertising and non-essential technology controls, this term refers to the EEA, the United Kingdom, Switzerland and the additional territories listed in our geographical consent configuration. We also apply the same restrictions where geographical location cannot reliably be determined or a connection is identified as originating through the Tor network.</p>
+    <p>The additional territories in our geographical consent configuration are: Gibraltar, Jersey, Guernsey, the Isle of Man, R&eacute;union, Guadeloupe, Martinique, French Guiana, Mayotte, Saint-Martin, Saint Barth&eacute;lemy, Saint Pierre and Miquelon, New Caledonia, French Polynesia, Wallis and Futuna, the French Southern and Antarctic Lands, the &Aring;land Islands, Andorra, Monaco, San Marino and Vatican City.</p>
 
     <h2>5. Third-Party Content (LaunchNest Badge)</h2>
-    <p>To maintain strict privacy and performance standards:</p>
+    <p>For privacy and performance:</p>
     <ul class="why-list">
-      <li>For visitors in the EEA, the UK, and Switzerland, we display a plain text link reading "Listed on LaunchNest" instead of loading embedded widgets, ensuring no requests are made to launchnest.io.</li>
-      <li>For visitors outside those regions, a lightweight badge image may load from launchnest.io as configured.</li>
+      <li>For visitors in the Consent-Controlled Locations, we display a plain text link reading "Listed on LaunchNest" instead of loading the badge, so the page does not request anything from launchnest.io.</li>
+      <li>For visitors outside those regions, a lightweight badge image may load from launchnest.io as configured. If your browser sends a Global Privacy Control signal, the badge image is not loaded.</li>
     </ul>
 
+    <h2>Videos from YouTube</h2>
+    <p>Some pages show short KuickKonvert videos that are hosted on YouTube, a service of Google. Until you act, the page shows only a still image stored on our own server, and nothing is requested from YouTube or Google for the video.</p>
+    <ul class="why-list">
+      <li>For visitors in the Consent-Controlled Locations, we do not load the YouTube player. The image is a link that opens the video on YouTube in a new tab, only if you choose to follow it.</li>
+      <li>For other visitors, a video plays on the page only if you press the button labelled "Play Video &mdash; Loads player from YouTube (Google). Connects to external servers and processes device details." The player then loads from youtube-nocookie.com, YouTube's privacy-enhanced mode. Google receives your IP address and technical information about your browser and device, and may set cookies or similar storage entries, under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>. According to Google, views in privacy-enhanced mode are not used to personalise your YouTube experience or the advertising you see elsewhere. Each video also has a link to watch it on YouTube instead.</li>
+    </ul>
+
+    <h2>Transfers to Google in the United States</h2>
+    <p>When Google tags load (after your consent, where consent is required) or when you play or open a video, information such as your IP address goes to Google LLC in the United States. Google states that Google LLC and its wholly-owned US subsidiaries have certified adherence to the Data Privacy Framework Principles, and that for its ads and analytics services it relies on the EU-U.S. Data Privacy Framework and, in certain circumstances, the UK Extension and the Swiss-U.S. Data Privacy Framework for transfers from the EEA, the UK and Switzerland (<a href="https://business.safety.google/adsdatatransfers/" target="_blank" rel="noopener">Google: international data transfers</a>). Your uploaded files are never sent to Google: they are processed on our server in Singapore and deleted as described above.</p>
+
     <h2>Advertising on this site</h2>
-    <p>KuickKonvert has applied to Google AdSense, a third-party advertising service, to help cover hosting costs and keep its conversion tools free to use.</p>
-    <p>Google AdSense advertising code is not currently loaded on this site, and no advertisements are shown. Our pages include a Google AdSense account verification tag, and our website publishes an ads.txt file. Neither the tag nor the file loads code from Google or causes your browser to communicate with Google.</p>
-    <p>If advertisements are introduced in the future, we will update this Privacy Notice before doing so.</p>
-    <p>You can review or adjust your ad personalization settings at <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">My Ad Center</a>, and you can also control cookies generally through your browser's settings.</p>
+    {# "FINAL RECOMMENDED VERSION 1", adviser review of 12 Nov 2026, inserted verbatim
+       (AdSense switched off: ADSENSE_SCRIPT_ENABLED = False). Version 2, for after
+       AdSense approval, is kept unpublished in the Release 7 approval pack. #}
+    <p>KuickKonvert does not currently load Google AdSense advertising code or serve advertisements through Google AdSense.</p>
+    <p>Other Google services, including Google Analytics and Google Ads measurement technologies, may continue to operate in accordance with the applicable consent choices and disclosures described in this Privacy Notice.</p>
+    <p>If your browser sends a Global Privacy Control (GPC) signal, we treat it as a request to opt out of the sale or sharing of your personal information, and of its use for targeted advertising, to the extent required by applicable privacy law. We apply it on every page, before any Google tag is set up: the Google Ads tag is not activated, the LaunchNest badge is not loaded, and Google&rsquo;s advertising consent signals (ad_storage, ad_user_data and ad_personalization) are set to &ldquo;denied&rdquo;. According to Google, when ad_personalization is denied, data is not used for remarketing or personalised advertising in Google&rsquo;s advertising products. Google Analytics continues to operate to measure how the site is used, as described in section 2 (in the Consent-Controlled Locations, only if you accept Analytics). A choice you saved earlier to allow advertising is not applied while your browser sends GPC.</p>
+    {#- Final legal opinion, 12 Nov 2026 (stage 7): this Consent Mode paragraph is
+        published only after production verification. Set
+        PRIVACY_CONSENT_MODE_DISCLOSURE = True in config.py after the live tests pass. -#}
+    {% if privacy_consent_mode_disclosure %}
+    <p>Where Google advertising technologies are otherwise used, the relevant Google Consent Mode v2 advertising consent parameters are set to &ldquo;denied&rdquo;, and advertising or remarketing technologies are prevented from operating contrary to that preference.</p>
+    {% endif %}
+    <p>In the Consent-Controlled Locations, while your browser sends GPC, the Advertising option in Cookie settings is switched off and cannot be turned on, and a note explains why.</p>
+    <p>If Google AdSense or another third-party advertising service is introduced in the future, we will update this Privacy Notice before introducing the relevant advertising technologies.</p>
+
+    <h2>Personal data we process</h2>
+    <p>Although we do not run user accounts or keep your files, we and our service providers do process personal data, including: your IP address and technical request details (our server, Render and Cloudflare); the in-memory fair-use counters and application logs described above; Google Analytics and Google Ads identifiers, events and cookies, where those tags load; your consent choice, stored in your browser; browser and device information sent with every request; and the contents of any email you send us.</p>
+
+    <h2>Why we use personal data and our legal bases</h2>
+    <p>Where the GDPR or the UK GDPR applies, we rely on the following legal bases:</p>
+    <div class="guide-table-wrap">
+    <table class="format-table guide-table">
+      <thead><tr><th scope="col">Processing</th><th scope="col">Purpose</th><th scope="col">Legal basis</th></tr></thead>
+      <tbody>
+        <tr><td>File conversion</td><td>Providing the conversion you request</td><td>Performing our service at your request (Article 6(1)(b))</td></tr>
+        <tr><td>Security and technical logs</td><td>Protecting the website, preventing abuse and fixing errors</td><td>Our legitimate interests in keeping the service secure and working (Article 6(1)(f))</td></tr>
+        <tr><td>Fair-use counters</td><td>Preventing excessive requests and keeping the service available to everyone</td><td>Our legitimate interests in service availability (Article 6(1)(f))</td></tr>
+        <tr><td>Google Analytics</td><td>Understanding how the website is used and improving it</td><td>Your consent (Article 6(1)(a)); in the Consent-Controlled Locations the tag loads only after you accept Analytics</td></tr>
+        <tr><td>Google Ads</td><td>Measuring the results of our own advertising campaigns</td><td>Your consent (Article 6(1)(a)); in the Consent-Controlled Locations the tag loads only after you accept Advertising</td></tr>
+        <tr><td>Privacy requests and other enquiries</td><td>Answering you and handling requests to use your rights</td><td>Legal obligation for requests to use your rights (Article 6(1)(c)); our legitimate interests in answering other enquiries (Article 6(1)(f))</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Where we rely on legitimate interests, you can object, as described under &ldquo;Your data-protection rights&rdquo;.</p>
+
+    <h2>How long we keep personal data</h2>
+    <div class="guide-table-wrap">
+    <table class="format-table guide-table">
+      <thead><tr><th scope="col">Data</th><th scope="col">How long</th></tr></thead>
+      <tbody>
+        <tr><td>Uploaded files and working files</td><td>Deleted by our application as soon as the conversion finishes or fails; anything left by an interrupted conversion is removed by a later automatic clean-up. Storage and backups managed by Render follow Render&rsquo;s own policies.</td></tr>
+        <tr><td>Fair-use counters</td><td>Held in memory for no longer than 24 hours</td></tr>
+        <tr><td>Our application logs</td><td>7 days, in Render&rsquo;s log service on our current plan</td></tr>
+        <tr><td>Network and request logs kept by Render and Cloudflare</td><td>Set by Render and Cloudflare under their own policies to protect and run their services; we do not set or receive these periods</td></tr>
+        <tr><td>Google Analytics event and user data</td><td>14 months under our current Google Analytics settings. The reset-on-new-activity option applies to user-level data, not event-level data.</td></tr>
+        <tr><td>Cookies and browser storage</td><td>As shown in the table in section 1; you can delete them at any time in your browser</td></tr>
+        <tr><td>Your consent choice (kk_consent)</td><td>Kept in your browser; we ask again after 12 months</td></tr>
+        <tr><td>Emails and privacy requests</td><td>As long as needed to answer you and to keep a record of how a privacy request was handled</td></tr>
+      </tbody>
+    </table>
+    </div>
 
     <h2>Your data-protection rights</h2>
-    <p>If you are in one of these regions, data protection law such as the GDPR gives you rights over your personal data, including the rights to access it, to ask for it to be deleted and to object to its use, and the right to complain to your local data protection authority. Because we do not store your files or run user accounts, we normally hold no personal data about you beyond the short-lived records described above; for data held by Google, use the Google links in this notice. For any other request, contact us using the details below.</p>
+    <p>If you are in the EEA, the UK or Switzerland, applicable data-protection laws, including the GDPR, the UK GDPR and the Swiss Federal Act on Data Protection (FADP), give you rights over your personal data, subject to the conditions and exceptions in the relevant law. Which of the following rights you have, and on what terms, depends on the law that applies to you and its conditions. They include the rights to:</p>
+    <ul class="why-list">
+      <li>access your personal data and receive a copy;</li>
+      <li>have inaccurate personal data corrected;</li>
+      <li>have your personal data deleted;</li>
+      <li>restrict how it is used;</li>
+      <li>receive it in a portable format;</li>
+      <li>object to its use;</li>
+      <li>withdraw your consent at any time, without affecting processing that took place before you withdrew it (use Cookie settings in the footer);</li>
+      <li>not be subject to decisions based solely on automated processing that have legal or similarly significant effects on you (we do not make such decisions); and</li>
+      <li>complain to your local data protection authority.</li>
+    </ul>
+    <h3>How to make a privacy request</h3>
+    <p>Email us at the address in the Contact section with the subject &ldquo;Privacy request&rdquo;, and tell us which right you want to use. Because we do not run user accounts, most of the data described above is not linked to your name, and we may not be able to find it unless you give us details that identify it, such as the date, time and IP address of your visit, or your Google Analytics client ID. We may ask for information to confirm that the request is yours. Some rights apply only in certain circumstances or are subject to legal exemptions, so not every request can be granted in full; if we cannot meet a request, we will tell you why. We will reply within one month of receiving your request; where the law allows, we may extend this by up to two further months for complex or numerous requests, and we will tell you if we do. For data that Google holds, you can also use the Google links in this notice.</p>
 
     <h2>Children</h2>
-    <p>KuickKonvert is a general-audience tool and is not directed at children. We do not knowingly collect personal data from children.</p>
+    <p>KuickKonvert is a general-audience tool. It is not aimed at children, but students under 18 may use it, for example for school work, so we have designed it to collect as little as possible: there are no accounts, we never ask for a name, age or contact details, and uploaded files are deleted automatically after conversion. In the EEA, the UK and Switzerland, no analytics, advertising tags or video player load unless the visitor chooses them, and "Reject all" in the cookie banner keeps every tool working. Where applicable law requires parental or guardian authorisation for a child to provide consent to data processing, we will apply the relevant legal requirements. If you are a parent, guardian or student with a question, please contact us.</p>
 
     <h2>Contact</h2>
     <p>Shahid Iqbal &middot; {{ obfuscated_mailto('info@kuickkonvert.com') }}</p>
 
     <h2>Data-protection law</h2>
-    <p>Pakistan's Personal Data Protection Bill had not been enacted as of our last check. If data-protection law that applies to KuickKonvert changes, we will update this notice.</p>
+    <p>KuickKonvert is run from Pakistan. At our last check (November 2026), Pakistan had no comprehensive personal data protection statute in force: the Personal Data Protection Bill had not been enacted. Other laws may apply to our activities, such as the Prevention of Electronic Crimes Act 2016, as amended, which addresses specified electronic crimes, and Article 14 of the Constitution of Pakistan, which protects the dignity of man and, subject to law, the privacy of home. These are not a comprehensive data-protection framework. Where the GDPR or the UK GDPR applies to our processing, you have the rights described above. We will update this notice if the law that applies to KuickKonvert changes.</p>
 
     <h2>Terms of use</h2>
     <p>Use of this site is also governed by our <a href="{{ url_for('terms') }}">Terms of Service</a>.</p>

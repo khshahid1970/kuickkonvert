@@ -162,6 +162,16 @@ def _edit_sheet_fit_to_page(xml: bytes) -> bytes:
     # 2) <pageSetup fitToWidth="1" fitToHeight="0" orientation=.../>.
     setup = b'<pageSetup fitToWidth="1" fitToHeight="0" orientation="' + orient + b'"/>'
     if b"<pageSetup" in xml:
+        # R7-84 (13 Nov 2026): keep the sheet's own page-setup attributes --
+        # above all paperSize (A4, Letter...) -- and change only the three we
+        # set. Before, the whole element was replaced, so a workbook with
+        # pictures or charts saved as A4 came out as the default paper size.
+        m = re.search(rb"<pageSetup\b([^>]*)/>", xml)
+        if m:
+            keep = [a for a in re.findall(rb'\s([\w:]+="[^"]*")', m.group(1))
+                    if a.split(b"=")[0] not in (b"fitToWidth", b"fitToHeight", b"orientation")]
+            setup = (b"<pageSetup " + b" ".join(keep + [b'fitToWidth="1"', b'fitToHeight="0"',
+                     b'orientation="' + orient + b'"']) + b"/>")
         xml = re.sub(rb"<pageSetup\b[^>]*/>", setup, xml, count=1)
     elif b"<pageMargins" in xml:
         xml = re.sub(rb"(<pageMargins\b[^>]*/>)", rb"\1" + setup, xml, count=1)

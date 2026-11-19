@@ -1,0 +1,34 @@
+{#- Release 7, WP8 video block (lawyer's final advice, 10 Nov 2026).
+    Needs: video (from VIDEOS), video_heading, video_name.
+    EEA/UK/CH visitors (consent_required): Option B, a still image from our
+    own server that links to the video on YouTube; no player is loaded.
+    Everyone else: Option A, click-to-play; static/js/video.js loads the
+    youtube-nocookie.com player only after the button is pressed.
+    Nothing is requested from YouTube or Google before the visitor acts. -#}
+{% if video %}
+<section class="kk-video-block" aria-labelledby="kk-video-heading">
+  <h2 id="kk-video-heading">{{ video_heading }}</h2>
+  {% if consent_required %}
+  <a class="kk-video kk-video--link" href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">
+    <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="360" height="640" loading="lazy" alt="Still from the KuickKonvert video: {{ video_name }}">
+    <span class="kk-video-cta">Watch this video on YouTube</span>
+  </a>
+  <p class="kk-video-note">Opens YouTube (Google) in a new tab.</p>
+  {% else %}
+  <div class="kk-video" data-yt="{{ video.id }}" data-title="{{ video_name }}">
+    <button type="button" class="kk-video-play">
+      <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="360" height="640" loading="lazy" alt="Still from the KuickKonvert video: {{ video_name }}">
+      <span class="kk-video-label">{{ video_play_label }}</span>
+    </button>
+  </div>
+  <p class="kk-video-note"><a href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">Watch this video on YouTube</a></p>
+  <script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/video.js') }}" defer></script>
+  {% endif %}
+  {% if video.transcript %}
+  <details class="kk-video-transcript">
+    <summary>Read the transcript</summary>
+    <p>{{ video.transcript }}</p>
+  </details>
+  {% endif %}
+</section>
+{% endif %}

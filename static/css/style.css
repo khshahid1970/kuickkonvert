@@ -789,6 +789,17 @@ body {
   margin: 12px 0 0;
 }
 
+/* Release 7, WP14 (Package 2): what a tool can't take (R7-62), the in-browser
+   reduction note (R7-64) and the "Download again" button (R7-60). */
+.upload-note {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin: 6px auto 0;
+  max-width: 34rem;
+}
+.status .status-note { display: block; margin-top: 6px; color: var(--color-text-muted); }
+.status .btn-again { margin-top: 10px; }
+
 .btn {
   display: inline-block;
   padding: 10px 22px;
@@ -1216,3 +1227,22 @@ body {
   .next-steps-list a,
   .related-tools-list a { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+/* Release 7: trust line under the tool intro */
+.tool-trust-line { font-weight: 600; margin: 0.25rem 0 1rem; }
+
+/* Release 7, WP8: video block (click-to-play / link to YouTube) */
+.kk-video-block { margin: 2rem 0; }
+.kk-video { position: relative; width: 360px; max-width: 100%; }
+.kk-video img, .kk-video-frame { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; border-radius: 12px; border: 0; }
+.kk-video-play, .kk-video--link { display: block; position: relative; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-decoration: none; color: inherit; }
+.kk-video-label, .kk-video-cta { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 8px; background: rgba(46, 16, 70, 0.92); color: #fff; font-size: 0.85rem; line-height: 1.35; text-align: left; }
+.kk-video-play:focus-visible, .kk-video--link:focus-visible { outline: 3px solid #d4a72c; outline-offset: 3px; }
+.kk-video-note { font-size: 0.85rem; margin-top: 0.5rem; }
+.kk-video-transcript { margin-top: 0.5rem; font-size: 0.9rem; }
+.kk-video-transcript summary { cursor: pointer; font-weight: 600; }
+
+/* Release 7: numbered steps in how-to guides (templates/guide.html). */
+.guide-steps { margin: 4px 0 16px; padding-left: 22px; color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6; }
+.guide-steps li { margin-bottom: 6px; }
+.guide-steps a { color: var(--color-primary); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }

@@ -29,9 +29,10 @@
   "datePublished": {{ guide.published|tojson }},
   "dateModified": {{ (guide.updated or guide.published)|tojson }},
   "image": ["{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}"],
-  "author": {"@type": "Person", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}, "url": "{{ site_url }}/about"},
-  "publisher": {"@type": "Organization", "name": "KuickKonvert", "url": "{{ site_url }}/"},
-  "mainEntityOfPage": {"@type": "WebPage", "@id": "{{ canonical_url }}"}
+  "author": {"@type": "Person", "@id": "{{ site_url }}/about#shahid-iqbal", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}, "url": "{{ site_url }}/about"},
+  "publisher": {"@type": "Organization", "@id": "{{ site_url }}/#organization", "name": "KuickKonvert"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "{{ canonical_url }}"}{% if guide.sources %},
+  "citation": [{% for label, url in guide.sources %}{"@type": "CreativeWork", "name": {{ label|tojson }}, "url": {{ url|tojson }}}{% if not loop.last %}, {% endif %}{% endfor %}]{% endif %}
 }
 </script>
 {% endblock %}
@@ -56,13 +57,13 @@
     </nav>
     <h1>{{ guide.title }}</h1>
     <p class="guide-meta">
-      By {{ guide.get('author', 'Shahid Iqbal') }}
+      By <a href="{{ url_for('about') }}">{{ guide.get('author', 'Shahid Iqbal') }}</a>
       &middot; Published <time datetime="{{ guide.published }}">{{ nice_date(guide.published) }}</time>
       {% if guide.updated and guide.updated != guide.published %}
       &middot; Updated <time datetime="{{ guide.updated }}">{{ nice_date(guide.updated) }}</time>
       {% endif %}
     </p>
-    <p class="tool-page-desc">{{ guide.dek }}</p>
+    <p class="tool-page-desc">{{ guide.dek|tool_links }}</p>
 
     <section class="tool-info guide-body">
       {% for section in guide.sections %}
@@ -70,6 +71,13 @@
       {% for para in section.paragraphs %}
       <p>{{ para|tool_links }}</p>
       {% endfor %}
+      {#- Optional numbered steps (Release 7 how-to guides). -#}
+      {% if section.steps %}
+      <ol class="guide-steps">
+        {% for step in section.steps %}<li>{{ step|tool_links }}</li>
+        {% endfor %}
+      </ol>
+      {% endif %}
       {#- Optional table for a section: {"caption", "headers", "rows", "note"}.
           The wrapper scrolls sideways on narrow phones instead of squashing
           the columns. -#}
@@ -90,6 +98,16 @@
       {% if section.table.note %}<p class="guide-table-note">{{ section.table.note }}</p>{% endif %}
       {% endif %}
       {% endfor %}
+
+      {#- Release 7, R7-78: official sources behind facts stated in the guide. -#}
+      {% if guide.sources %}
+      <h2>Official sources</h2>
+      <ul class="related-tools-list guide-sources">
+        {% for label, url in guide.sources %}
+        <li><a href="{{ url }}" rel="noopener">{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
       {% if related_tools %}
       <h2>Related tools</h2>

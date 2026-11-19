@@ -35,11 +35,13 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 from config import (
+    ADSENSE_SCRIPT_ENABLED,
+    PRIVACY_CONSENT_MODE_DISCLOSURE,
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
-    FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL,
+    FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL, HOME_PILLAR_GUIDES,
     RELATED_GUIDES, HOME_LASTMOD, TOOLS_LASTMOD, RELEASE5_DATE, GUIDES_LINKS_LASTMOD, GUIDES_MARKUP_LASTMOD, STATIC_LASTMOD,
     RELEASE_DATE_TEXT, TERMS_UPDATED_TEXT, CONSENT_VERSION, CONSENT_MAX_AGE_DAYS, CONSENT_MODE_TYPE,
-    ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS,
+    ADS_DATA_REDACTION, LAUNCHNEST_CONSENT_REGIONS, UPLOAD_NOTES,
 )
 from converters.utils import job_workspace, safe_name, change_ext, sweep_stale_temp
 from converters.isolate import run_isolated, JobFailed, TOO_LARGE_MESSAGE, IMAGE_TOO_LARGE_MESSAGE
@@ -48,7 +50,7 @@ from converters.office import (
     convert_word_format,
 )
 from converters.tables import convert_pdf_to_excel
-from converters.images import images_to_pdf, pdf_to_images, convert_images
+from converters.images import images_to_pdf, pdf_to_images, convert_images, MAX_IMAGE_MEGAPIXELS
 from converters.pdf_tools import (
     merge_pdfs, split_pdf, rotate_pdf, watermark_pdf, protect_pdf, compress_pdf,
     ensure_pdf_unlocked, check_pdf_to_word, check_pdf_page_limit, MAX_EXCEL_PAGES,
@@ -229,18 +231,21 @@ _GOOGLE_COUNTRY_DOMAINS = (
 _GOOGLE_TLDS = " ".join("https://*.google." + d for d in _GOOGLE_COUNTRY_DOMAINS)
 _CSP_DIRECTIVES = (
     "default-src 'self'; "
-    "script-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com 'nonce-{nonce}'; "
+    # Release 7 (WP15): AdSense supports only strict CSP (Google AdSense Help
+    # 16283098): nonce + 'strict-dynamic'. 'unsafe-inline'/https: are fallbacks
+    # that CSP3 browsers ignore when a nonce/'strict-dynamic' is present.
+    "script-src 'nonce-{nonce}' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' https: http:; "
     "style-src 'self'; "
-    "img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
+    "img-src 'self' data: https: https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
     "https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://pagead2.googlesyndication.com " + _GOOGLE_TLDS + " https://launchnest.io; "
-    "connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
+    "connect-src 'self' https: https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
     "https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://pagead2.googlesyndication.com https://ad.doubleclick.net " + _GOOGLE_TLDS + "; "
     "font-src 'self'; "
     "object-src 'none'; "
     "base-uri 'self'; "
     "form-action 'self'; "
     "frame-ancestors 'self'; "
-    "frame-src https://www.googletagmanager.com"
+    "frame-src https:"
 )
 
 
@@ -292,23 +297,47 @@ _CONSENT_REGIONS = frozenset({
     "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
     "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
     "SI", "ES", "SE", "IS", "LI", "NO", "GB", "CH",
+    # R7-72 (11 Nov 2026; deploy only after the lawyer approves): parts of the
+    # EU that have their own ISO 3166-1 codes -- Reunion, Guadeloupe,
+    # Martinique, French Guiana, Mayotte, Saint-Martin (EU outermost regions)
+    # and the Aland Islands (Finland).
+    "RE", "GP", "MQ", "GF", "YT", "MF", "AX",
+    # Final legal opinion, 12 Nov 2026 (B2): Gibraltar, plus precautionary
+    # territories: Jersey, Guernsey, Isle of Man, Saint Barthelemy, Saint
+    # Pierre and Miquelon, New Caledonia, French Polynesia, Wallis and Futuna,
+    # French Southern and Antarctic Lands, Andorra, Monaco, San Marino and
+    # Vatican City. Keep in step with the list in templates/privacy.html.
+    "GI", "JE", "GG", "IM", "BL", "PM", "NC", "PF", "WF", "TF", "AD", "MC", "SM", "VA",
 })
+# R7-72: Cloudflare sends "XX" when it has no country data and "T1" for Tor
+# (developers.cloudflare.com/fundamentals/reference/http-headers). When the
+# country is unknown, use the stricter consent-region behaviour.
+_UNKNOWN_COUNTRY = frozenset({"", "XX", "T1"})
 
 
 @app.context_processor
 def _inject_consent_required():
     country = (request.headers.get("CF-IPCountry") or "").upper()
-    required = country in _CONSENT_REGIONS
+    required = country in _CONSENT_REGIONS or country in _UNKNOWN_COUNTRY
+    # Global Privacy Control (final legal opinion, 12 Nov 2026, A3): a browser
+    # sending "Sec-GPC: 1" is treated as an opt-out of advertising: no AdSense
+    # code, and Google advertising storage stays "denied". Analytics unchanged.
+    gpc = (request.headers.get("Sec-GPC") or "").strip() == "1"
     # consent_cfg (11 Oct 2026): settings for the consent banner / consent.js,
     # see the "Consent" block in config.py. Only used when consent_required.
     return {
         "consent_required": required,
+        "gpc": gpc,
+        "adsense_script_enabled": ADSENSE_SCRIPT_ENABLED,
+        "privacy_consent_mode_disclosure": PRIVACY_CONSENT_MODE_DISCLOSURE,
         "consent_cfg": {
             "version": CONSENT_VERSION,
             "maxAgeDays": CONSENT_MAX_AGE_DAYS,
             "mode": CONSENT_MODE_TYPE,
             "badge": LAUNCHNEST_CONSENT_REGIONS,
             "redaction": bool(ADS_DATA_REDACTION),
+            # Adviser review 12 Nov 2026: the banner must honour GPC too.
+            "gpc": gpc,
         } if required else None,
     }
 
@@ -434,7 +463,10 @@ def obfuscated_mailto(email, label=None):
 # reducer]]". Everything else in the text is HTML-escaped exactly as before,
 # and an unknown slug falls back to plain text, so a typo can never produce
 # a broken link or stray markup.
-_TOOL_LINK_RE = re.compile(r"\[\[([a-z0-9-]+)\|([^\]|]+)\]\]")
+_TOOL_LINK_RE = re.compile(r"\[\[((?:page:|guide:)?[a-z0-9-]+)\|([^\]|]+)\]\]")
+# Release 7, R7-79: [[page:privacy|text]] links to a site page. Whitelist only,
+# so an unknown name still falls back to plain text.
+_PAGE_LINKS = {"page:privacy": "privacy", "page:terms": "terms", "page:about": "about"}
 
 
 @app.template_filter("tool_links")
@@ -447,11 +479,25 @@ def tool_links(text):
         if slug in TOOLS_BY_SLUG:
             parts.append(Markup('<a href="{}">{}</a>').format(
                 url_for("tool_page", slug=slug), label))
+        elif slug.startswith("guide:") and slug[6:] in GUIDES_BY_SLUG:
+            # R7-92 (L12): [[guide:slug|label]] links to a guide.
+            parts.append(Markup('<a href="{}">{}</a>').format(
+                url_for("guide_page", slug=slug[6:]), label))
+        elif slug in _PAGE_LINKS:
+            parts.append(Markup('<a href="{}">{}</a>').format(
+                url_for(_PAGE_LINKS[slug]), label))
         else:
             parts.append(escape(label))
         pos = m.end()
     parts.append(escape((text or "")[pos:]))
     return Markup("").join(parts)
+
+
+@app.context_processor
+def inject_videos():
+    # Release 7, WP8: video data for templates/_video.html.
+    import config as _cfg
+    return {"videos": _cfg.VIDEOS, "video_play_label": _cfg.VIDEO_PLAY_LABEL}
 
 
 @app.context_processor
@@ -806,7 +852,9 @@ def index():
         categories=CATEGORIES,
         by_category=by_category,
         badge_class=FORMAT_BADGE_CLASS,
-        guides=GUIDES,
+        # R7-92 (L15): the 3 pillar guides first in the home "Guides" block.
+        guides=([GUIDES_BY_SLUG[s] for s in HOME_PILLAR_GUIDES]
+                + [g for g in GUIDES if g["slug"] not in HOME_PILLAR_GUIDES]),
         canonical_url=f"{SITE_URL}/",
     )
 
@@ -819,6 +867,8 @@ def tools_index():
         "tools_index.html",
         categories=CATEGORIES,
         by_category=by_category,
+        # Release 7: same order as the page, for the ItemList JSON-LD.
+        ordered_tools=[t for c in CATEGORIES for t in by_category[c]],
         badge_class=FORMAT_BADGE_CLASS,
         canonical_url=f"{SITE_URL}/tools",
     )
@@ -841,6 +891,13 @@ def tool_page(slug):
         "max_mb": MAX_CONTENT_LENGTH // (1024 * 1024),
         "min_files": 2 if slug == "merge-pdf" else 1,
         "max_files": MAX_IMAGES_PER_CONVERSION if slug in IMAGE_TO_IMAGE_SLUGS else 0,
+        # Release 7, WP14 R7-64: the server's pixel limit, for the in-browser
+        # downscale of an image that would otherwise be refused. HEIC is left
+        # out: most browsers can't decode it, so the server decides.
+        "max_mp": (MAX_IMAGE_MEGAPIXELS
+                   if slug in IMAGE_INPUT_SLUGS and slug != "heic-to-jpg" else 0),
+        # R7-62: what this tool refuses, said before the upload.
+        "note": UPLOAD_NOTES.get(slug, ""),
     }
     return render_template(
         "tool.html",
@@ -964,6 +1021,13 @@ _ERROR_CODE_RULES = (
     ("isn't a valid image", "image_damaged"),
     ("couldn't be read", "image_damaged"),
     ("libreoffice could not convert", "office_failed"),
+    # Release 7, WP14 R7-65 (11 Nov 2026): the last messages that still
+    # fell through to "other_400" (found by checking every ConversionError
+    # text in converters/ and app.py against these rules).
+    ("produced no output file", "office_failed"),
+    ("please upload a .doc or .docx file", "wrong_type"),
+    ("could not compress this pdf", "compress_failed"),
+    ("could not build a pdf from these images", "images_pdf_failed"),
 )
 
 
@@ -1136,17 +1200,32 @@ def robots_txt():
 # Google/Bing indexing. Served as plain text (Markdown body) at the site root.
 @app.route("/llms.txt")
 def llms_txt():
+    # Release 7: adds a key-facts block, alternate names, a one-line note for
+    # every link (the page's own meta description) and the video channel.
+    # Every fact here must match the live site; do not add numbers for the
+    # fair-use limits.
+    n = len(TOOLS)
     lines = [
         "# KuickKonvert",
         "",
-        "> Free online file-conversion tools. Convert Word, Excel, PowerPoint, "
-        "images and PDFs without signing up. Files are processed on our servers "
-        "and deleted automatically after conversion.",
+        f"> KuickKonvert offers {n} free online file-conversion tools for Word, "
+        "Excel, PowerPoint, images and PDFs. No sign-up. Files are processed on "
+        "our servers and deleted automatically after conversion.",
         "",
-        f"Website: {SITE_URL}/",
+        f"Website: {SITE_URL}/ (also written as Kuick Konvert or kuickkonvert.com).",
         "",
-        "## Conversion tools",
+        "Key facts:",
+        "",
+        "- Price: free, with no account or sign-up.",
+        "- Upload size: up to 50 MB per upload (all files together); fair-use limits apply.",
+        "- Your files: deleted automatically after conversion.",
+        "- Watermark: none is added to converted files. The Watermark PDF tool adds only the text you type.",
+        "- Not offered: OCR, PDF editing, e-signatures, removing PDF passwords, audio or video conversion.",
+        "- Language: English.",
     ]
+    # llmstxt.org format: only H2 file-list sections after the summary, each
+    # line a Markdown link (checked with the SEO suite's llms.txt validator).
+    headings = {"Documents": "Document converters", "Images": "Image converters", "PDF Tools": "PDF tools"}
     categories = []
     for t in TOOLS:
         cat = t.get("category") or "Tools"
@@ -1154,22 +1233,29 @@ def llms_txt():
             categories.append(cat)
     for cat in categories:
         lines.append("")
-        lines.append(f"### {cat}")
+        lines.append(f"## {headings.get(cat, cat)}")
+        lines.append("")
         for t in TOOLS:
             if (t.get("category") or "Tools") == cat:
-                lines.append(f"- [{t['name']}]({SITE_URL}/tools/{t['slug']})")
-    lines.append("")
-    lines.append(f"- [All tools on one page]({SITE_URL}/tools)")
+                lines.append(f"- [{t['name']}]({SITE_URL}/tools/{t['slug']}): {t['meta_description']}")
+    lines.append(f"- [All tools on one page]({SITE_URL}/tools): every tool in one table")
     lines.append("")
     lines.append("## Guides")
+    lines.append("")
     for g in GUIDES:
-        lines.append(f"- [{g['title']}]({SITE_URL}/guides/{g['slug']})")
+        lines.append(f"- [{g['title']}]({SITE_URL}/guides/{g['slug']}): {g['meta_description']}")
     lines.append("")
     lines.append("## Key pages")
-    lines.append(f"- [About]({SITE_URL}/about)")
-    lines.append(f"- [Privacy notice]({SITE_URL}/privacy)")
-    lines.append(f"- [Terms of Service]({SITE_URL}/terms)")
-    lines.append(f"- [Contact]({SITE_URL}/contact)")
+    lines.append("")
+    lines.append(f"- [About]({SITE_URL}/about): who runs KuickKonvert and how we test")
+    lines.append(f"- [Privacy notice]({SITE_URL}/privacy): what we log, cookies, videos and your choices")
+    lines.append(f"- [Terms of Service]({SITE_URL}/terms): rules for using the tools")
+    lines.append(f"- [Contact]({SITE_URL}/contact): how to reach us")
+    lines.append("")
+    lines.append("## Optional")
+    lines.append("")
+    lines.append("- [YouTube channel](https://www.youtube.com/channel/UCVAlDJfAlJeNjm9vnNbVSbg): short videos for each tool")
+    lines.append("- [KuickKonvert blog](https://kuickkonvert.blogspot.com/): practical how-to posts")
     lines.append("")
     return Response("\n".join(lines) + "\n", mimetype="text/plain")
 

@@ -68,6 +68,16 @@
   var TAG_BASE = 'https://www.googletagmanager.com/gtag/js?id=';
   var GA_ID = 'G-K0VJLC113K';
   var ADS_ID = 'AW-18473004328';
+  // Global Privacy Control (adviser review, 12 Nov 2026). Detected from the
+  // browser (navigator.globalPrivacyControl) or the server (Sec-GPC: 1, passed
+  // in cfg.gpc). When present, Advertising is always off: a stored "yes" is
+  // not used, "Accept all" grants Analytics only, and the Advertising switch
+  // is locked off. Analytics choices are unaffected.
+  var GPC = cfg.gpc === true || navigator.globalPrivacyControl === true;
+  function applyGpc(choice) {
+    if (!choice) return choice;
+    return { analytics: !!choice.analytics, advertising: GPC ? false : !!choice.advertising };
+  }
 
   function gtag() {
     if (typeof window.gtag === 'function') window.gtag.apply(window, arguments);
@@ -215,7 +225,7 @@
 
   // ---- state + choices ---------------------------------------------------------
   var record = readRecord();
-  var current = record.state === 'valid' ? record.choice : null;
+  var current = record.state === 'valid' ? applyGpc(record.choice) : null;
   var opener = null;
 
   if (current) {
@@ -225,7 +235,7 @@
   }
 
   function choose(choice) {
-    current = { analytics: !!choice.analytics, advertising: !!choice.advertising };
+    current = applyGpc({ analytics: !!choice.analytics, advertising: !!choice.advertising });
     var stored = writeRecord(current);
     gtag('consent', 'update', consentValues(current));   // before config / tag load
     cleanUpRefused(current);
@@ -257,6 +267,7 @@
       var d = $('consent-advertising');
       if (a) a.checked = !!(current && current.analytics);
       if (d) d.checked = !!(current && current.advertising);
+      if (d && GPC) { d.checked = false; d.disabled = true; }
     }
   }
 
@@ -280,6 +291,8 @@
 
   function wire() {
     var b = $('consent-banner');
+    var gpcNote = $('consent-gpc-note');
+    if (gpcNote) gpcNote.hidden = !GPC;
     applyBadge(current);
     var on = function (id, fn) { var el = $(id); if (el) el.addEventListener('click', fn); };
     on('consent-accept', function () { choose({ analytics: true, advertising: true }); });
@@ -309,6 +322,7 @@
   window.__kkConsent = Object.freeze({
     state: record.state,
     mode: MODE,
+    gpc: GPC,
     current: function () { return current ? { analytics: current.analytics, advertising: current.advertising } : null; }
   });
 

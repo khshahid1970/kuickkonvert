@@ -58,7 +58,7 @@
   {%- endif %}
   window.__kkConsentConfig = {{ consent_cfg|tojson }};
 </script>
-<script src="{{ url_for('static', filename='js/consent.js') }}"></script>
+<script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/consent.js') }}"></script>
 {%- else %}
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
@@ -68,7 +68,7 @@
     'ad_user_data': 'denied',
     'ad_personalization': 'denied',
     'analytics_storage': 'denied',
-    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']
+    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH','RE','GP','MQ','GF','YT','MF','AX','GI','JE','GG','IM','BL','PM','NC','PF','WF','TF','AD','MC','SM','VA']
   });
   gtag('consent', 'default', {
     'ad_storage': 'granted',
@@ -76,9 +76,19 @@
     'ad_personalization': 'granted',
     'analytics_storage': 'granted'
   });
+  // Global Privacy Control (legal opinion 12 Nov 2026): treat as an opt-out
+  // of advertising storage and personalisation.
+  // Adviser review 12 Nov 2026: GPC is detected before any tag is configured;
+  // the Google Ads tag (advertising/remarketing) is then not configured at all.
+  var KK_GPC = navigator.globalPrivacyControl === true{{ ' || true' if gpc else '' }};
+  if (KK_GPC) {
+    gtag('consent', 'update', {
+      'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied'
+    });
+  }
   gtag('js', new Date());
   gtag('config', 'G-K0VJLC113K');
-  gtag('config', 'AW-18473004328');
+  if (!KK_GPC) gtag('config', 'AW-18473004328');
   (function () {
     var CONSENT_REQUIRED = {{ 'true' if consent_required else 'false' }};
     var loaded = false;
@@ -97,9 +107,10 @@
       window.addEventListener('load', function () { setTimeout(loadGoogleTag, 3000); });
     }
     function grantConsent() {
+      var ad = KK_GPC ? 'denied' : 'granted';
       gtag('consent', 'update', {
-        'ad_storage': 'granted', 'ad_user_data': 'granted',
-        'ad_personalization': 'granted', 'analytics_storage': 'granted'
+        'ad_storage': ad, 'ad_user_data': ad,
+        'ad_personalization': ad, 'analytics_storage': 'granted'
       });
     }
     function loadBadge() {
@@ -120,9 +131,10 @@
       reject: function () { try { localStorage.setItem('kk_consent', 'denied'); } catch (e) {} loadGoogleTag(); hideBanner(); }
     };
     if (!CONSENT_REQUIRED) {
-      // Outside the EEA/UK/CH: granted by default -- lazy-load the tag + badge as before.
+      // Outside the EEA/UK/CH: granted by default -- lazy-load the tag + badge as before
+      // (the badge is in the Advertising category, so not with GPC).
       registerLazyLoad();
-      loadBadge();
+      if (!KK_GPC) document.addEventListener('DOMContentLoaded', loadBadge);
     } else if (stored === 'granted') {
       grantConsent(); registerLazyLoad(); loadBadge();
     } else if (stored === 'denied') {
@@ -138,6 +150,8 @@
 {% if not is_error_page %}<link rel="canonical" href="{{ canonical_url|default(site_url ~ request.path) }}">{% endif %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-mark.svg') }}">
+<link rel="icon" type="image/png" sizes="48x48" href="{{ url_for('static', filename='img/favicon-48.png') }}">
+<link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='img/favicon-96.png') }}">
 <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
@@ -152,6 +166,9 @@
 <meta property="og:title" content="{{ self.title() }}">
 <meta property="og:description" content="{{ self.description() }}">
 <meta property="og:image" content="{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KuickKonvert - free online file converter">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ self.title() }}">
 <meta name="twitter:description" content="{{ self.description() }}">
@@ -163,8 +180,12 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "{{ site_url }}/#website",
   "name": "KuickKonvert",
+  "alternateName": ["Kuick Konvert", "kuickkonvert.com"],
   "url": "{{ site_url }}/",
+  "inLanguage": "en",
+  "publisher": {"@id": "{{ site_url }}/#organization"},
   "description": "Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up; uploaded files are deleted automatically after conversion."
 }
 </script>
@@ -172,8 +193,12 @@
 {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "{{ site_url }}/#organization",
   "name": "KuickKonvert",
+  "alternateName": "Kuick Konvert",
   "url": "{{ site_url }}/",
+  "foundingDate": "2026-08",
+  "founder": {"@id": "{{ site_url }}/about#shahid-iqbal"},
   "logo": "{{ site_url }}{{ url_for('static', filename='img/logo-512.png') }}",
   "email": "info@kuickkonvert.com",
   "description": "Free online file-conversion tools for documents, images and PDFs. No sign-up, and every uploaded file is deleted automatically after conversion.",
@@ -184,7 +209,7 @@
     "availableLanguage": "en"
   },
   "sameAs": [
-    "https://www.facebook.com/profile.php?id=61594014512417",
+    "https://www.facebook.com/kuickkonvert/",
     "https://www.instagram.com/kuickkonvert/",
     "https://x.com/kuickkonvert",
     "https://www.linkedin.com/company/kuickkonvert/",
@@ -192,7 +217,8 @@
     "https://www.tiktok.com/@kuickkonvert",
     "https://github.com/khshahid1970/kuickkonvert",
     "https://www.producthunt.com/products/kuickkonvert",
-    "https://peerlist.io/kuickkonvert/project/kuick-konvert"
+    "https://peerlist.io/kuickkonvert/project/kuickkonvert",
+    "https://kuickkonvert.blogspot.com/"
   ]
 }
 </script>
@@ -231,8 +257,16 @@
      as done. A matching /ads.txt is served at the domain root via the
      /ads.txt route in app.py -- unaffected by this change. #}
 <meta name="google-adsense-account" content="ca-pub-2468332370767807">
-{# <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous"></script> #}
-{# ^ restore this <script> line (removing this comment wrapper) instead of the meta tag above when placing real ad units after approval. #}
+{# Release 7 (WP15): AdSense code in the head, as Google's site-approval
+     guidance asks. Outside the EEA/UK/CH only: there Google requires a
+     certified TCF CMP, which we do not have. Auto ads are OFF in the AdSense
+     account and no ad units are placed, so nothing is shown until approval. #}
+{#- Also not loaded when the browser sends Global Privacy Control (Sec-GPC: 1).
+    12 Nov 2026: switched off until AdSense approval (ADSENSE_SCRIPT_ENABLED in
+    config.py); the meta tag above keeps the site connected. -#}
+{% if adsense_script_enabled and not consent_required and not gpc %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous" nonce="{{ csp_nonce }}"></script>
+{% endif %}
 </head>
 <body>
 {% if consent_required %}
@@ -265,6 +299,7 @@
         <input type="checkbox" id="consent-advertising" aria-describedby="consent-advertising-desc">
         <div>
           <label for="consent-advertising" class="consent-option-label">Advertising</label>
+          <p id="consent-gpc-note" class="consent-option-desc consent-gpc-note" hidden>Turned off because your browser sends a Global Privacy Control (GPC) signal.</p>
           <p id="consent-advertising-desc" class="consent-option-desc">Google Ads helps us measure whether visits from our ads lead to conversions and, where enabled and permitted, support remarketing and personalised advertising. When enabled, it may use advertising cookies.{% if consent_cfg.badge == 'advertising' %} Also shows the LaunchNest badge, an image loaded from launchnest.io.{% endif %}</p>
         </div>
       </div>
@@ -289,6 +324,7 @@
           <a href="{{ url_for('tool_page', slug='pdf-to-excel') }}">PDF to Excel</a>
           <a href="{{ url_for('tool_page', slug='ppt-to-pdf') }}">PPT to PDF</a>
           <a href="{{ url_for('tool_page', slug='pdf-to-ppt') }}">PDF to PPT</a>
+          <a href="{{ url_for('tool_page', slug='doc-to-docx') }}">DOC to DOCX</a>
         </div>
       </div>
       <div class="nav-item">
@@ -342,14 +378,14 @@
           <img class="brand-mark" src="{{ url_for('static', filename='img/logo-mark.svg') }}" width="36" height="36" alt="KuickKonvert logo">
           <span class="brand-name">Kuick<strong>Konvert</strong></span>
         </a>
-        <p class="footer-tagline">Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up needed.</p>
+        <p class="footer-tagline">KuickKonvert: free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up needed.</p>
         <p class="footer-credit">A production of Shahid Iqbal &middot; {{ obfuscated_mailto('info@kuickkonvert.com') }}</p>
         <p class="footer-featured">Featured on
           <a href="https://www.producthunt.com/products/kuickkonvert" target="_blank" rel="noopener">Product Hunt</a> &middot;
           <a href="https://peerpush.com/p/kuickkonvert" target="_blank" rel="noopener">PeerPush</a> &middot;
           <a href="https://www.saashub.com/kuickkonvert" target="_blank" rel="noopener">SaaSHub</a> &middot;
-          <a href="https://peerlist.io/kuickkonvert/project/kuick-konvert" target="_blank" rel="noopener">Peerlist</a> &middot;
-          <a href="https://www.nxgntools.com/tools/shahid-iqbal" target="_blank" rel="noopener">NxGn Tools</a>
+          <a href="https://peerlist.io/kuickkonvert/project/kuickkonvert" target="_blank" rel="noopener">Peerlist</a> &middot;
+          <a href="https://www.nxgntools.com/tools/kuickkonvert" target="_blank" rel="noopener">NxGn Tools</a>
         </p>
         {# LaunchNest badge: required for the free LaunchNest listing. Keep the
              link exactly as LaunchNest's embed code (no rel="nofollow") or
@@ -361,11 +397,15 @@
              data-src consent.js turns into src only with Advertising consent.
              The "-" whitespace control keeps everyone else's HTML unchanged. #}
         <p class="footer-badges">
-          {%- if consent_required and consent_cfg.badge == 'text_link' %}
+          {#- 12 Nov 2026 (adviser review): with GPC the badge (Advertising category)
+              is not loaded: Sec-GPC -> text link; outside consent regions the
+              image uses data-src and the inline script sets src only without
+              navigator.globalPrivacyControl. #}
+          {%- if (consent_required and consent_cfg.badge == 'text_link') or gpc %}
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">Listed on LaunchNest</a>
           {%- else %}
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">
-            <img id="launchnest-badge" {% if consent_required %}data-src{% else %}src{% endif %}="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
+            <img id="launchnest-badge" data-src="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
           </a>
           {%- endif %}
         </p>
@@ -404,7 +444,7 @@
       <div class="footer-col footer-social">
         <h3>Follow us</h3>
         <ul class="social-list">
-          <li><a href="https://www.facebook.com/profile.php?id=61594014512417" target="_blank" rel="noopener me" aria-label="KuickKonvert on Facebook (opens in a new tab)"><span class="social-badge"><svg class="social-icon" viewBox="0 0 320 512" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></svg></span>Facebook</a></li>
+          <li><a href="https://www.facebook.com/kuickkonvert/" target="_blank" rel="noopener me" aria-label="KuickKonvert on Facebook (opens in a new tab)"><span class="social-badge"><svg class="social-icon" viewBox="0 0 320 512" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></svg></span>Facebook</a></li>
           <li><a href="https://www.instagram.com/kuickkonvert/" target="_blank" rel="noopener me" aria-label="KuickKonvert on Instagram (opens in a new tab)"><span class="social-badge"><svg class="social-icon" viewBox="0 0 448 512" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></span>Instagram</a></li>
           <li><a href="https://x.com/kuickkonvert" target="_blank" rel="noopener me" aria-label="KuickKonvert on X (Twitter) (opens in a new tab)"><span class="social-badge"><svg class="social-icon" viewBox="0 0 512 512" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg></span>X (Twitter)</a></li>
           <li><a href="https://www.linkedin.com/company/kuickkonvert/" target="_blank" rel="noopener me" aria-label="KuickKonvert on LinkedIn (opens in a new tab)"><span class="social-badge"><svg class="social-icon" viewBox="0 0 448 512" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg></span>LinkedIn</a></li>
@@ -434,7 +474,7 @@
     <p class="footer-credit">Microsoft, Word, Excel and PowerPoint are trademarks of the Microsoft group of companies. KuickKonvert is an independent service and is not affiliated with, endorsed or sponsored by Microsoft.</p>
   </div>
 </footer>
-<script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+<script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='js/nav.js') }}"></script>
 
 </body>
 </html>

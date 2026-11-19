@@ -164,7 +164,7 @@ def images_to_pdf(image_paths: list, out_path: str) -> str:
         rotations = []  # page /Rotate for each image (see below)
         for p in image_paths:
             _reject_non_raster(p)
-            with Image.open(p) as im:
+            with Image.open(p, formats=_open_formats()) as im:
                 # Release 6 (Nov 2026), D21: for every image, not only JPEG --
                 # img2pdf no longer reads EXIF itself (rotation=none below).
                 rotations.append(_page_rotation(im))
@@ -340,6 +340,22 @@ _EXIF_KEEP_SUB = (                          # in the Exif sub-IFD (0x8769)
     0x9290, 0x9291, 0x9292,                 # SubSecTime, -Original, -Digitized
 )
 
+# R7-91 (17 Nov 2026): only the raster formats these tools accept are decoded.
+# Image.open() otherwise sniffs the file and hands it to whichever of Pillow's
+# ~40 decoders matches (TIFF, BMP, FPX, MSP, TGA ...), whatever the file is
+# called. Most 2026 Pillow advisories sit in decoders KuickKonvert never needs,
+# so an upload in any other format is refused ("not a valid image") before
+# such a decoder runs. iPhone multi-picture JPEGs (MPO) still open: Pillow's
+# JPEG opener returns them. HEIF is registered by pi_heif (_enable_heif).
+_ALLOWED_IMAGE_FORMATS = ("JPEG", "PNG", "WEBP", "HEIF")
+
+
+def _open_formats():
+    """The allowed formats Pillow has an opener for right now (HEIF only once
+    pi_heif is registered; Image.open raises KeyError for an unknown name)."""
+    Image.init()
+    return tuple(f for f in _ALLOWED_IMAGE_FORMATS if f in Image.OPEN)
+
 _heif_ready = False
 
 
@@ -437,7 +453,7 @@ def convert_images(src_paths: list, out_dir: str, out_format: str, out_names: li
         out_path = os.path.join(out_dir, name)
         try:
             _reject_non_raster(src, label)
-            with Image.open(src) as im:
+            with Image.open(src, formats=_open_formats()) as im:
                 w, h = im.size
                 if w * h > max_pixels:
                     raise ConversionError(
