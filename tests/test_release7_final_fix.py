@@ -210,3 +210,13 @@ def test_release_date_consistent(client):
     d = date.fromisoformat(config.RELEASE7_DATE)
     privacy = _visible(_get(client, "/privacy"))
     assert f"Last updated: {d.day} {d.strftime('%B %Y')}" in privacy
+
+
+def test_r7_93_privacy_sitemap_lastmod_matches_notice(client):
+    # The sitemap <lastmod> for /privacy must equal the notice's "Last updated" day.
+    from datetime import date
+    sm = _get(client, "/sitemap.xml")
+    m = re.search(r"<loc>[^<]*/privacy</loc><lastmod>([0-9-]+)</lastmod>", sm)
+    assert m and m.group(1) == config.RELEASE7_DATE
+    d = date.fromisoformat(m.group(1))
+    assert f"Last updated: {d.day} {d.strftime('%B %Y')}" in _visible(_get(client, "/privacy"))

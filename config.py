@@ -2758,6 +2758,9 @@ for _t in TOOLS:
     _t["lastmod"] = RELEASE7_DATE
 for _k in ("tools", "about", "link-to-us"):
     STATIC_LASTMOD[_k] = RELEASE7_DATE
+# R7-93: the Privacy Notice text changed in Release 7 ("Last updated" =
+# RELEASE7_DATE), so its sitemap <lastmod> moves to the same day.
+STATIC_LASTMOD["privacy"] = RELEASE7_DATE
 # R7-28 (Shahid, 11 Nov 2026: yes): the 12 guides whose visible text changed
 # in Release 7 (dek links R7-26; H2 renames R7-27 are in three of them) show
 # "Updated" with the release day. Only these 12: a date moves only with a
