@@ -229,9 +229,14 @@ def test_release7_updated_dates(pages):
     import config
     changed = set(config.RELEASE7_UPDATED_GUIDES)
     assert len(changed) == 15
+    # R8-02 (20 Nov 2026): two guides changed again in Release 8 and now show
+    # R8_DATE instead (checked in test_r8_comparison_guides.py).
+    redated = set(config._R8_DEK_ANSWERS)
     for k, p in pages.items():
         if k.startswith("/guides/") and k != "/guides":
             slug = k.split("/")[-1]
+            if slug in redated:
+                continue
             shows = f'Updated <time datetime="{config.RELEASE7_DATE}"' in p["html"]
             assert shows == (slug in changed), k
 
@@ -516,7 +521,8 @@ def test_r7_78_official_sources_and_r7_79_links(pages):
     import config, json as _j
     guides = {g["slug"]: g for g in config.GUIDES} if isinstance(config.GUIDES, list) else config.GUIDES
     with_sources = [s for s, g in guides.items() if g.get("sources")]
-    assert len(with_sources) == 11, with_sources
+    # R8-01 (20 Nov 2026): the five new comparison guides all cite official sources: 11 + 5 = 16.
+    assert len(with_sources) == 16, with_sources
     for slug in with_sources:
         p = pages[f"/guides/{slug}"]
         assert "<h2>Official sources</h2>" in p["main"], slug

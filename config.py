@@ -3564,3 +3564,417 @@ R7_95_VIDEO_TITLES = {
 }
 for _k, _title in R7_95_VIDEO_TITLES.items():
     VIDEOS[_k]["title"] = _title
+
+
+# ---- Release 8, R8-01: five comparison guides (20 Nov 2026) ----------------
+# Why: Bing Webmaster Tools "AI Performance" (read 20 Nov 2026) shows 154
+# Microsoft Copilot citations of KuickKonvert in 3 months, all to guides and
+# mostly to "X vs Y" comparisons (docx-vs-doc 64, jpg-vs-png 49). Topics were
+# chosen by US search volume (DataForSEO, 20 Nov 2026) and only where no KK
+# guide already answers the query: jpg vs jpeg 9,900; excel vs pdf 8,100;
+# jpg vs pdf 1,000; png vs pdf 880; webp vs jpg / webp vs png 590 each.
+# (xls vs xlsx, doc vs pdf, heic and webp basics already have guides.)
+# Every number comes from KuickKonvert's own converter code run on
+# computer-made test files in a test copy of the site (repo 32ef76c,
+# Python 3.13, Pillow 13.0.0, LibreOffice 24.2) -- see r8-test-results.json
+# in the release package. Sources were opened and checked on 20 Nov 2026.
+R8_DATE = "2026-11-20"
+_LOC_JFIF = ("Library of Congress: JPEG File Interchange Format Family",
+             "https://www.loc.gov/preservation/digital/formats/fdd/fdd000619.shtml")
+_W3C_PNG = ("W3C: Portable Network Graphics (PNG) Specification", "https://www.w3.org/TR/png/")
+_PDFA_ISO = ("PDF Association: ISO 32000-2 (PDF 2.0)", "https://pdfa.org/resource/iso-32000-2/")
+_GOOGLE_WEBP = ("Google for Developers: WebP, an image format for the Web", "https://developers.google.com/speed/webp")
+_MS_OPENXML = ("Microsoft Support: Open XML Formats and file name extensions",
+               "https://support.microsoft.com/en-us/office/open-xml-formats-and-file-name-extensions-5200d93c-3449-4380-8e11-31ef14555b18")
+
+R8_NEW_GUIDES = [
+    {
+        "slug": "jpg-vs-jpeg",
+        "title": "JPG vs JPEG: Is There Any Difference? (With Test Results)",
+        "seo_title": "JPG vs JPEG: Any Difference? (Tested) | KuickKonvert",
+        "meta_description": "JPG and JPEG are the same image format; only the file extension is spelt differently. Our test: identical files and identical conversions.",
+        "dek": "There is no difference in the picture: .jpg and .jpeg are two spellings of the file extension for the same JPEG image format. In our test, one photo saved as .jpg and as .jpeg was the same file byte for byte, and both gave identical PNG and PDF results. Renaming one to the other changes nothing inside the file. To convert either, use our [[jpg-to-png|JPG to PNG converter]] or [[jpg-to-pdf|JPG to PDF converter]].",
+        "published": R8_DATE,
+        "related_tools": ["jpg-to-png", "jpg-to-pdf", "png-to-jpg"],
+        "sources": [_LOC_JFIF],
+        "sections": [
+            {
+                "heading": "JPG vs JPEG at a glance",
+                "paragraphs": [
+                    "The short version: JPG and JPEG are the same thing. The format is JPEG, named after the Joint Photographic Experts Group that created it, and .jpg is simply a three-letter spelling of the same file extension.",
+                ],
+                "table": {
+                    "caption": "JPG and JPEG compared",
+                    "headers": ["", ".jpg", ".jpeg"],
+                    "rows": [
+                        ["Image format inside", "JPEG", "JPEG"],
+                        ["Compression", "Lossy (the same method)", "Lossy (the same method)"],
+                        ["Picture quality", "Identical for the same file", "Identical for the same file"],
+                        ["Same file in our test?", "Yes, byte for byte", "Yes, byte for byte"],
+                        ["Accepted by our JPG tools?", "Yes", "Yes"],
+                    ],
+                    "note": "The Library of Congress lists .jpg, .jpeg, .jpe, .jif, .jfif and .jfi as extensions for the same format family, with .jpg and .jpeg the most common.",
+                },
+            },
+            {
+                "heading": "Why there are two spellings",
+                "paragraphs": [
+                    "MS-DOS and early versions of Windows allowed only three characters after the dot in a file name, so JPEG files were saved as .jpg. Other systems allowed longer extensions and used .jpeg. Both spellings stayed in use, and today's computers, phones and browsers open either one.",
+                    "Inside, both files usually start with the same bytes: FF D8 FF, the JPEG start-of-image marker, often followed by E0 and the letters JFIF -- the signature the Library of Congress lists for the JPEG File Interchange Format. Our test file started with FF D8 FF E0.",
+                ],
+            },
+            {
+                "heading": "What our test showed",
+                "paragraphs": [
+                    "We saved one 3000 x 2000 photo-like image as a JPEG, made a copy with the other extension, and ran both through the same code our JPG tools use.",
+                ],
+                "table": {
+                    "caption": "The same JPEG saved as .jpg and .jpeg (our test, November 2026)",
+                    "headers": ["Check", ".jpg", ".jpeg"],
+                    "rows": [
+                        ["File size", "1,761.9 KB", "1,761.9 KB"],
+                        ["Contents", "Identical (same SHA-256 checksum)", "Identical (same SHA-256 checksum)"],
+                        ["Converted to PNG", "Identical output", "Identical output"],
+                        ["Converted to PDF", "1,763.3 KB", "1,763.3 KB"],
+                    ],
+                    "note": "Computer-made test image, not a camera photo.",
+                },
+            },
+            {
+                "heading": "When the extension does matter",
+                "paragraphs": [
+                    "Upload forms. If a form lists only .jpg or only .jpeg, you can rename the file's extension to the spelling it wants; the picture inside is unchanged. On Windows, turn on File name extensions in File Explorer's View menu first, or you may end up with a name like photo.jpg.jpeg.",
+                    "Renaming is not converting. Changing photo.png or photo.heic to photo.jpg does not make it a JPEG -- the file inside stays a PNG or a HEIC, and many apps will refuse it. To get a real JPEG, convert it: our [[png-to-jpg|PNG to JPG]] and [[heic-to-jpg|HEIC to JPG]] converters do this.",
+                    "Choosing a format. If the real question is which format to use, the differences are between JPG, PNG and WEBP, not between .jpg and .jpeg. Our guides on JPG vs PNG and on WEBP vs JPG vs PNG compare them with test results.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. A computer-made 3000 x 2000 photo-like image was saved as a JPEG at quality 90 with Pillow 13.0.0 and copied under the other extension. Both files were compared by SHA-256 checksum and converted by the same code our JPG to PNG and JPG to PDF tools run, in a test copy of the site. Your files will have different sizes, but the two spellings will always match each other.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "jpg-vs-pdf",
+        "title": "JPG or PDF: Which Should You Upload? (With Test Results)",
+        "seo_title": "JPG vs PDF: Which Should You Upload? (Tested) | KuickKonvert",
+        "meta_description": "JPG vs PDF: when to upload a photo as a JPG and when a form needs a PDF, with our test of file size when photos become a PDF and back again.",
+        "dek": "Use JPG for a single photo or picture. Use PDF when the upload is a document, has more than one page, or the form asks for PDF. Turning photos into a PDF with our tool hardly changed the size in our test -- three photos totalling 1,824 KB became a 1,827 KB PDF -- because each photo goes in unchanged. To combine photos, use our [[jpg-to-pdf|JPG to PDF converter]]; to get pages out as pictures, use [[pdf-to-jpg|PDF to JPG]].",
+        "published": R8_DATE,
+        "related_tools": ["jpg-to-pdf", "pdf-to-jpg", "compress-pdf"],
+        "sources": [_PDFA_ISO, _LOC_JFIF],
+        "sections": [
+            {
+                "heading": "JPG vs PDF at a glance",
+                "paragraphs": [
+                    "A JPG is one picture. A PDF is a document: one or more pages that can hold text, pictures or both, laid out at a fixed page size. If a form asks for a specific format, use that one. Otherwise:",
+                ],
+                "table": {
+                    "caption": "JPG and PDF compared",
+                    "headers": ["", "JPG", "PDF"],
+                    "rows": [
+                        ["What it holds", "One image", "Pages of text, images or both"],
+                        ["More than one page?", "No - one file per picture", "Yes - all pages in one file"],
+                        ["Text you can select or search", "No - text is part of the picture", "Yes if made from a document; no if made from photos"],
+                        ["Usually asked for", "Profile photos, product pictures, a single scan", "Forms, applications, ID documents, multi-page scans"],
+                        ["Size when photos become a PDF (our test)", "-", "About the same, plus roughly 1 KB per page"],
+                    ],
+                    "note": "Test details are in the sections below.",
+                },
+            },
+            {
+                "heading": "What happens to file size when photos become a PDF",
+                "paragraphs": [
+                    "Our JPG to PDF converter places each photo on its own page without re-compressing it; only hidden metadata such as the location is removed. So the PDF is about the size of the photos added together.",
+                ],
+                "table": {
+                    "caption": "Photos into one PDF (our test, November 2026)",
+                    "headers": ["Input", "JPG size", "PDF size"],
+                    "rows": [
+                        ["One 2000 x 1500 photo", "607.8 KB", "609.1 KB"],
+                        ["Three 2000 x 1500 photos", "1,824.2 KB in total", "1,826.5 KB (3 pages)"],
+                    ],
+                    "note": "Computer-made photo-like images saved at JPEG quality 85. A PDF will not be smaller than the photos inside it; to meet a size limit, resize the photos first, as our guide to turning photos into one PDF explains.",
+                },
+            },
+            {
+                "heading": "Going back: PDF to JPG is not an undo",
+                "paragraphs": [
+                    "Turning a PDF page into a JPG draws the whole page again at 300 dpi and saves it as a new JPEG. It does not pull the original photo back out. In our test, a 2000 x 1500 photo placed in a PDF came back from PDF to JPG as a 4000 x 3000 image of 1,180 KB -- larger than the 608 KB original, with no extra detail, because the page was scaled up and compressed a second time.",
+                    "The page itself was 13.33 x 10 inches, because the photo was labelled 150 dpi. Photos labelled 72 dpi, or with no label, make even larger pages; our guide to turning photos into one PDF explains why and how to fix it. Keep your original JPGs if you might need them again.",
+                ],
+            },
+            {
+                "heading": "Text in a PDF made from photos",
+                "paragraphs": [
+                    "A PDF made from photos of a document still contains pictures, not text. In our test, no text at all could be extracted from the photo PDF. Our tools don't read text out of images, so a scanned page can't be searched or copied. If you have the original file -- a Word document, for example -- make the PDF from that instead with our [[word-to-pdf|Word to PDF converter]], and the text stays selectable.",
+                ],
+            },
+            {
+                "heading": "Which to choose",
+                "steps": [
+                    "The form names a format: use that format, even if the other seems better.",
+                    "One photo or picture, no format given: JPG.",
+                    "Several pages, a document or an application: one PDF, with the pages in order -- [[jpg-to-pdf|JPG to PDF]] combines photos in the order you add them.",
+                    "A size limit such as 200 KB: resize the photos before making the PDF; [[compress-pdf|Compress PDF]] can't shrink a PDF of photos much below the photos themselves.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. Three computer-made 2000 x 1500 photo-like images were saved as JPEG at quality 85 with a 150 dpi label, using Pillow 13.0.0. They were combined by the same code our JPG to PDF tool runs, and one single-photo PDF was turned back into a JPG by the code our PDF to JPG tool runs (300 dpi), in a test copy of the site. Text extraction was checked with pypdf. Camera photos will give different sizes.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "png-vs-pdf",
+        "title": "PNG or PDF: Which to Use for Screenshots, Scans and Documents (With Test Results)",
+        "seo_title": "PNG vs PDF: Which Should You Use? (Tested) | KuickKonvert",
+        "meta_description": "PNG vs PDF: when an image is enough and when you need a PDF, with our test of file size and selectable text for a screenshot and a document.",
+        "dek": "Use PNG for a single screenshot, diagram or image with sharp edges. Use PDF for documents -- several pages, or text people need to search, copy or print. In our test a screenshot turned into a PDF stayed almost the same size (113 KB to 114 KB) but its text couldn't be selected, while the same words saved as a document PDF were 28 KB and fully searchable. To combine PNGs, use our [[png-to-pdf|PNG to PDF converter]]; to turn PDF pages into images, use [[pdf-to-png|PDF to PNG]].",
+        "published": R8_DATE,
+        "related_tools": ["png-to-pdf", "pdf-to-png", "word-to-pdf"],
+        "sources": [_W3C_PNG, _PDFA_ISO],
+        "sections": [
+            {
+                "heading": "PNG vs PDF at a glance",
+                "paragraphs": [
+                    "PNG is an image format with lossless compression: every pixel is kept exactly, which keeps text and lines sharp. PDF is a document format: pages at a fixed size that can contain real text, drawings and images.",
+                ],
+                "table": {
+                    "caption": "PNG and PDF compared",
+                    "headers": ["", "PNG", "PDF"],
+                    "rows": [
+                        ["What it holds", "One image", "One or more pages"],
+                        ["Compression", "Lossless", "Depends on the content inside"],
+                        ["Transparent background", "Supported", "Our PNG to PDF tool places transparent areas on white"],
+                        ["Text you can select or search", "No - text is pixels", "Yes if made from a document; no if made from an image"],
+                        ["Prints at a set page size", "No", "Yes"],
+                    ],
+                    "note": "Test details are in the next section.",
+                },
+            },
+            {
+                "heading": "What our test showed",
+                "paragraphs": [
+                    "We made a 1920 x 1080 screenshot of a short report with a table and a chart, and the same words and table as a Word document. Then we converted each with our own tools' code.",
+                ],
+                "table": {
+                    "caption": "A screenshot and a document, as PNG and PDF (our test, November 2026)",
+                    "headers": ["File", "Size", "Text that could be extracted"],
+                    "rows": [
+                        ["Screenshot as PNG (1920 x 1080)", "112.7 KB", "None - it's an image"],
+                        ["That PNG turned into a PDF", "114.1 KB", "None"],
+                        ["The same words as a Word document, saved as PDF", "28.4 KB", "2,337 characters"],
+                        ["That document PDF turned into a PNG (300 dpi)", "561.5 KB (2550 x 3300 pixels)", "None"],
+                    ],
+                    "note": "Computer-made test files. Text was extracted with pypdf.",
+                },
+            },
+            {
+                "heading": "Why a PDF made from a PNG is still a picture",
+                "paragraphs": [
+                    "Our PNG to PDF converter puts each PNG on a page with its pixels kept as they are (transparent areas are placed on white), so the PDF is about the same size and looks the same. But the words in a screenshot are pixels, so the PDF can't be searched, copied or read aloud by a screen reader. Our tools don't read text from images.",
+                    "Going the other way, a document PDF becomes much larger as a PNG: at 300 dpi our test page grew from 28 KB to 562 KB, and its text stopped being text. Keep the PDF when the words matter, and make PNGs only when you need a picture of the page -- for slides, a website or a message.",
+                ],
+            },
+            {
+                "heading": "Which to choose",
+                "steps": [
+                    "One screenshot, diagram or logo for a message, slide or web page: PNG.",
+                    "Several screenshots to send as one file: one PDF -- [[png-to-pdf|PNG to PDF]] combines them in order.",
+                    "A document people will read, print, search or sign: PDF made from the original file, for example with [[word-to-pdf|Word to PDF]], so the text stays selectable.",
+                    "A single page needed as an image: [[pdf-to-png|PDF to PNG]] keeps text sharp; PNG suits text and lines better than JPG, as our JPG vs PNG guide shows.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. The screenshot was drawn with Pillow 13.0.0 and saved as an optimised PNG. The document was made with python-docx and converted to PDF by the LibreOffice engine our Word to PDF tool runs (LibreOffice 24.2). The PNG to PDF and PDF to PNG steps used the same code as our tools, in a test copy of the site. Real screenshots and documents will give different sizes.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "excel-vs-pdf",
+        "title": "Excel or PDF: Which Should You Send? (With Test Results)",
+        "seo_title": "Excel vs PDF: Which Should You Send? (Tested) | KuickKonvert",
+        "meta_description": "Excel vs PDF: send Excel when someone must edit or calculate, PDF when the figures are final. Our test shows what a PDF keeps and loses.",
+        "dek": "Send Excel (XLSX) when the other person needs to change the numbers, sort, filter or check the formulas. Send a PDF when the figures are final -- an invoice, a quote or a report -- and must look the same for everyone. In our test a workbook with 24 formulas became a 2-page PDF that showed every result but no formulas, and turning that PDF back into Excel gave lines of text, not working numbers. To make the PDF, use our [[excel-to-pdf|Excel to PDF converter]].",
+        "published": R8_DATE,
+        "related_tools": ["excel-to-pdf", "pdf-to-excel"],
+        "sources": [_MS_OPENXML, _PDFA_ISO],
+        "sections": [
+            {
+                "heading": "The quick answer",
+                "paragraphs": [
+                    "Excel is for working with numbers; PDF is for reading them. If someone has asked for a specific format, send that. Otherwise:",
+                ],
+                "table": {
+                    "caption": "When to send Excel and when to send PDF",
+                    "headers": ["Situation", "Send"],
+                    "rows": [
+                        ["The other person will edit, sort, filter or add to the data", "Excel (XLSX)"],
+                        ["They need to see or check how totals are calculated", "Excel (XLSX)"],
+                        ["An invoice, quote, statement or final report", "PDF"],
+                        ["It must look the same on any phone or computer, and print neatly", "PDF"],
+                        ["You want a fixed record and a working copy", "Both: the PDF as the record, the XLSX to work in"],
+                    ],
+                },
+            },
+            {
+                "heading": "What a PDF keeps and loses from a spreadsheet",
+                "paragraphs": [
+                    "We made a two-sheet workbook: an invoice with 20 lines, each line total calculated by a formula, a SUM at the bottom, and a summary sheet that adds 10% tax. Then we converted it to PDF with our Excel to PDF code, and converted that PDF back to Excel with our PDF to Excel code.",
+                ],
+                "table": {
+                    "caption": "An invoice workbook to PDF and back (our test, November 2026)",
+                    "headers": ["Step", "Result"],
+                    "rows": [
+                        ["Original XLSX", "5.9 KB, 2 sheets, 24 formulas"],
+                        ["Excel to PDF", "10.7 KB, 2 pages - one per sheet"],
+                        ["Totals in the PDF", "Shown as results (997.5, 99.75, 1097.25)"],
+                        ["Formulas in the PDF", "None - only the results are printed"],
+                        ["PDF back to Excel", "2 sheets named Page 1 and Page 2"],
+                        ["What came back", "Each row as one line of text in column A; 0 formulas, 0 cells stored as numbers"],
+                    ],
+                    "note": "Computer-made test workbook. The PDF had no gridlines, which is why each row came back as a single line of text.",
+                },
+            },
+            {
+                "heading": "Why the PDF can't give the spreadsheet back",
+                "paragraphs": [
+                    "A PDF stores what a page looks like: each piece of text at a position, plus any lines. It doesn't store cells, formulas or which number belongs to which column. Converting back to Excel has to guess the table from the layout, and without ruled lines between cells there is nothing to guess from -- as our test shows. Our guide on PDF tables in Excel has more test results.",
+                    "So if the other person needs the numbers, send the XLSX as well. A PDF is the right file when the numbers should not change.",
+                ],
+            },
+            {
+                "heading": "Before you send a spreadsheet as a PDF",
+                "steps": [
+                    "Check every sheet: each sheet becomes its own page or pages -- in our test the summary sheet became page 2.",
+                    "Check wide sheets: our [[excel-to-pdf|Excel to PDF converter]] fits every column across the page width; our guide on fitting a spreadsheet on one page explains the options.",
+                    "Hidden helper sheets or columns with notes you don't want shared: remove them in Excel first.",
+                    "Old .xls file: it converts too, but our XLS vs XLSX guide explains why XLSX is the safer format to keep.",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. The workbook was made with openpyxl, converted to PDF by the same LibreOffice-based code our Excel to PDF tool runs (LibreOffice 24.2), and the PDF converted back by the code our PDF to Excel tool runs, in a test copy of the site. Formulas and cell types were counted with openpyxl and the PDF text was read with pypdf. Workbooks with ruled tables will convert back differently.",
+                ],
+            },
+        ],
+    },
+    {
+        "slug": "webp-vs-jpg-vs-png",
+        "title": "WEBP vs JPG vs PNG: Which Image Format Should You Use? (With Test Results)",
+        "seo_title": "WEBP vs JPG vs PNG: Which to Use? (Tested) | KuickKonvert",
+        "meta_description": "WEBP vs JPG vs PNG compared: file size for a photo and a screenshot in our test, and why many forms and apps still ask for JPG or PNG.",
+        "dek": "For a website, WEBP usually makes the smallest file. For uploading, emailing or printing, JPG (photos) and PNG (screenshots and logos) work almost everywhere -- which WEBP still doesn't. In our test WEBP was smallest for both a photo-like image (608 KB, against 1,762 KB as JPG) and a screenshot (20 KB lossless, against 113 KB as PNG). If a form or app won't take a WEBP, use our [[webp-to-jpg|WEBP to JPG converter]].",
+        "published": R8_DATE,
+        "related_tools": ["webp-to-jpg", "png-to-jpg", "jpg-to-png"],
+        "sources": [_GOOGLE_WEBP, _W3C_PNG, _LOC_JFIF],
+        "sections": [
+            {
+                "heading": "WEBP vs JPG vs PNG at a glance",
+                "paragraphs": [
+                    "JPG is made for photos and throws away detail the eye is unlikely to miss. PNG keeps every pixel, so it suits screenshots, text and logos. WEBP, developed by Google for the web, can work either way -- with some loss like JPG, or lossless like PNG.",
+                ],
+                "table": {
+                    "caption": "The three formats compared",
+                    "headers": ["", "JPG", "PNG", "WEBP"],
+                    "rows": [
+                        ["Compression", "Lossy", "Lossless", "Lossy or lossless"],
+                        ["Transparent background", "No", "Yes", "Yes"],
+                        ["Suits", "Photos", "Screenshots, text, logos", "Web pages"],
+                        ["Accepted by forms and apps", "Almost everywhere", "Almost everywhere", "Not everywhere yet"],
+                        ["Smallest in our test", "-", "-", "Yes, for both test images"],
+                    ],
+                    "note": "Sizes are in the next section.",
+                },
+            },
+            {
+                "heading": "What our test showed",
+                "paragraphs": [
+                    "We saved a 3000 x 2000 photo-like image and a 1920 x 1080 screenshot in each format.",
+                ],
+                "table": {
+                    "caption": "The same two images in each format (our test, November 2026)",
+                    "headers": ["Format and setting", "Photo-like image", "Screenshot"],
+                    "rows": [
+                        ["JPG, quality 90", "1,761.6 KB", "338.4 KB"],
+                        ["PNG (lossless)", "11,912.5 KB", "112.7 KB"],
+                        ["WEBP, lossy, quality 80", "607.6 KB", "113.6 KB"],
+                        ["WEBP, lossless", "12,053.9 KB", "19.9 KB"],
+                    ],
+                    "note": "Computer-made images. The photo-like image has fine artificial grain, which makes the lossless versions unusually large; camera photos will give different sizes, but the order of the lossy results is typical.",
+                },
+            },
+            {
+                "heading": "What the numbers mean",
+                "paragraphs": [
+                    "For the photo-like image, lossy formats won by a wide margin: WEBP was about a third of the size of the JPG, and both were far smaller than PNG. Lossless WEBP gave no advantage for this photo.",
+                    "For the screenshot, lossless was the right choice: PNG was a third of the JPG's size, and lossless WEBP shrank it further, to about a sixth of the PNG. JPG was the worst fit for the screenshot -- the largest file, and lossy compression also blurs the edges of text, as our JPG vs PNG guide shows.",
+                ],
+            },
+            {
+                "heading": "Converting WEBP to JPG: what happens to size",
+                "paragraphs": [
+                    "WEBP files saved from websites often need converting before a form or photo app will accept them. Our WEBP to JPG converter saves at quality 90 and full size. In our test the 608 KB WEBP became a 1,328 KB JPG: the file grows because JPEG compresses less efficiently, but no detail is added back. Our guide to WEBP images explains how to open and convert them.",
+                ],
+            },
+            {
+                "heading": "Which to choose",
+                "steps": [
+                    "Uploading a photo to a form, or emailing it: JPG.",
+                    "A screenshot, logo or anything with text: PNG -- use [[jpg-to-png|JPG to PNG]] if an app asks for PNG.",
+                    "Images for your own website: WEBP, if your site and visitors' browsers support it.",
+                    "A WEBP that won't open or upload: convert it with [[webp-to-jpg|WEBP to JPG]]; a heavy PNG photo can become a smaller JPG with [[png-to-jpg|PNG to JPG]].",
+                ],
+            },
+            {
+                "heading": "How we tested",
+                "paragraphs": [
+                    "November 2026. Both images were made on a computer and saved with Pillow 13.0.0 (WEBP with method 6). The WEBP to JPG step used the same code our WEBP to JPG tool runs, in a test copy of the site. Google's WebP page describes the format and its own size comparisons.",
+                ],
+            },
+        ],
+    },
+]
+
+GUIDES.extend(R8_NEW_GUIDES)
+for _g in R8_NEW_GUIDES:
+    GUIDES_BY_SLUG[_g["slug"]] = _g
+    for _slug in _g["related_tools"]:
+        GUIDES_BY_TOOL[_slug].append(_g)   # appended last: pillar guides stay first
+RELATED_GUIDES.update({
+    "jpg-vs-jpeg": ["jpg-vs-png", "webp-vs-jpg-vs-png", "photos-to-one-pdf-jpg-to-pdf-tips"],
+    "jpg-vs-pdf": ["photos-to-one-pdf-jpg-to-pdf-tips", "png-vs-pdf", "submitting-coursework-as-a-pdf"],
+    "png-vs-pdf": ["jpg-vs-png", "jpg-vs-pdf", "pdf-to-word-text-vs-scanned"],
+    "excel-vs-pdf": ["pdf-or-word-which-to-send", "pdf-to-excel-table-conversion-results", "excel-to-pdf-fit-on-one-page"],
+    "webp-vs-jpg-vs-png": ["what-is-a-webp-image", "jpg-vs-png", "jpg-vs-jpeg"],
+})
+# Inbound links so each new guide is reachable from its closest older guide.
+for _src, _new in (("jpg-vs-png", "jpg-vs-jpeg"), ("what-is-a-webp-image", "webp-vs-jpg-vs-png"),
+                   ("photos-to-one-pdf-jpg-to-pdf-tips", "jpg-vs-pdf"),
+                   ("pdf-or-word-which-to-send", "excel-vs-pdf"), ("xls-vs-xlsx", "excel-vs-pdf")):
+    if _new not in RELATED_GUIDES[_src]:
+        RELATED_GUIDES[_src] = RELATED_GUIDES[_src] + [_new]
+for _src, _targets in RELATED_GUIDES.items():
+    for _t in _targets:
+        if _t not in GUIDES_BY_SLUG or _t == _src:
+            raise ValueError(f"RELATED_GUIDES[{_src!r}]: bad target {_t!r}")
+
+# R8-02: a one-sentence direct answer first in the two format guides whose
+# dek opened with a question scenario. Facts already stated in each guide.
+_R8_DEK_ANSWERS = {
+    "what-is-a-heic-file": "HEIC is the photo format iPhones save by default: it stores a photo in roughly half the space of a JPEG, but many Windows PCs, Android apps and upload forms can't open it. ",
+    "what-is-a-webp-image": "WEBP is an image format Google developed for websites: it usually makes pictures smaller than JPG or PNG at a similar quality, but some photo apps and upload forms still don't accept it. ",
+}
+for _s, _lead in _R8_DEK_ANSWERS.items():
+    if not GUIDES_BY_SLUG[_s]["dek"].startswith(_lead):
+        GUIDES_BY_SLUG[_s]["dek"] = _lead + GUIDES_BY_SLUG[_s]["dek"]
+    GUIDES_BY_SLUG[_s]["updated"] = R8_DATE
