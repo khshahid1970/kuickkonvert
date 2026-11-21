@@ -126,12 +126,27 @@
         <li>Your {{ out_fmt }} file{{ ' (or one ZIP file holding several)' if tool.get('zip_output') else '' }} downloads straight away. The original is deleted from our servers as soon as the conversion finishes.</li>
       </ol>
 
+      {#- Release 9 (C1): optional steps per device -- {"heading", "devices": [(label, [steps])], "note"} -#}
+      {% if tool.get('device_steps') %}
+      <h2>{{ tool.device_steps.heading }}</h2>
+      {% for label, steps in tool.device_steps.devices %}
+      <h3>{{ label }}</h3>
+      <ol class="how-to-steps">
+        {% for step in steps %}<li>{{ step }}</li>
+        {% endfor %}
+      </ol>
+      {% endfor %}
+      {% if tool.device_steps.note %}<p>{{ tool.device_steps.note }}</p>{% endif %}
+      {% endif %}
+
       <h2>{{ tool.name }} at a glance</h2>
       <table class="format-table">
         <tbody>
           <tr><th scope="row">You upload</th><td>{{ fmts|join(', ') }}{{ ' (several files at once)' if tool.multi else '' }}</td></tr>
           <tr><th scope="row">You get</th><td>{{ out_fmt }}{{ ' (several files come as one ZIP)' if tool.get('zip_output') else '' }}</td></tr>
           <tr><th scope="row">Upload size</th><td>Up to {{ upload_rules.max_mb }} MB per upload (all files together)</td></tr>
+          {#- Release 9, R9-09: the limits this tool applies (config TOOLS[...]["limits"]). -#}
+          {% if tool.get('limits') %}<tr><th scope="row">Limits</th><td>{{ tool.limits }}</td></tr>{% endif %}
           <tr><th scope="row">Price and sign-up</th><td>Free, no sign-up</td></tr>
           <tr><th scope="row">Watermark</th><td>{{ 'Only the text you type' if tool.slug == 'watermark-pdf' else 'None added' }}</td></tr>
           <tr><th scope="row">Your files</th><td>Deleted automatically after conversion</td></tr>
@@ -161,6 +176,16 @@
          pages is replaced by one line that links to the full explanation. #}
       <h2>Privacy</h2>
       <p>Everything you upload here is deleted automatically after conversion. <a href="{{ url_for('guide_page', slug='what-happens-to-your-file') }}">See what happens to your file, step by step</a>.</p>
+
+      {#- Release 9 (C1): optional troubleshooting -- {"heading", "fixes": [(problem, fix)]} -#}
+      {% if tool.get('troubleshooting') %}
+      <h2>{{ tool.troubleshooting.heading }}</h2>
+      <ul class="use-case-list fix-list">
+        {% for problem, fix in tool.troubleshooting['fixes'] %}
+        <li><strong>{{ problem }}</strong> {{ fix }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
       <h2>{{ tool.name }} FAQ</h2>
       <div class="faq-list faq-list-compact">

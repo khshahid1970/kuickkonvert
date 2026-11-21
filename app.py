@@ -50,7 +50,8 @@ from converters.office import (
     convert_word_format,
 )
 from converters.tables import convert_pdf_to_excel
-from converters.images import images_to_pdf, pdf_to_images, convert_images, MAX_IMAGE_MEGAPIXELS
+from converters.images import images_to_pdf, pdf_to_images, convert_images, MAX_IMAGE_MEGAPIXELS, MAX_RENDER_PAGES
+from converters.pdf_tools import MAX_WORD_PAGES  # Release 9, R9-10 (llms.txt limits line)
 from converters.pdf_tools import (
     merge_pdfs, split_pdf, rotate_pdf, watermark_pdf, protect_pdf, compress_pdf,
     ensure_pdf_unlocked, check_pdf_to_word, check_pdf_page_limit, MAX_EXCEL_PAGES,
@@ -1218,6 +1219,12 @@ def llms_txt():
         "",
         "- Price: free, with no account or sign-up.",
         "- Upload size: up to 50 MB per upload (all files together); fair-use limits apply.",
+        # Release 9, R9-10 (21 Nov 2026): the per-tool limits, from the same
+        # constants the converters enforce.
+        f"- Limits: up to {MAX_IMAGES_PER_CONVERSION} images at a time in the image converters, each up to "
+        f"{MAX_IMAGE_MEGAPIXELS} megapixels; PDF to JPG, PDF to PNG and PDF to PPT convert up to "
+        f"{MAX_RENDER_PAGES} pages at a time; PDF to Word and PDF to Excel up to {MAX_WORD_PAGES} pages; "
+        "password-protected PDFs must be unlocked first.",
         "- Your files: deleted automatically after conversion.",
         "- Watermark: none is added to converted files. The Watermark PDF tool adds only the text you type.",
         "- Not offered: OCR, PDF editing, e-signatures, removing PDF passwords, audio or video conversion.",

@@ -730,6 +730,10 @@ body {
 }
 .related-tools-list a:hover, .related-guides-list a:hover { text-decoration: underline; }
 .tool-info .faq-list { margin-top: 4px; }
+/* Release 9 (C1): device sub-headings and the troubleshooting list on tool pages. */
+.tool-info h3 { font-size: 15.5px; margin: 14px 0 6px; }
+.fix-list li { margin-bottom: 6px; }
+.fix-list strong { color: var(--color-text); }
 
 /* Guides index (/guides) */
 .guides-list { list-style: none; margin: 28px 0 0; padding: 0; }

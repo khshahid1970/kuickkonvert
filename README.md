@@ -21,16 +21,22 @@
 - **Works in any modern browser** — desktop or mobile, nothing to install.
 - **Free** — up to 50 MB per upload (all files together), and up to 20 images at a time in the image converters.
 
+**Limits, stated plainly:** PDF → JPG, PDF → PNG and PDF → PowerPoint convert up to 50 pages at a time; images up to 65 megapixels in the image converters; no OCR (a scanned PDF converts as a picture, not editable text); password-protected PDFs must be unlocked first; fair-use limits apply to how many conversions can run per minute, hour and day.
+
 Files are converted on the server (Render, Singapore region, behind Cloudflare), not in the browser. What happens to an upload, step by step: [What happens to your file](https://kuickkonvert.com/guides/what-happens-to-your-file).
 
 ## Guides
 
-Short explainers on common file questions: [kuickkonvert.com/guides](https://kuickkonvert.com/guides)
+30 plain-English guides, most with results from our own test conversions (run with the same code as the live site, on computer-made test files): [kuickkonvert.com/guides](https://kuickkonvert.com/guides). For example:
+
+- [DOCX vs DOC](https://kuickkonvert.com/guides/docx-vs-doc), [JPG vs PNG](https://kuickkonvert.com/guides/jpg-vs-png), [JPG vs JPEG](https://kuickkonvert.com/guides/jpg-vs-jpeg), [Excel vs PDF](https://kuickkonvert.com/guides/excel-vs-pdf), [WEBP vs JPG vs PNG](https://kuickkonvert.com/guides/webp-vs-jpg-vs-png)
+- [PDF compression levels explained](https://kuickkonvert.com/guides/pdf-compression-levels-explained) and [why a PDF's layout sometimes shifts](https://kuickkonvert.com/guides/why-pdf-layout-shifts)
+- [How to turn photos into one PDF](https://kuickkonvert.com/guides/photos-to-one-pdf-jpg-to-pdf-tips) and [password-protecting a PDF (AES-256)](https://kuickkonvert.com/guides/pdf-password-protection-explained)
 
 ## Built with
 
 - Python 3.11 and Flask, served by Gunicorn
-- LibreOffice (Office ↔ PDF), Poppler (PDF ↔ images), Ghostscript (PDF compression)
+- LibreOffice (Office ↔ PDF), Poppler and pypdfium2 (PDF → images), Ghostscript (PDF compression)
 - pypdf, pikepdf, pdf2docx (with PyMuPDF), pdfplumber, python-pptx, openpyxl, Pillow, pi-heif, img2pdf
 - Plain HTML, CSS and JavaScript on the front end
 - Deployed as a Docker container

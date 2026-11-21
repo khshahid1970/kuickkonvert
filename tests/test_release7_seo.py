@@ -232,6 +232,9 @@ def test_release7_updated_dates(pages):
     # R8-02 (20 Nov 2026): two guides changed again in Release 8 and now show
     # R8_DATE instead (checked in test_r8_comparison_guides.py).
     redated = set(config._R8_DEK_ANSWERS)
+    # Release 9 (21 Nov 2026): six guides got a step-by-step section and show
+    # R9_DATE (checked in test_r9_release.py).
+    redated |= set(config.R9_UPDATED_GUIDES)
     for k, p in pages.items():
         if k.startswith("/guides/") and k != "/guides":
             slug = k.split("/")[-1]
@@ -522,7 +525,9 @@ def test_r7_78_official_sources_and_r7_79_links(pages):
     guides = {g["slug"]: g for g in config.GUIDES} if isinstance(config.GUIDES, list) else config.GUIDES
     with_sources = [s for s, g in guides.items() if g.get("sources")]
     # R8-01 (20 Nov 2026): the five new comparison guides all cite official sources: 11 + 5 = 16.
-    assert len(with_sources) == 16, with_sources
+    # Release 9 (21 Nov 2026): Microsoft/Google/Apple help pages added to the
+    # Word-to-PDF and photos-to-one-PDF guides: 16 + 2 = 18.
+    assert len(with_sources) == 18, with_sources
     for slug in with_sources:
         p = pages[f"/guides/{slug}"]
         assert "<h2>Official sources</h2>" in p["main"], slug
@@ -665,6 +670,7 @@ def test_r7_86_pdf_to_word_guide_sections(pages):
     assert [s["heading"] for s in g["sections"]] == [
         "Two kinds of PDF that look the same",
         "How to tell which one you have",
+        "How to open a PDF in Word, step by step",   # Release 9, C3 (21 Nov 2026)
         "What we measured",
         "Which method to use",
         "What to do with a scanned PDF",
@@ -684,4 +690,5 @@ def test_r7_86_pdf_to_word_guide_sections(pages):
     for bad in ("smallpdf", "ilovepdf", "adobe acrobat", "pdfgear", "wps", "kimi",
                 "guaranteed", "100%", "unlimited", "secure", " fast "):
         assert bad not in low, bad
-    assert f'Updated <time datetime="{config.RELEASE7_DATE}"' in p["html"]
+    # Release 9 (21 Nov 2026) added a how-to section, so the guide now shows R9_DATE.
+    assert f'Updated <time datetime="{config.R9_DATE}"' in p["html"]

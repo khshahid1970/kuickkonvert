@@ -3978,3 +3978,441 @@ for _s, _lead in _R8_DEK_ANSWERS.items():
     if not GUIDES_BY_SLUG[_s]["dek"].startswith(_lead):
         GUIDES_BY_SLUG[_s]["dek"] = _lead + GUIDES_BY_SLUG[_s]["dek"]
     GUIDES_BY_SLUG[_s]["updated"] = R8_DATE
+
+
+# ===========================================================================
+# Release 9 (21 Nov 2026): round-1 way forward, C1 + C3.
+# C1: steps per device and a "not working?" block on the six image-tool pages
+#     (low-difficulty image searches, report section 2.3).
+# C3: a step-by-step "how to" section in six existing guides (report 5.3),
+#     each with one new result from our own tests. New pages were NOT made
+#     where KK already has a guide, so KK doesn't compete with itself; the
+#     Copilot-cited docx-vs-doc guide is untouched.
+# Every number comes from r9-test-results.json (KK's own converter code on
+# computer-made test files, 21 Nov 2026). Device steps follow the official
+# help pages of Microsoft, Google and Apple, opened and read on 21 Nov 2026.
+# ===========================================================================
+R9_DATE = "2026-11-21"
+
+_R9_ZIP_NOTE = ("Several files come back as one ZIP file. On an iPhone, tap the ZIP in the Files app "
+                "and a folder with the files appears; on Android, select it in Files by Google and tap "
+                "Extract; on a computer, double-click it.")
+
+
+def _r9_device_steps(heading, pc_pick, ios_pick, android_pick, result, note=None):
+    return {
+        "heading": heading,
+        "devices": [
+            ("On a Windows PC or a Mac", [
+                "Open this page in Chrome, Edge, Safari or Firefox.",
+                pc_pick,
+                f"Press Convert. {result} goes to your Downloads folder, unless your browser is set to ask where to save files.",
+            ]),
+            ("On an iPhone or iPad", [
+                "Open this page in Safari.",
+                ios_pick,
+                f"Tap Convert. {result} is saved in the Downloads folder of the Files app. Straight after the download you can also tap the Downloads button next to Safari's search field.",
+            ]),
+            ("On an Android phone", [
+                "Open this page in Chrome.",
+                android_pick,
+                "Tap Convert. To find the file later, open the Files app and go to Downloads, or in Chrome tap More (the three dots) and then Downloads.",
+            ]),
+        ],
+        "note": note,
+    }
+
+
+_R9_TOOL_UPDATES = {
+    "png-to-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to convert PNG to PDF on a PC, Mac, iPhone or Android",
+            "Click Choose files and select your PNG images -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box. Pages follow the order of the file list.",
+            "Tap Choose files, then pick your PNG screenshots or images from your photo library or the Files app.",
+            "Tap Choose files and pick your PNG images from your photos or files.",
+            "Your PDF"),
+        "troubleshooting": {"heading": "PNG to PDF not working? Common fixes", "fixes": [
+            ("A file is refused as the wrong type.", "This page takes PNG files only. For JPG photos, or a mix of JPG and PNG, use JPG to PDF, which combines both in the order you add them."),
+            ("The pages are in the wrong order.", "Pages follow the file list, and new files are added to its end. Remove the files and add them again one at a time, in the order you want."),
+            ("The pages look very large.", "Each page is sized from the image's pixels: in our test (November 2026) a 1920 x 1080 screenshot became a 20 x 11.25 inch page. PDF readers zoom to fit, and when printing you can choose to fit the page to your paper in the print settings."),
+            ("A transparent background turned white.", "That's by design: transparent areas are placed on white, like a printed page."),
+            ("The upload is refused as too big.", "The limit is 50 MB for all files together. Convert the images in smaller groups, then join the PDFs with Merge PDF."),
+        ]},
+        "faq_add": [("How big is the PDF compared with my PNG files?",
+                     "About the same, because PNG images go into the PDF losslessly and nothing is re-compressed. In our test (November 2026), five 1920 x 1080 screenshots totalling 580 KB made a 5-page PDF of 583 KB. The screenshots stay pictures, so their text can't be selected or searched in the PDF.")],
+    },
+    "pdf-to-png": {
+        "device_steps": _r9_device_steps(
+            "How to convert PDF to PNG on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your PDF, or drag it onto the box.",
+            "Tap Choose file and pick the PDF from the Files app.",
+            "Tap Choose file and pick the PDF from your files.",
+            "Your PNG (or a ZIP with one PNG per page)", _R9_ZIP_NOTE),
+        "troubleshooting": {"heading": "PDF to PNG not working? Common fixes", "fixes": [
+            ("The PDF has more than 50 pages.", "Up to 50 pages are converted at a time. Split the file with Split PDF, then convert it in parts."),
+            ("It says the PDF is password-protected.", "Open it with its password in your PDF reader, save or print a copy without a password, and upload that copy."),
+            ("The PNG files are large.", "Each page is saved at 300 DPI without lossy compression: in our test (November 2026) the pages of a three-page text document came to between 410 KB and 636 KB each. For pages that are mostly photos, PDF to JPG gives much smaller files."),
+            ("You got a ZIP file instead of images.", "A PDF with more than one page comes back as one ZIP holding a PNG for each page. The note above explains how to open it on a phone."),
+        ]},
+        "faq_add": [("Is PNG or JPG smaller for pages of text?",
+                     "PNG, in our test (November 2026): the three pages of a text document came to 607, 636 and 410 KB as PNG and 661, 691 and 491 KB as JPG, both at 300 DPI, and PNG keeps the letters sharper. Each US Letter page became a 2,550 x 3,300 pixel image. For pages that are mostly photos, JPG is the smaller choice.")],
+    },
+    "png-to-jpg": {
+        "device_steps": _r9_device_steps(
+            "How to convert PNG to JPG on a PC, Mac, iPhone or Android",
+            "Click Choose files and select up to 20 PNG images -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box.",
+            "Tap Choose files, then pick your PNG images from your photo library or the Files app.",
+            "Tap Choose files and pick your PNG images from your photos or files.",
+            "Your JPG (or a ZIP of JPGs, if you converted several)", _R9_ZIP_NOTE),
+        "troubleshooting": {"heading": "PNG to JPG not working? Common fixes", "fixes": [
+            ("The JPG is bigger than the PNG.", "This happens with screenshots, logos and text. In our test (November 2026) a 116 KB screenshot became a 294 KB JPG, while a photo-like image shrank from 11,913 KB to 1,587 KB. Keep screenshots as PNG unless a form asks for JPG."),
+            ("The transparent background turned white.", "JPG can't store transparency, so transparent areas become white. Keep the PNG if you need the see-through background."),
+            ("It says the file is already a JPG.", "Then it doesn't need converting: it already opens anywhere a JPG is accepted."),
+            ("You added more than 20 images.", "Convert them in batches of 20, up to 50 MB per batch."),
+            ("An image is refused as too large.", "Images up to 65 megapixels are supported. Make a very large image smaller in an image editor first."),
+        ]},
+    },
+    "jpg-to-png": {
+        "device_steps": _r9_device_steps(
+            "How to convert JPG to PNG on a PC, Mac, iPhone or Android",
+            "Click Choose files and select up to 20 JPG images -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box.",
+            "Tap Choose files, then pick your JPG photos from your photo library or the Files app.",
+            "Tap Choose files and pick your JPG photos from your photos or files.",
+            "Your PNG (or a ZIP of PNGs, if you converted several)", _R9_ZIP_NOTE),
+        "troubleshooting": {"heading": "JPG to PNG not working? Common fixes", "fixes": [
+            ("The PNG is much bigger than the JPG.", "That's expected for photos, because PNG is lossless. In our test (November 2026) a 1,762 KB JPG photo became a 10,652 KB PNG, six times the size. Use the PNG only where an app or form asks for one."),
+            ("The background isn't transparent.", "Converting keeps the picture exactly as it is, including its solid background. Removing a background needs an image editor."),
+            ("It says the file is already a PNG.", "Then it doesn't need converting."),
+            ("The conversion stops as too big to download.", "The converted PNGs can be up to 150 MB together. Because PNG copies of photos are large, convert fewer photos at a time."),
+            ("You added more than 20 images.", "Convert them in batches of 20, up to 50 MB per batch."),
+        ]},
+    },
+    "webp-to-jpg": {
+        "device_steps": _r9_device_steps(
+            "How to convert WEBP to JPG on a PC, Mac, iPhone or Android",
+            "Click Choose files and select up to 20 WEBP images -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box.",
+            "Tap Choose files, then pick your WEBP images from the Files app or your photo library.",
+            "Tap Choose files and pick your WEBP images from your files.",
+            "Your JPG (or a ZIP of JPGs, if you converted several)", _R9_ZIP_NOTE),
+        "troubleshooting": {"heading": "WEBP to JPG not working? Common fixes", "fixes": [
+            ("The JPG is bigger than the WEBP.", "That's normal, because WEBP compresses more tightly than JPG. In our test (November 2026) a 608 KB WEBP became a 1,328 KB JPG at quality 90; no detail is added back."),
+            ("An animated WEBP became a still picture.", "JPG can't hold animation, so the first frame is saved. In our test a three-frame animation came back as one JPG of its first frame."),
+            ("Transparent areas turned white.", "JPG can't store transparency, so transparent areas become white."),
+            ("It says the file is already a JPG.", "Then it doesn't need converting: it already opens anywhere a JPG is accepted."),
+            ("You added more than 20 images.", "Convert them in batches of 20, up to 50 MB per batch."),
+        ]},
+    },
+    "heic-to-jpg": {
+        "device_steps": _r9_device_steps(
+            "How to convert HEIC to JPG on a PC, Mac, iPhone or Android",
+            "Click Choose files and select up to 20 HEIC photos -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box.",
+            "Tap Choose files, then pick your photos from your photo library or the Files app.",
+            "Tap Choose files and pick the HEIC photos from your files.",
+            "Your JPG (or a ZIP of JPGs, if you converted several)", _R9_ZIP_NOTE),
+        "troubleshooting": {"heading": "HEIC to JPG not working? Common fixes", "fixes": [
+            ("It says the photo is already a JPG.", "Then it doesn't need converting: a JPG opens anywhere as it is."),
+            ("The photo was sideways.", "The converter turns photos the right way up. In our test (November 2026) a 4032 x 3024 photo stored sideways with a rotation tag came back as an upright 3024 x 4032 JPG."),
+            ("A Live Photo or a burst became one picture.", "The main image is converted, as a still JPG."),
+            ("You added more than 20 photos.", "Convert them in batches of 20, up to 50 MB per batch."),
+            ("A photo is refused as too large.", "Photos up to 65 megapixels are supported."),
+        ]},
+        "faq_replace": [("Is the photo's location removed?",
+                         "Yes. GPS location details are removed from the JPG, so you can share it without revealing where it was taken. The date and time taken and the camera make and model are kept. In our test (November 2026), a HEIC photo carrying GPS coordinates came back as a JPG with no GPS data, with its camera model still in place.")],
+    },
+}
+
+for _slug, _upd in _R9_TOOL_UPDATES.items():
+    _t = TOOLS_BY_SLUG[_slug]
+    _t["device_steps"] = _upd["device_steps"]
+    _t["troubleshooting"] = _upd["troubleshooting"]
+    for _q, _a in _upd.get("faq_add", []):
+        if all(q != _q for q, _ in _t["faq"]):
+            _r7f_faq_add(_slug, _q, _a)
+    for _q, _a in _upd.get("faq_replace", []):
+        _r7f_faq_replace(_slug, _q, _q, _a)
+    _t["lastmod"] = R9_DATE
+
+
+# ---- C3: step-by-step sections in six existing guides ----------------------
+_MS_PDF_WIN = ("Microsoft Support: Save or convert to PDF or XPS in Office desktop apps",
+               "https://support.microsoft.com/en-us/office/collab-files/save-or-convert-to-pdf-or-xps-in-office-desktop-apps")
+_MS_PDF_MAC = ("Microsoft Support: Save or convert to PDF on your Mac",
+               "https://support.microsoft.com/en-us/office/save-or-convert-to-pdf-on-your-mac-aa183751-1f09-4b8b-88a4-099a0c7528da")
+_GOOGLE_DOCS_DOWNLOAD = ("Google Docs Editors Help: Create, view, or download a file",
+                         "https://support.google.com/docs/answer/49114?co=GENIE.Platform%3DDesktop")
+_APPLE_DOWNLOADS = ("Apple Support: Where to find downloads on your iPhone or iPad",
+                    "https://support.apple.com/en-us/102440")
+_CHROME_ANDROID_DOWNLOADS = ("Google Chrome Help: Download a file (Android)",
+                             "https://support.google.com/chrome/answer/95759?co=GENIE.Platform%3DAndroid")
+
+_R9_GUIDE_SECTIONS = [
+    ("photos-to-one-pdf-jpg-to-pdf-tips", "How our JPG to PDF tool builds the PDF", {
+        "heading": "How to turn several photos into one PDF on a phone or computer",
+        "paragraphs": [
+            "The steps are the same on an iPhone, an Android phone and a computer; only where you pick the photos and find the PDF differ. In our test (November 2026), ten 4000 x 3000 photos totalling 24,230 KB became a 10-page PDF of 24,236 KB -- so if a form has a size limit, resize the photos first, as described below.",
+        ],
+        "steps": [
+            "If your photos are HEIC (from an iPhone) or WEBP (saved from a website), convert them first with [[heic-to-jpg|HEIC to JPG]] or [[webp-to-jpg|WEBP to JPG]].",
+            "Open our [[jpg-to-pdf|JPG to PDF converter]]: in Safari on an iPhone, in Chrome on Android, or in any web browser on a computer.",
+            "Tap or click Choose files and pick the photos -- on a phone from your photo library or the Files app. Each page follows the file list, so add them one at a time if the order matters.",
+            "Press Convert to download the PDF.",
+            "Find the PDF: on an iPhone in the Files app under Downloads, on Android in the Files app under Downloads, and on a computer in your Downloads folder.",
+            "Open the PDF and check every page, and its file size, before you upload it.",
+        ],
+    }, [_APPLE_DOWNLOADS, _CHROME_ANDROID_DOWNLOADS]),
+    ("word-to-pdf-what-carries-over", "What we tested", {
+        "heading": "How to save a Word document or Google Doc as a PDF",
+        "paragraphs": [
+            "You don't always need a converter: Word and Google Docs can save a PDF themselves. Our tool is for when you have a .doc or .docx file but no Word to open it, for example on a shared computer or a phone.",
+            "Both Word formats behave the same in our tool. In our test (November 2026), the same three-page document saved as .docx (36 KB) and as the older .doc (31 KB) gave matching results: two 3-page PDFs of 31.3 KB, each with all 892 words as selectable text.",
+        ],
+        "steps": [
+            "In Word on Windows: according to Microsoft, choose File > Save As (or Save a Copy), choose where to save, select PDF in the drop-down list of file types, and select Save. More Options > Options lets you save only some pages, or create bookmarks from your headings.",
+            "In Word on a Mac: choose File > Save As, give the PDF a different name from the document, select PDF in the File Format box, and select Export.",
+            "In Google Docs: open the document, choose File > Download, and choose PDF as the file type.",
+            "Without Word: open our [[word-to-pdf|Word to PDF converter]], choose your .doc or .docx file and press Convert; the PDF downloads. Then check the fonts, as explained below.",
+        ],
+    }, [_MS_PDF_WIN, _MS_PDF_MAC, _GOOGLE_DOCS_DOWNLOAD]),
+    ("pdf-to-word-text-vs-scanned", "How to tell which one you have", {
+        "heading": "How to open a PDF in Word, step by step",
+        "paragraphs": [
+            "In our test (November 2026), a three-page text-based PDF of 34 KB came back from our tool as a 37 KB Word file with 41 paragraphs and a real Word table, and it still filled three pages when printed.",
+        ],
+        "steps": [
+            "Check that the PDF has real text, with the highlight test above. A scan comes out as a picture.",
+            "In Microsoft Word on a computer: according to Microsoft, choose File > Open and pick the PDF. Word converts a copy into an editable document, and the original PDF isn't changed.",
+            "Without Word: open our [[pdf-to-word|PDF to Word converter]], choose the PDF and press Convert, then open the downloaded .docx in Word, Google Docs or LibreOffice.",
+            "Compare the Word file with the PDF -- pages, tables, lists, headers and footers -- before you send or print it.",
+        ],
+    }, []),
+    ("split-and-rotate-pdf-pages", "What Rotate PDF does -- and why it loses no quality", {
+        "heading": "How to rotate a PDF page and save it",
+        "paragraphs": [
+            "Rotate PDF saves the turned pages as a new PDF, so there's no separate save step: the file you download is the rotated copy.",
+            "We also tested the one-page method below (November 2026), turning only page 2 of a three-page text document. The result had three pages, page 2 turned 90 degrees and the others unchanged, and page 2's text was still selectable. The file grew from 34 KB to 52 KB, because each separated page carries its own copy of the fonts, as explained above.",
+        ],
+        "steps": [
+            "To turn every page: open [[rotate-pdf|Rotate PDF]], choose the PDF, pick 90, 180 or 270 degrees and press Convert. The rotated PDF downloads.",
+            "To turn one page: split the file with [[split-pdf|Split PDF]], rotate that page's file, then join all the pages in order with [[merge-pdf|Merge PDF]].",
+            "Open the result and check each page before you delete your original.",
+        ],
+    }, []),
+    ("watermark-pdf-what-it-protects", "What our Watermark PDF tool adds", {
+        "heading": "How to add a watermark to a PDF, step by step",
+        "paragraphs": [
+            "In our test (November 2026), watermarking a three-page text document with CONFIDENTIAL took it from 34.0 KB to 41.7 KB, and searching found the word on every page.",
+        ],
+        "steps": [
+            "Keep an unwatermarked copy of your PDF: the tool doesn't remove watermarks.",
+            "Open [[watermark-pdf|Watermark PDF]] and choose your PDF.",
+            "Type the watermark text -- about 25 characters or fewer fits across an A4 page -- and press Convert.",
+            "Open the downloaded PDF and check a page or two.",
+            "If the file also needs a password, add it last with [[protect-pdf|Protect PDF]].",
+        ],
+    }, []),
+    ("pdf-password-protection-explained", "What our Protect PDF tool actually does", {
+        "heading": "How to password-protect a PDF, step by step",
+        "paragraphs": [
+            "In our test (November 2026), protecting a three-page document took it from 34.0 KB to 35.8 KB. Opening it without the password failed; with the password it opened normally, with all three pages, encrypted with 256-bit AES.",
+        ],
+        "steps": [
+            "Choose a password of at least 10 characters mixing upper-case letters, lower-case letters and digits (the tool needs at least 4).",
+            "Open [[protect-pdf|Protect PDF]], choose your PDF and type the password.",
+            "Press Convert. The protected copy downloads; the original file on your device is unchanged.",
+            "Open the protected file once to check that the password works.",
+            "Send the password separately from the file, for example by phone or text message.",
+            "The recipient opens the file in an up-to-date PDF reader and types the password when asked.",
+        ],
+    }, []),
+]
+
+R9_UPDATED_GUIDES = tuple(s for s, _, _, _ in _R9_GUIDE_SECTIONS)
+for _slug, _after, _section, _sources in _R9_GUIDE_SECTIONS:
+    _r7_84_insert(_slug, _after, _section)
+    _g = GUIDES_BY_SLUG[_slug]
+    if _sources:
+        _g["sources"] = list(_g.get("sources") or []) + [s for s in _sources if s not in (_g.get("sources") or [])]
+    _g["updated"] = R9_DATE
+
+
+# ---- Release 9, R9-08 (21 Nov 2026): the same two blocks on the 8 priority
+# tool pages named in the consultant's audit (PDF to Word, Word to PDF, JPG to
+# PDF, PDF to Excel, Excel to PDF, PPT to PDF, Compress PDF, Merge PDF).
+# Every fix matches converter behaviour in converters/*.py and app.py; every
+# number is a result already published in a KK guide (test month given) or
+# from r9-test-results.json.
+_R9_PRIORITY_UPDATES = {
+    "pdf-to-word": {
+        "device_steps": _r9_device_steps(
+            "How to convert PDF to Word on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your PDF, or drag it onto the box.",
+            "Tap Choose file and pick the PDF from the Files app.",
+            "Tap Choose file and pick the PDF from your files.",
+            "Your Word (DOCX) file"),
+        "troubleshooting": {"heading": "PDF to Word not working? Common fixes", "fixes": [
+            ("The Word file shows a picture of the page, not text.", "The PDF is a scan: its pages are pictures, and KuickKonvert doesn't do OCR. Ask for the original file, or use a free OCR option such as Google Docs, as our guide on text-based and scanned PDFs explains."),
+            ("It says the PDF looks scanned and has too many pages.", "Scanned PDFs of up to 10 pages are accepted, and they come out as pictures. To get the pages as images instead, use PDF to JPG."),
+            ("It says the pages are very detailed, or the PDF is too long.", "PDF to Word takes up to 200 pages, and pages packed with table lines take longer. Split the file with Split PDF and convert it in parts, as the message suggests."),
+            ("It says the PDF is password-protected.", "Open it with its password in your PDF reader, save or print a copy without a password, and upload that copy."),
+            ("Bullet points became plain lines.", "Lists come through as plain lines of text. Reapply the bullets or numbering in Word."),
+        ]},
+        "faq_add": [("How well does a text-based PDF convert to Word?",
+                     "In our test (November 2026), a three-page text-based PDF of 34 KB became a 37 KB Word file with 41 paragraphs and a real Word table, and it still filled three pages when printed. Check lists, tables and headers against the PDF before you rely on the Word file.")],
+    },
+    "word-to-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to convert Word to PDF on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your Word document (.doc or .docx), or drag it onto the box.",
+            "Tap Choose file and pick the document from the Files app.",
+            "Tap Choose file and pick the document from your files.",
+            "Your PDF"),
+        "troubleshooting": {"heading": "Word to PDF not working? Common fixes", "fixes": [
+            ("Text wraps differently, or there's an extra page.", "A font we don't have was replaced. Calibri, Cambria, Arial, Times New Roman and Courier New get look-alikes with the same letter widths; other fonts, such as Aptos, don't, and in our test (October 2026) a document in Aptos grew from four pages to five. Use one of those common fonts if the page count matters."),
+            ("Comments are missing from the PDF.", "Comments are not included, as our test (October 2026) showed. To share them, send the Word file, or print from Word with the markup shown to a PDF printer."),
+            ("The file can't be converted because it has a password.", "Remove the password in Word first (File > Info > Protect Document), then convert."),
+            ("The PDF is much smaller than the Word file.", "That's expected: photos are stored at 300 dpi for their printed size. In our test (October 2026) a 5,510 KB Word file became a 544 KB PDF. Send the original photos separately if someone needs them at full size."),
+        ]},
+        "faq_add": [("Does it work the same for .doc and .docx files?",
+                     "Yes. In our test (November 2026), the same three-page document saved as .docx (36 KB) and as the older .doc (31 KB) gave matching 3-page PDFs of 31.3 KB, each with all 892 words as selectable text.")],
+    },
+    "jpg-to-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to convert JPG to PDF on a PC, Mac, iPhone or Android",
+            "Click Choose files and select your JPG or PNG images -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box. Pages follow the order of the file list.",
+            "Tap Choose files, then pick your photos from your photo library or the Files app.",
+            "Tap Choose files and pick your photos from your photos or files.",
+            "Your PDF"),
+        "troubleshooting": {"heading": "JPG to PDF not working? Common fixes", "fixes": [
+            ("A HEIC or WEBP photo is refused.", "This page takes JPG and PNG. Convert iPhone HEIC photos with HEIC to JPG, or WEBP images with WEBP to JPG, first (up to 20 at a time)."),
+            ("The pages are in the wrong order.", "Pages follow the file list, and new files are added to its end. Remove the files and add them again one at a time, in the order you want."),
+            ("The PDF is too big for a form.", "The PDF is about the size of all the photos together. Resize the photos before converting: in our test (November 2026) a phone photo resized to 1,200 pixels on its long side and saved at JPG quality 80 came to 134 KB. Our guide on putting photos into one PDF has the full table."),
+            ("Compress PDF doesn't make it smaller.", "Phone photos often make very large pages, so their resolution is already low for the page size and there is nothing to reduce: in our test a 5,456 KB photo PDF stayed the same at every level. Resize the photos first instead."),
+            ("The upload is refused as too big.", "The limit is 50 MB for all photos together. Convert them in smaller groups, then join the PDFs with Merge PDF."),
+        ]},
+        "faq_add": [("Will the PDF be smaller than my photos?",
+                     "No. The photos go in without being re-compressed, so the PDF is about the size of all of them added together: in our test (November 2026), ten 4000 x 3000 photos totalling 24,230 KB made a 10-page PDF of 24,236 KB.")],
+    },
+    "pdf-to-excel": {
+        "device_steps": _r9_device_steps(
+            "How to convert PDF to Excel on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your PDF, or drag it onto the box.",
+            "Tap Choose file and pick the PDF from the Files app.",
+            "Tap Choose file and pick the PDF from your files.",
+            "Your Excel (XLSX) file"),
+        "troubleshooting": {"heading": "PDF to Excel not working? Common fixes", "fixes": [
+            ("It says no text or tables could be found.", "The PDF is a scan, a picture of the page, and KuickKonvert doesn't do OCR. Ask for the original file or a PDF exported from the software that made it."),
+            ("Each row landed in column A.", "The table has no lines between cells. In our test (October 2026) a borderless table came through one row per line in column A; in Excel use Data > Text to Columns. A table with lines around every cell came through with all 5 columns correct."),
+            ("Numbers don't add up in a SUM.", "Every value arrives as text: the tool doesn't guess which values are numbers, codes or dates. Select the column and use Convert to Number."),
+            ("The table is split over several sheets.", "Each PDF page becomes its own sheet (Page 1, Page 2 and so on). Copy the rows onto one sheet and delete any repeated header rows."),
+            ("The PDF has more than 200 pages, or a password.", "PDF to Excel takes up to 200 pages, so split a longer file with Split PDF. Unlock a password-protected PDF first and upload a copy without the password."),
+        ]},
+    },
+    "excel-to-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to convert Excel to PDF on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your spreadsheet (.xls or .xlsx), or drag it onto the box.",
+            "Tap Choose file and pick the spreadsheet from the Files app.",
+            "Tap Choose file and pick the spreadsheet from your files.",
+            "Your PDF"),
+        "troubleshooting": {"heading": "Excel to PDF not working? Common fixes", "fixes": [
+            ("The text in the PDF is tiny.", "Every column is fitted across the page, so a very wide sheet gets small text: in our test (October 2026), 20 columns with long headings came out at 3.6 pt. Set a print area or hide columns the reader doesn't need; limiting that sheet to columns A to H raised the text to 9.3 pt."),
+            ("The headings are only on page 1.", "Set a print title in Excel (Page Layout > Print Titles, Rows to repeat at top), save, and convert again: the headings then repeat on every page."),
+            ("The formulas aren't in the PDF.", "A PDF shows values, not formulas: in our test (November 2026) a workbook with 24 formulas became a 2-page PDF showing the totals as results. Send the XLSX too if someone needs the formulas."),
+            ("A cell shows an error in the PDF.", "Very new Excel functions, such as XLOOKUP, may not be recognised by the converter. Check the PDF if your sheet uses them."),
+            ("A sheet is missing.", "Hidden sheets are not included. Unhide the sheet in Excel, save, and convert again."),
+        ]},
+    },
+    "ppt-to-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to convert PowerPoint to PDF on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your presentation (.ppt or .pptx), or drag it onto the box.",
+            "Tap Choose file and pick the presentation from the Files app.",
+            "Tap Choose file and pick the presentation from your files.",
+            "Your PDF"),
+        "troubleshooting": {"heading": "PPT to PDF not working? Common fixes", "fixes": [
+            ("A slide is missing from the PDF.", "Hidden slides are left out: in our test (October 2026) a five-slide deck with one hidden slide gave a 4-page PDF. Unhide the slide in PowerPoint, save, and convert again."),
+            ("The speaker notes aren't in the PDF.", "Notes are not included. Move the key points onto the slides, or print notes pages to PDF from PowerPoint itself."),
+            ("Animations and transitions are gone.", "A PDF is static, so each slide becomes one fixed page."),
+            ("Text wraps differently on a slide.", "A font we don't have was replaced. Calibri, Cambria, Arial, Times New Roman and Courier New get look-alikes with the same letter widths; other fonts, such as Aptos, can wrap differently."),
+        ]},
+        "faq_add": [("What carries over into the PDF?",
+                     "In our test (October 2026), one PDF page was made for each visible slide, at the slides' own widescreen size; a web link on a slide stayed clickable and all slide text could be selected. The 39.7 KB presentation became a 20.5 KB PDF.")],
+    },
+    "compress-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to compress a PDF on a PC, Mac, iPhone or Android",
+            "Click Choose file and select your PDF, or drag it onto the box, then choose a compression level.",
+            "Tap Choose file, pick the PDF from the Files app, then choose a compression level.",
+            "Tap Choose file, pick the PDF from your files, then choose a compression level.",
+            "Your compressed PDF"),
+        "troubleshooting": {"heading": "Compress PDF not working? Common fixes", "fixes": [
+            ("The file didn't get smaller.", "Compression works on pictures, so a text-only PDF can't shrink much, and you get your original back instead of a bigger file. A PDF made from phone photos may not shrink either: in our test a 5,456 KB photo PDF stayed the same at every level. Resize the photos and make the PDF again."),
+            ("You need an exact size, such as 200 KB.", "There's no exact-size setting. Choose \"Smallest file (screen quality)\" for the biggest reduction: in our test (September 2026) a 3.2 MB PDF holding one photo came out at 50 KB. Check the size before uploading it to a form."),
+            ("Pictures look blurry.", "\"Smallest file (screen quality)\" reduces pictures to about 72 dpi. Choose \"Balanced (recommended)\", about 150 dpi, or \"Highest quality, larger file\" to keep more detail."),
+            ("It says the PDF is password-protected.", "Open it with its password in your PDF reader, save or print a copy without a password, and upload that copy."),
+        ]},
+    },
+    "merge-pdf": {
+        "device_steps": _r9_device_steps(
+            "How to merge PDF files on a PC, Mac, iPhone or Android",
+            "Click Choose files and select two or more PDFs -- hold Ctrl (Cmd on a Mac) to select several -- or drag them onto the box. Pages follow the order of the file list.",
+            "Tap Choose files and pick the PDFs from the Files app, one at a time if the order matters.",
+            "Tap Choose files and pick the PDFs from your files, one at a time if the order matters.",
+            "Your merged PDF"),
+        "troubleshooting": {"heading": "Merge PDF not working? Common fixes", "fixes": [
+            ("It says to add at least two PDFs.", "Merge needs two or more files. Add the next PDF and press Convert again."),
+            ("The pages are in the wrong order.", "Files are merged from the top of the list down, and new files are added to its end. Remove the files and add them again one at a time, in the order you want."),
+            ("A password-protected PDF is refused.", "Open it with its password in your PDF reader, save or print a copy without a password, and add that copy."),
+            ("A Word file or an image is refused.", "Merge PDF accepts PDF files only. Convert Word documents with Word to PDF and images with JPG to PDF first."),
+            ("The bookmarks are gone.", "Bookmarks and the document title are not kept: in our test (October 2026), a merge of three files kept all 6 pages in order, each at its own size, but not the 3 bookmarks. Add them again in a PDF editor if needed."),
+        ]},
+    },
+}
+
+for _slug, _upd in _R9_PRIORITY_UPDATES.items():
+    _t = TOOLS_BY_SLUG[_slug]
+    _t["device_steps"] = _upd["device_steps"]
+    _t["troubleshooting"] = _upd["troubleshooting"]
+    for _q, _a in _upd.get("faq_add", []):
+        if all(q != _q for q, _ in _t["faq"]):
+            _r7f_faq_add(_slug, _q, _a)
+    _t["lastmod"] = R9_DATE
+R9_PRIORITY_TOOLS = tuple(_R9_PRIORITY_UPDATES)
+
+
+# ---- Release 9, R9-09: a "Limits" row in the "at a glance" table of every
+# tool page. Each limit is enforced in code (app.py, converters/*.py):
+# 20 images and 65 MP (convert_images), 150 MB of output (MAX_IMAGE_OUTPUT_MB),
+# 50 pages (MAX_RENDER_PAGES), 200 pages (MAX_WORD_PAGES / MAX_EXCEL_PAGES),
+# 10 scanned pages for PDF to Word, password check on every PDF upload
+# (ensure_pdf_unlocked), 2+ files for Merge, 4+ password characters, 120
+# watermark characters.
+_PDF_LOCK = "a PDF that needs a password to open must be unlocked first"
+_IMG_LIMITS = "Up to 20 images at a time, each up to 65 megapixels; up to 150 MB of converted images per conversion"
+R9_TOOL_LIMITS = {
+    "word-to-pdf": "One .doc or .docx file at a time; remove a Word password first",
+    "pdf-to-word": f"Up to 200 pages; scanned PDFs up to 10 pages, and they come out as pictures (no OCR); {_PDF_LOCK}",
+    "doc-to-docx": "One .doc or .docx file at a time",
+    "excel-to-pdf": "One .xls or .xlsx file at a time; the PDF shows values, not formulas; hidden sheets are left out",
+    "pdf-to-excel": f"Up to 200 pages; no OCR, so scanned pages have no tables to extract; {_PDF_LOCK}",
+    "ppt-to-pdf": "One .ppt or .pptx file at a time; hidden slides and speaker notes are left out",
+    "pdf-to-ppt": f"Up to 50 pages at a time; each slide is a picture of the page; {_PDF_LOCK}",
+    "jpg-to-pdf": "JPG and PNG images (convert HEIC or WEBP first); no fixed number of images within the 50 MB upload",
+    "png-to-pdf": "PNG images only; no fixed number of images within the 50 MB upload",
+    "pdf-to-jpg": f"Up to 50 pages at a time; {_PDF_LOCK}",
+    "pdf-to-png": f"Up to 50 pages at a time; {_PDF_LOCK}",
+    "heic-to-jpg": _IMG_LIMITS,
+    "webp-to-jpg": _IMG_LIMITS,
+    "png-to-jpg": _IMG_LIMITS,
+    "jpg-to-png": _IMG_LIMITS,
+    "merge-pdf": f"At least 2 PDFs; no fixed number within the 50 MB upload; {_PDF_LOCK}",
+    "split-pdf": f"Every page is split (no page-range option); {_PDF_LOCK}",
+    "compress-pdf": f"No exact target size; a text-only PDF may not get smaller; {_PDF_LOCK}",
+    "rotate-pdf": f"Every page is turned together, by 90, 180 or 270 degrees; {_PDF_LOCK}",
+    "watermark-pdf": f"Up to 120 characters of text, on every page; {_PDF_LOCK}",
+    "protect-pdf": "Password of at least 4 characters; a PDF that already needs a password to open must be unlocked first",
+}
+assert set(R9_TOOL_LIMITS) == set(TOOLS_BY_SLUG), set(TOOLS_BY_SLUG) ^ set(R9_TOOL_LIMITS)
+for _slug, _lim in R9_TOOL_LIMITS.items():
+    TOOLS_BY_SLUG[_slug]["limits"] = _lim
+    TOOLS_BY_SLUG[_slug]["lastmod"] = R9_DATE   # visible change on every tool page
