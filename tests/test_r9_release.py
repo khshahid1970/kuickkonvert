@@ -42,7 +42,7 @@ def test_tool_pages_show_device_steps_and_fixes():
         html = _get(f"/tools/{slug}")
         assert f"<h2>{t['device_steps']['heading']}</h2>" in html, slug
         for label, steps in t["device_steps"]["devices"]:
-            assert f"<h3>{label}</h3>" in html and len(steps) == 3, slug
+            assert f"<h3>{label}</h3>" in html and len(steps) == 2, slug
         assert f"<h2>{t['troubleshooting']['heading']}</h2>" in html, slug
         assert len(t["troubleshooting"]["fixes"]) >= 4, slug
         assert f"/tools/{slug}</loc><lastmod>{config.R9_DATE}</lastmod>" in sm, slug
@@ -145,3 +145,13 @@ def test_llms_txt_limits_line():
     assert "- Limits: up to 20 images at a time in the image converters, each up to 65 megapixels; " \
            "PDF to JPG, PDF to PNG and PDF to PPT convert up to 50 pages at a time; " \
            "PDF to Word and PDF to Excel up to 200 pages; password-protected PDFs must be unlocked first." in body
+
+
+def test_r9_1_no_long_repeated_device_sentences():
+    # R9.1 (22 Nov 2026): the three generic device sentences are gone.
+    for t in config.TOOLS:
+        html = _get(f"/tools/{t['slug']}")
+        for gone in ("Open this page in Chrome, Edge, Safari or Firefox.",
+                     "Downloads button next to Safari",
+                     "tap More (the three dots)"):
+            assert gone not in html, (t["slug"], gone)

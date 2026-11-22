@@ -4000,23 +4000,25 @@ _R9_ZIP_NOTE = ("Several files come back as one ZIP file. On an iPhone, tap the 
 
 
 def _r9_device_steps(heading, pc_pick, ios_pick, android_pick, result, note=None):
+    # R9.1 (22 Nov 2026): two short steps per device. The three generic
+    # sentences that repeated on all 14 pages ("Open this page in ...", the
+    # Safari Downloads-button line, the Chrome More-menu line) were removed to
+    # cut text replicated across pages (AdSense content guidance).
+    first_lower = lambda t: t[0].lower() + t[1:]
     return {
         "heading": heading,
         "devices": [
             ("On a Windows PC or a Mac", [
-                "Open this page in Chrome, Edge, Safari or Firefox.",
                 pc_pick,
-                f"Press Convert. {result} goes to your Downloads folder, unless your browser is set to ask where to save files.",
+                f"Press Convert. {result} usually goes to your Downloads folder.",
             ]),
             ("On an iPhone or iPad", [
-                "Open this page in Safari.",
-                ios_pick,
-                f"Tap Convert. {result} is saved in the Downloads folder of the Files app. Straight after the download you can also tap the Downloads button next to Safari's search field.",
+                "In Safari, " + first_lower(ios_pick),
+                f"Tap Convert. {result} is saved in the Files app, under Downloads.",
             ]),
             ("On an Android phone", [
-                "Open this page in Chrome.",
-                android_pick,
-                "Tap Convert. To find the file later, open the Files app and go to Downloads, or in Chrome tap More (the three dots) and then Downloads.",
+                "In Chrome, " + first_lower(android_pick),
+                f"Tap Convert, then find {first_lower(result)} in the Files app, under Downloads.",
             ]),
         ],
         "note": note,
