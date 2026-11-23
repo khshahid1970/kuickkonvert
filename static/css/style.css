@@ -1269,6 +1269,8 @@ body {
 .kk-video-kicker { margin: 0; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #5f2585; }
 .home-video .kk-video-block { margin-left: auto; margin-right: auto; }
 .home-video { padding-bottom: 80px; } /* R7-95: same space above the footer as the tool pages */
+/* R9.2: let the video card shrink on narrow phones (was a fixed 320 px, page scrolled sideways below ~375 px). */
+.kk-video-media { min-width: 0; }
 @media (max-width: 560px) {
-  .kk-video-block { grid-template-columns: 1fr; }
+  .kk-video-block { grid-template-columns: minmax(0, 1fr); }
 }
