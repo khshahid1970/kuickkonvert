@@ -123,6 +123,85 @@ def _cache_versioned_static(response):
     return response
 
 
+# --- Minified style.css (R9.3, 23 Nov 2026) --------------------------------
+# static/css/style.css keeps its long explanatory comments for maintainers,
+# but visitors are sent a minified copy (comments and extra spaces removed),
+# so website checkers no longer report "CSS not minified" and the download is
+# smaller. The copy is made once per worker from the file on disk, so the
+# repository needs no build step and no second file to keep in sync. Text
+# inside quotes ("Segoe UI", content: "") is copied unchanged. If minifying
+# fails for any reason, the original file is served as before.
+_CSS_MIN_FILES = ("css/style.css",)
+_CSS_MIN_CACHE = {}
+
+
+def _minify_css(css):
+    out = []
+    i, n = 0, len(css)
+    pending_space = False
+    while i < n:
+        ch = css[i]
+        if ch in "\"'":                       # copy quoted text unchanged
+            j = i + 1
+            while j < n and css[j] != ch:
+                j += 2 if css[j] == "\\" else 1
+            if pending_space and out and out[-1] not in "{};,>:(":
+                out.append(" ")
+            pending_space = False
+            out.append(css[i:j + 1])
+            i = j + 1
+            continue
+        if css.startswith("/*", i):            # drop comments
+            end = css.find("*/", i + 2)
+            i = n if end == -1 else end + 2
+            pending_space = True
+            continue
+        if ch.isspace():
+            pending_space = True
+            i += 1
+            continue
+        if ch in "{};,>":                      # no space needed around these
+            if ch == "}" and out and out[-1] == ";":
+                out.pop()                      # last ";" before "}" not needed
+            out.append(ch)
+            pending_space = False
+            i += 1
+            continue
+        if pending_space and out and out[-1] not in "{};,>:":
+            out.append(" ")
+        pending_space = False
+        out.append(ch)
+        i += 1
+    return "".join(out).strip()
+
+
+def _minified_static(filename):
+    if filename not in _CSS_MIN_CACHE:
+        try:
+            with open(os.path.join(app.static_folder, filename), encoding="utf-8") as fh:
+                data = _minify_css(fh.read()).encode("utf-8")
+            _CSS_MIN_CACHE[filename] = (data, hashlib.sha256(data).hexdigest()[:16])
+        except (OSError, UnicodeDecodeError, ValueError):
+            _CSS_MIN_CACHE[filename] = None
+    return _CSS_MIN_CACHE[filename]
+
+
+@app.before_request
+def _serve_minified_css():
+    if request.endpoint != "static" or request.method not in ("GET", "HEAD"):
+        return None
+    filename = (request.view_args or {}).get("filename")
+    if filename not in _CSS_MIN_FILES:
+        return None
+    cached = _minified_static(filename)
+    if not cached:
+        return None                            # fall back to the normal file
+    data, etag = cached
+    response = app.response_class(data, mimetype="text/css")
+    response.set_etag(etag)
+    return response.make_conditional(request)
+
+
 # --- Per-request CSP nonce -------------------------------------------------
 # One random, unguessable value generated fresh for every request and used to
 # allow exactly one specific inline <script> block (the Google Analytics

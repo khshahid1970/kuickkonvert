@@ -986,6 +986,8 @@ body {
 
 .legal h2 { font-size: 17px; margin-top: 28px; }
 .legal p { color: var(--color-text-muted); }
+/* R9.3: long link text (e.g. the GitHub URL on /about) wraps instead of making the page scroll sideways on phones. */
+.legal a { overflow-wrap: anywhere; }
 
 /* Link to us page (15 Oct 2026): copy-paste code snippets. Long lines wrap
    inside the box instead of making the whole page scroll sideways on phones.
