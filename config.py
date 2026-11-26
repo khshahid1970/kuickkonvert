@@ -2804,7 +2804,7 @@ RELEASE7_NEW_GUIDES = [
         "title": "How to Split a PDF on Windows, Mac, iPhone or Android",
         "seo_title": "Split a PDF on Windows, Mac, iPhone & Android | KuickKonvert",
         "meta_description": "Split a PDF into one file per page on Windows, Mac, iPhone or Android, open the ZIP on each device, and see what our split test did to file size.",
-        "dek": "Splitting a PDF gives you every page as a separate PDF file. It works in any web browser, on a computer or a phone, with nothing to install. Here are the steps, how to open the result on each kind of device, and what we found when we split a file of text and photos. Our [[split-pdf|Split PDF tool]] is free, with no sign-up.",
+        "dek": "Splitting a PDF gives you every page as a separate PDF file. You open it in any web browser, on a computer or a phone, and the splitting runs on our server, so there’s nothing to install. Here are the steps, how to open the result on each kind of device, and what we found when we split a file of text and photos. Our [[split-pdf|Split PDF tool]] is free, with no sign-up.",
         "published": RELEASE7_DATE,
         "related_tools": ["split-pdf", "merge-pdf", "compress-pdf"],
         "sections": [
@@ -2972,7 +2972,7 @@ RELEASE7_NEW_GUIDES = [
             {
                 "heading": "Compress a PDF before you attach it",
                 "paragraphs": [
-                    "This works in any browser, on a computer or a phone:",
+                    "You can do this from any browser, on a computer or a phone; the compression runs on our server:",
                 ],
                 "steps": [
                     "Open [[compress-pdf|Compress PDF]] on kuickkonvert.com and choose your PDF (up to 50 MB).",
@@ -3442,7 +3442,7 @@ _r7f_faq_replace("webp-to-jpg", "Do I need special software to open WEBP files a
 _g = GUIDES_BY_SLUG["how-to-split-pdf-files"]
 _hits = [s for s in _g["sections"] if s.get("heading") == "Split a PDF in your browser"]
 assert len(_hits) == 1
-_hits[0]["heading"] = "Split a PDF online, in any browser"
+_hits[0]["heading"] = "Split a PDF online, from any browser"
 
 # ---- R7-89: form-size limits in the photos-to-one-PDF guide -----------------
 # Measured 15 Nov 2026 with KuickKonvert's own converter (photo 1920 x 3413);

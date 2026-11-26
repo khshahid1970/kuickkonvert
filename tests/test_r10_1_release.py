@@ -40,3 +40,19 @@ def test_keyboard_handler_for_choose_file_label_still_present():
     js = (ROOT / "static" / "js" / "main.js").read_text(encoding="utf-8")
     assert 'getElementById("file-input-label")' in js
     assert 'chooseLabel.addEventListener("keydown"' in js
+
+
+# ---- Release 10.2 (26 Nov 2026): remaining "works in any browser" wording ---------------
+def test_r10_2_guides_say_conversion_runs_on_our_server():
+    client = kk.app.test_client()
+    split = _text(client.get("/guides/how-to-split-pdf-files", headers={"CF-IPCountry": "US"}).data.decode())
+    hub = _text(client.get("/guides", headers={"CF-IPCountry": "US"}).data.decode())
+    email = _text(client.get("/guides/reduce-pdf-size-for-email", headers={"CF-IPCountry": "US"}).data.decode())
+    new_dek = ("You open it in any web browser, on a computer or a phone, and the splitting runs on our "
+               "server, so there’s nothing to install.")
+    assert new_dek in split and new_dek in hub
+    assert "Split a PDF online, from any browser" in split
+    assert "You can do this from any browser, on a computer or a phone; the compression runs on our server:" in email
+    for t in (split, hub, email):
+        assert "It works in any web browser, on a computer or a phone, with nothing to install." not in t
+        assert "This works in any browser" not in t

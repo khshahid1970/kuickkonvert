@@ -122,7 +122,7 @@ def test_r7_88_server_wording(client):
     webp = _visible(_get(client, "/tools/webp-to-jpg"))
     assert "they’re converted on our server" in webp
     split = _get(client, "/guides/how-to-split-pdf-files")
-    assert "Split a PDF online, in any browser" in split and "Split a PDF in your browser" not in split
+    assert "Split a PDF online, from any browser" in split and "Split a PDF in your browser" not in split
     for path in ["/"] + [f"/tools/{t['slug']}" for t in config.TOOLS] + [f"/guides/{g['slug']}" for g in config.GUIDES]:
         text = _visible(_get(client, path)).lower()
         for bad in ("client-side", "no upload", "without uploading", "never leaves your device"):
