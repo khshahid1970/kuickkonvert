@@ -56,3 +56,15 @@ def test_r10_2_guides_say_conversion_runs_on_our_server():
     for t in (split, hub, email):
         assert "It works in any web browser, on a computer or a phone, with nothing to install." not in t
         assert "This works in any browser" not in t
+
+
+# ---- Release 10.3 (26 Nov 2026): Gunicorn keep-alive behind Render's proxy --------------
+def test_r10_3_dockerfile_sets_keep_alive_and_keeps_other_settings():
+    import json as _json
+    line = [l for l in (ROOT / "Dockerfile").read_text(encoding="utf-8").splitlines() if l.startswith("CMD ")]
+    assert len(line) == 1
+    cmd = _json.loads(line[0][4:])
+    assert cmd[:2] == ["gunicorn", "app:app"]
+    args = dict(zip(cmd[2::2], cmd[3::2]))
+    assert args == {"--bind": "0.0.0.0:8080", "--workers": "2", "--threads": "4", "--timeout": "180",
+                    "--keep-alive": "120", "--max-requests": "200", "--max-requests-jitter": "50"}

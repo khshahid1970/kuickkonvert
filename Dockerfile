@@ -56,4 +56,10 @@ EXPOSE 8080
 # --max-requests: each worker is replaced with a fresh process after about
 # 200 requests, so memory that Python keeps after a large conversion is
 # handed back to the system (added 2026-10-05 after out-of-memory restarts).
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4", "--timeout", "180", "--max-requests", "200", "--max-requests-jitter", "50"]
+# --keep-alive 120 (Release 10.3, 26 Nov 2026): Gunicorn's default is 2 s. Behind
+# Render's proxy, an idle connection that Gunicorn closes while the proxy still
+# reuses it can surface as an occasional 502 (16 of 32,841 requests, 20-26 Nov).
+# Gunicorn's docs: "When Gunicorn is deployed behind a load balancer, it often
+# makes sense to set this to a higher value." Render does not publish its proxy
+# idle timeout, so 120 s is a tested setting, compared against that baseline.
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4", "--timeout", "180", "--keep-alive", "120", "--max-requests", "200", "--max-requests-jitter", "50"]
