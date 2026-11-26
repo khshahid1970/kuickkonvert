@@ -22,14 +22,27 @@
       <span aria-current="page">Link to us</span>
     </nav>
     <h1>Link to KuickKonvert</h1>
-    <p>If KuickKonvert has been useful to you and you would like to mention it on your site, blog or resource page, the ready-made code below makes that easy: no sign-up, no watermark, and every file deleted automatically after conversion. You don't need our permission, and we don't ask for anything in return &mdash; we never pay for links or offer anything in exchange for them.</p>
+    <div class="guide-meta tool-byline">Last updated <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a></div>
+    <p>If KuickKonvert has been useful to you and you would like to mention it on your site, blog or resource page, the ready-made code below makes that easy: no sign-up, no watermark, and every file deleted automatically after conversion. You don’t need our permission, and we don’t ask for anything in return &mdash; we never pay for links or offer anything in exchange for them.</p>
 
-    <h2>Option 1 &mdash; A simple text link</h2>
+    <h2>Which option should you use?</h2>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <thead><tr><th scope="col">Option</th><th scope="col">What you paste</th><th scope="col">Good for</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1. Text link</th><td>One line of HTML linking to our home page</td><td>Lists of free tools, blog posts</td></tr>
+          <tr><th scope="row">2. Badge</th><td>A 240 x 60 image linking to our home page</td><td>Sidebars and resource pages</td></tr>
+          <tr><th scope="row">3. A tool’s address</th><td>The address of one tool page, with your own link text</td><td>Articles about one conversion</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How do I add a simple text link?</h2>
     <p>Preview: <a href="{{ site_url }}/">KuickKonvert</a></p>
     <pre id="snippet-text" class="embed-code">&lt;a href="{{ site_url }}/"&gt;KuickKonvert&lt;/a&gt;</pre>
     <p><button type="button" class="btn btn-secondary" data-copy="snippet-text">Copy link code</button></p>
 
-    <h2>Option 2 &mdash; Our badge</h2>
+    <h2>Can I use your badge?</h2>
     <p>Preview:</p>
     <p><a href="{{ site_url }}/"><img src="{{ url_for('static', filename='img/badge-kuickkonvert.svg') }}" alt="KuickKonvert" width="240" height="60"></a></p>
     <pre id="snippet-badge" class="embed-code">&lt;a href="{{ site_url }}/" rel="nofollow"&gt;
@@ -38,7 +51,7 @@
     <p><button type="button" class="btn btn-secondary" data-copy="snippet-badge">Copy badge code</button></p>
 
     <h2>Option 3 &mdash; Point to a specific tool</h2>
-    <p>If you're writing about one particular conversion, pointing readers straight to that tool is the most helpful. Here are a few page addresses &mdash; please use your own words for the link:</p>
+    <p>If you’re writing about one particular conversion, pointing readers straight to that tool is the most helpful. Here are a few page addresses &mdash; please use your own words for the link:</p>
     <pre id="snippet-tool" class="embed-code">{{ site_url }}/tools/word-to-pdf
 {{ site_url }}/tools/merge-pdf
 {{ site_url }}/tools/compress-pdf</pre>

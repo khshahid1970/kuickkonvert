@@ -30,7 +30,7 @@ def _visible(html):
 def _banned(text):
     low = text.lower()
     # "OCR" may appear only to say KuickKonvert doesn't do it (no OCR claim).
-    for ok in ("doesn't do ocr", "no ocr", "free ocr option"):
+    for ok in ("doesn't do ocr", "doesn’t do ocr", "no ocr", "free ocr option"):  # R10 F10-11: curly apostrophe
         low = low.replace(ok, " ")
     return [w for w in BANNED if re.search(r"(?<![\w-])" + re.escape(w) + r"(?![\w-])", low)]
 
@@ -45,7 +45,7 @@ def test_tool_pages_show_device_steps_and_fixes():
             assert f"<h3>{label}</h3>" in html and len(steps) == 2, slug
         assert f"<h2>{t['troubleshooting']['heading']}</h2>" in html, slug
         assert len(t["troubleshooting"]["fixes"]) >= 4, slug
-        assert f"/tools/{slug}</loc><lastmod>{config.R9_DATE}</lastmod>" in sm, slug
+        assert f"/tools/{slug}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm, slug   # R10 part 4
 
 
 def _upd(slug):
@@ -60,7 +60,7 @@ def test_tool_page_copy_rules_and_measured_fact():
                         [p + " " + f for p, f in t["troubleshooting"]["fixes"]] +
                         [q + " " + a for q, a in _upd(slug).get("faq_add", []) + _upd(slug).get("faq_replace", [])])
         assert not _banned(blob), (slug, _banned(blob))
-        assert re.search(r"our test \((September|October|November) 2026\)", blob), slug   # a result from our own tests
+        assert re.search(r"our test \((\d{1,2} )?(September|October|November) 2026\)", blob), slug   # a result from our own tests
 
 
 def test_tool_page_numbers_match_test_results():
@@ -69,7 +69,8 @@ def test_tool_page_numbers_match_test_results():
         " ".join(a for _, a in config.TOOLS_BY_SLUG[s]["faq"])
     assert "580 KB" in f("png-to-pdf") and "583 KB" in f("png-to-pdf") and "20 x 11.25" in f("png-to-pdf")
     assert "607, 636 and 410 KB" in f("pdf-to-png") and "2,550 x 3,300" in f("pdf-to-png")
-    assert "116 KB" in f("png-to-jpg") and "294 KB" in f("png-to-jpg") and "1,587 KB" in f("png-to-jpg")
+    # R10 (P22): fresh 26 Nov 2026 figures replace the earlier run's
+    assert "83.1 KB" in f("png-to-jpg") and "125.2 KB" in f("png-to-jpg") and "459.8 KB" in f("png-to-jpg")
     assert "1,762 KB" in f("jpg-to-png") and "10,652 KB" in f("jpg-to-png")
     assert "608 KB" in f("webp-to-jpg") and "1,328 KB" in f("webp-to-jpg")
     assert "3024 x 4032" in f("heic-to-jpg") and "no GPS data" in f("heic-to-jpg")
@@ -86,7 +87,7 @@ def test_guides_have_how_to_sections():
         assert not _banned(text), (slug, _banned(text))
         html = _get(f"/guides/{slug}")
         assert f"<h2>{sec['heading']}</h2>" in html, slug
-        assert f'Updated <time datetime="{config.R9_DATE}"' in html, slug
+        assert f'Updated <time datetime="{config.RELEASE10_DATE}"' in html, slug   # R10 part 5
         assert "[[" not in _visible(html), slug                  # tool links rendered
 
 
@@ -125,7 +126,7 @@ def test_limits_row_on_every_tool_page():
         assert t.get("limits"), t["slug"]
         assert '<th scope="row">Limits</th>' in html, t["slug"]
         assert not _banned(t["limits"]), t["slug"]
-        assert f"/tools/{t['slug']}</loc><lastmod>{config.R9_DATE}</lastmod>" in sm, t["slug"]
+        assert f"/tools/{t['slug']}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm, t["slug"]   # R10 part 4
     lim = config.R9_TOOL_LIMITS
     assert "20 images" in lim["heic-to-jpg"] and "65 megapixels" in lim["png-to-jpg"]
     assert "50 pages" in lim["pdf-to-jpg"] and "50 pages" in lim["pdf-to-ppt"]
@@ -142,7 +143,7 @@ def test_limits_match_code_constants():
 
 def test_llms_txt_limits_line():
     body = _get("/llms.txt")
-    assert "- Limits: up to 20 images at a time in the image converters, each up to 65 megapixels; " \
+    assert "- Limits: HEIC to JPG, WEBP to JPG, PNG to JPG and JPG to PNG take up to 20 images at a time, each up to 65 megapixels; " \
            "PDF to JPG, PDF to PNG and PDF to PPT convert up to 50 pages at a time; " \
            "PDF to Word and PDF to Excel up to 200 pages; password-protected PDFs must be unlocked first." in body
 

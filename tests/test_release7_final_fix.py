@@ -59,7 +59,7 @@ PHRASES = {
     "/tools/protect-pdf": ["Password protect a PDF online for free", "How does Protect PDF encrypt the PDF?",
                            "With 256-bit AES encryption"],
     "/tools/compress-pdf": ["Can I compress a PDF to 100 KB, 200 KB, 500 KB or 1 MB?",
-                            "a 3.2 MB PDF holding one photo came out at 50 KB on Screen and 127 KB on Ebook",
+                            "a 3.2 MB PDF holding one photo came out at 50 KB on Screen and 127 KB on eBook",  # R10 F10-24
                             "If your PDF was made from phone photos, Compress PDF may not shrink it at all"],
     "/tools/merge-pdf": ["can also join PDF files"],
     "/tools/pdf-to-ppt": ["PowerPoint (PPTX) file", "Is this PDF to PPTX or PDF to PPT?"],
@@ -120,7 +120,7 @@ def test_r7_88_server_wording(client):
     assert "Your file is uploaded, converted on our server and deleted automatically after conversion." in home
     assert "directly from your browser" not in home
     webp = _visible(_get(client, "/tools/webp-to-jpg"))
-    assert "they're converted on our server" in webp
+    assert "they’re converted on our server" in webp
     split = _get(client, "/guides/how-to-split-pdf-files")
     assert "Split a PDF online, in any browser" in split and "Split a PDF in your browser" not in split
     for path in ["/"] + [f"/tools/{t['slug']}" for t in config.TOOLS] + [f"/guides/{g['slug']}" for g in config.GUIDES]:
@@ -133,14 +133,14 @@ def test_r7_88_server_wording(client):
 def test_r7_89_form_size_table(client):
     html = _get(client, "/guides/photos-to-one-pdf-jpg-to-pdf-tips")
     text = _visible(html)
-    assert "Meeting a form's size limit (100 KB, 200 KB or 500 KB)" in text
+    assert "Meeting a form’s size limit (100 KB, 200 KB or 500 KB)" in text
     for row in ("253 KB / 254 KB", "134 KB / 135 KB", "87 KB / 89 KB", "55 KB / 56 KB"):
         assert row in text
     assert "three pages at 1,200 pixels came to 404 KB" in text
     assert "at 800 pixels it was only just readable" in text
     order = [h for h in re.findall(r"<h2>(.*?)</h2>", html)]
     i = order.index("The reliable fix: resize the photos first")
-    assert _html.unescape(order[i + 1]) == "Meeting a form's size limit (100 KB, 200 KB or 500 KB)"
+    assert _html.unescape(order[i + 1]) == "Meeting a form’s size limit (100 KB, 200 KB or 500 KB)"
 
 
 # ---- R7-90 ------------------------------------------------------------------
@@ -153,7 +153,7 @@ def test_r7_90_brand_entity(client):
     assert 'class="footer-tagline">KuickKonvert: free online tools' in home
     org = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', home, re.S)]
     org = [o for o in org if o.get("@type") == "Organization"][0]
-    assert org["founder"] == {"@id": kk.SITE_URL + "/about#shahid-iqbal"}
+    assert org["founder"] == {"@id": kk.SITE_URL + "/about/shahid-iqbal"}  # R10 F10-54
     assert org["foundingDate"] == "2026-08"
     assert "https://www.facebook.com/kuickkonvert/" in org["sameAs"]
     assert "https://peerlist.io/kuickkonvert/project/kuickkonvert" in org["sameAs"]
@@ -207,7 +207,7 @@ def test_r7_92_guide_not_added_to_other_tool_pages():
 # ---- Release date ------------------------------------------------------------
 def test_release_date_consistent(client):
     from datetime import date
-    d = date.fromisoformat(config.RELEASE7_DATE)
+    d = date.fromisoformat(config.RELEASE10_DATE)  # R10: the notice changed again
     privacy = _visible(_get(client, "/privacy"))
     assert f"Last updated: {d.day} {d.strftime('%B %Y')}" in privacy
 
@@ -217,7 +217,7 @@ def test_r7_93_privacy_sitemap_lastmod_matches_notice(client):
     from datetime import date
     sm = _get(client, "/sitemap.xml")
     m = re.search(r"<loc>[^<]*/privacy</loc><lastmod>([0-9-]+)</lastmod>", sm)
-    assert m and m.group(1) == config.RELEASE7_DATE
+    assert m and m.group(1) == config.RELEASE10_DATE  # R10
     d = date.fromisoformat(m.group(1))
     assert f"Last updated: {d.day} {d.strftime('%B %Y')}" in _visible(_get(client, "/privacy"))
 

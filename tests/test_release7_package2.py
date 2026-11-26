@@ -59,7 +59,7 @@ def test_upload_notes_r7_62():
     for slug in ("pdf-to-word", "pdf-to-excel"):
         import html as _h
         page = _h.unescape(client.get(f"/tools/{slug}").data.decode())
-        assert "doesn't do OCR" in page
+        assert "doesn’t do OCR" in page
 
 
 def test_pixel_limit_attribute_r7_64():

@@ -35,7 +35,9 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 from config import (
-    ADSENSE_SCRIPT_ENABLED,
+    ADSENSE_SCRIPT_ENABLED, official_site, SECURITY_TXT_CONTACT, SECURITY_TXT_EXPIRES, RELEASE10_DATE,
+    PRIVACY_UPDATED_TEXT, R10_DATE_TEXT, R10_TEST_DATE_TEXT, R10_PUBLISHED_TESTS, R10_GUIDE_PICKER,
+    R10_SOFTWARE, R10_SAMEAS_ADD,
     PRIVACY_CONSENT_MODE_DISCLOSURE,
     TOOLS, TOOLS_BY_SLUG, CATEGORIES, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS,
     FORMAT_BADGE_CLASS, SITE_URL, GUIDES, GUIDES_BY_SLUG, GUIDES_BY_TOOL, HOME_PILLAR_GUIDES,
@@ -314,7 +316,13 @@ _CSP_DIRECTIVES = (
     # Release 7 (WP15): AdSense supports only strict CSP (Google AdSense Help
     # 16283098): nonce + 'strict-dynamic'. 'unsafe-inline'/https: are fallbacks
     # that CSP3 browsers ignore when a nonce/'strict-dynamic' is present.
-    "script-src 'nonce-{nonce}' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' https: http:; "
+    # Release 10 (F10-28, approved by Shahid 26 Nov 2026): 'unsafe-eval' removed.
+    # Google's CSP guide (updated 10 Nov 2026) needs it only for Tag Manager
+    # Custom JavaScript variables, which this site does not use. Checked in
+    # Chrome on the live site 26 Nov: the Google tag made no eval/new Function
+    # calls and GA4 + Ads hits were still sent. If a Google tag ever breaks,
+    # put it back here first.
+    "script-src 'nonce-{nonce}' 'unsafe-inline' 'strict-dynamic' https: http:; "
     "style-src 'self'; "
     "img-src 'self' data: https: https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com "
     "https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://pagead2.googlesyndication.com " + _GOOGLE_TLDS + " https://launchnest.io; "
@@ -408,6 +416,7 @@ def _inject_consent_required():
     return {
         "consent_required": required,
         "gpc": gpc,
+        "official_site": official_site(),
         "adsense_script_enabled": ADSENSE_SCRIPT_ENABLED,
         "privacy_consent_mode_disclosure": PRIVACY_CONSENT_MODE_DISCLOSURE,
         "consent_cfg": {
@@ -588,6 +597,11 @@ def inject_site_url():
     Also: release_date_text (Privacy "Last updated" / Terms "Effective
     date", from config.RELEASE_DATE) and tool_count (About page)."""
     return {"site_url": SITE_URL, "release_date_text": RELEASE_DATE_TEXT,
+            "privacy_updated_text": PRIVACY_UPDATED_TEXT,
+            "r10_date_text": R10_DATE_TEXT, "r10_test_date_text": R10_TEST_DATE_TEXT,
+            "release10_date": RELEASE10_DATE, "r10_published_tests": R10_PUBLISHED_TESTS,
+            "r10_guide_picker": R10_GUIDE_PICKER, "guides_by_slug": GUIDES_BY_SLUG,
+            "r10_software": R10_SOFTWARE, "r10_sameas_add": R10_SAMEAS_ADD,
             "tool_count": len(TOOLS)}
 
 
@@ -1057,6 +1071,37 @@ def _maybe_sweep_temp():
         _sweep_lock.release()
 
 
+# R10 (26 Nov 2026, approved by Shahid): a timed background clean-up as well, so a
+# workspace left behind by a server process that stopped mid-job is removed within
+# about 35 minutes (older than 30 minutes + at most one 5-minute timer interval),
+# even when no conversion request arrives. One daemon thread per worker; any error
+# is swallowed so it can never affect a request. TEMP_SWEEP_TIMER_SECONDS=0 turns it off.
+_TEMP_SWEEP_TIMER_SECONDS = int(os.environ.get("TEMP_SWEEP_TIMER_SECONDS", "300"))
+
+
+def _temp_sweep_timer_loop(interval, sleep=_time.sleep, max_runs=None):
+    runs = 0
+    while max_runs is None or runs < max_runs:
+        sleep(interval)
+        try:
+            sweep_stale_temp()
+        except Exception:
+            pass
+        runs += 1
+
+
+def _start_temp_sweep_timer():
+    if _TEMP_SWEEP_TIMER_SECONDS <= 0:
+        return None
+    t = _threading.Thread(target=_temp_sweep_timer_loop, args=(_TEMP_SWEEP_TIMER_SECONDS,),
+                          name="kk-temp-sweep", daemon=True)
+    t.start()
+    return t
+
+
+_temp_sweep_thread = _start_temp_sweep_timer()
+
+
 # --- Machine-readable error codes (Package 1, 16 Oct 2026) -----------------
 # Every failed /convert reply now carries a short, stable "code" next to the
 # human "error" message, so static/js/main.js can report WHY a conversion
@@ -1233,6 +1278,21 @@ def link_to_us():
     return render_template("link_to_us.html", canonical_url=f"{SITE_URL}/link-to-us")
 
 
+# Release 10: two new trust pages. NEW-1 /how-we-test (test method and dated
+# results) and NEW-2 /about/shahid-iqbal (author page: name, role and work
+# email only -- Shahid's decision). The Person @id site-wide is the author
+# page URL (F10-54).
+@app.route("/how-we-test")
+def how_we_test():
+    return render_template("how_we_test.html", canonical_url=f"{SITE_URL}/how-we-test",
+                           published=RELEASE10_DATE)
+
+
+@app.route("/about/shahid-iqbal")
+def author_page():
+    return render_template("author.html", canonical_url=f"{SITE_URL}/about/shahid-iqbal")
+
+
 # Added 2026-10-08: some browsers and crawlers ask for /favicon.ico directly
 # (it used to return "not found"). Serve the same icon the pages declare.
 @app.route("/favicon.ico")
@@ -1260,6 +1320,23 @@ def healthz():
     response.headers["Cache-Control"] = "no-store"
     response.headers["X-Robots-Tag"] = "noindex"
     return response
+
+
+# Release 10 (F10-27): security.txt (RFC 9116) -- how to report a problem.
+# Not in the sitemap. Official site only: a copy of this code must not send
+# reports to KuickKonvert.
+@app.route("/.well-known/security.txt")
+def security_txt():
+    if not official_site():
+        abort(404)
+    body = (
+        f"Contact: {SECURITY_TXT_CONTACT}\n"
+        f"Expires: {SECURITY_TXT_EXPIRES}\n"
+        "Preferred-Languages: en\n"
+        f"Canonical: {SITE_URL}/.well-known/security.txt\n"
+        "Policy: https://github.com/khshahid1970/kuickkonvert/blob/main/SECURITY.md\n"
+    )
+    return Response(body, mimetype="text/plain")
 
 
 @app.route("/robots.txt")
@@ -1300,7 +1377,7 @@ def llms_txt():
         "- Upload size: up to 50 MB per upload (all files together); fair-use limits apply.",
         # Release 9, R9-10 (21 Nov 2026): the per-tool limits, from the same
         # constants the converters enforce.
-        f"- Limits: up to {MAX_IMAGES_PER_CONVERSION} images at a time in the image converters, each up to "
+        f"- Limits: HEIC to JPG, WEBP to JPG, PNG to JPG and JPG to PNG take up to {MAX_IMAGES_PER_CONVERSION} images at a time, each up to "
         f"{MAX_IMAGE_MEGAPIXELS} megapixels; PDF to JPG, PDF to PNG and PDF to PPT convert up to "
         f"{MAX_RENDER_PAGES} pages at a time; PDF to Word and PDF to Excel up to {MAX_WORD_PAGES} pages; "
         "password-protected PDFs must be unlocked first.",
@@ -1337,6 +1414,12 @@ def llms_txt():
     lines.append(f"- [Privacy notice]({SITE_URL}/privacy): what we log, cookies, videos and your choices")
     lines.append(f"- [Terms of Service]({SITE_URL}/terms): rules for using the tools")
     lines.append(f"- [Contact]({SITE_URL}/contact): how to reach us")
+    # Release 10, F10-26: the two new pages, the guides list, the link page and the blog.
+    lines.append(f"- [How we test]({SITE_URL}/how-we-test): our test method and dated results, with Zenodo test data")
+    lines.append(f"- [Shahid Iqbal]({SITE_URL}/about/shahid-iqbal): who runs KuickKonvert and writes the guides")
+    lines.append(f"- [All guides]({SITE_URL}/guides): every guide on one page, with a pick-a-guide table")
+    lines.append(f"- [Link to KuickKonvert]({SITE_URL}/link-to-us): ready-made text links and a badge")
+    lines.append("- [KuickKonvert Engineering blog](https://blog.kuickkonvert.com): technical notes and test write-ups")
     lines.append("")
     lines.append("## Optional")
     lines.append("")
@@ -1353,6 +1436,9 @@ def ads_txt():
     # certification ID (f08c47fec0942fa0) are Google's fixed standard for
     # every AdSense publisher -- verified against Google's own AdSense Help
     # documentation on 2026-08-29, not something specific to this site.
+    # Release 10 (R-2): only the official site is an authorized seller.
+    if not official_site():
+        abort(404)
     body = "google.com, pub-2468332370767807, DIRECT, f08c47fec0942fa0\n"
     return Response(body, mimetype="text/plain")
 
@@ -1418,6 +1504,9 @@ def sitemap_xml():
         (f"{SITE_URL}/guides", STATIC_LASTMOD.get("guides")),
         (f"{SITE_URL}/link-to-us", STATIC_LASTMOD.get("link-to-us")),
         (f"{SITE_URL}/tools", STATIC_LASTMOD.get("tools")),
+        # Release 10 (F10-53): the 2 new pages.
+        (f"{SITE_URL}/how-we-test", STATIC_LASTMOD.get("how-we-test")),
+        (f"{SITE_URL}/about/shahid-iqbal", STATIC_LASTMOD.get("about/shahid-iqbal")),
     ]
     entries += [
         # Release 5 (26 Oct 2026) changed every tool page (privacy line), so

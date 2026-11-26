@@ -68,10 +68,10 @@
       return { code: "merge_needs_two", message: `Add ${minFiles} or more PDFs to merge (you have ${selectedFiles.length}).` };
     }
     if (maxFiles && selectedFiles.length > maxFiles) {
-      return { code: "too_many_files", message: `You can convert up to ${maxFiles} files at a time -- please remove ${selectedFiles.length - maxFiles}.` };
+      return { code: "too_many_files", message: `You can convert up to ${maxFiles} files at a time — please remove ${selectedFiles.length - maxFiles}.` };
     }
     if (refused.has(selectionKey())) {
-      return { code: "repeat_refused", message: `This file was refused a moment ago, so it wasn't sent again. ${refused.get(selectionKey())} Please choose a different file.` };
+      return { code: "repeat_refused", message: `This file was refused a moment ago, so it wasn’t sent again. ${refused.get(selectionKey())} Please choose a different file.` };
     }
     if (totalBytes() > maxBytes) {
       const mb = (totalBytes() / 1048576).toFixed(1);
@@ -202,7 +202,7 @@
     if (incoming.length > 0) ga4("file_selected");
     if (rejected > 0) {
       ga4("conversion_blocked", { error_type: "unsupported", error_code: "wrong_type" });
-      const which = rejected === 1 ? "That file isn't" : `${rejected} files aren't`;
+      const which = rejected === 1 ? "That file isn’t" : `${rejected} files aren’t`;
       setStatus(escapeHtml(`${which} the right type for this tool. Accepted: ${typesText.split("·")[0].trim()}.`), "error");
     }
   }
@@ -298,7 +298,7 @@
       if (!blob || blob.type !== file.type) return { file };
       return {
         file: new File([blob], file.name, { type: file.type, lastModified: file.lastModified }),
-        note: `'${file.name}' was ${mpText(w * h)} megapixels, above this tool's ` +
+        note: `'${file.name}' was ${mpText(w * h)} megapixels, above this tool’s ` +
               `${Math.round(maxPixels / 1e6)}-megapixel limit, so your browser reduced it to ` +
               `${nw.toLocaleString()} x ${nh.toLocaleString()} pixels before upload. ` +
               "Photo details such as the date and camera are not kept in a reduced image.",
@@ -371,7 +371,7 @@
         } catch (_) {
           // Not our JSON: a gateway/proxy page (e.g. 502 during a deploy).
           code = "http_" + resp.status;
-          if (resp.status >= 500) message = "The server didn't respond properly. Please try again in a minute.";
+          if (resp.status >= 500) message = "The server didn’t respond properly. Please try again in a minute.";
         }
         ga4("conversion_failed", {
           error_type: code ? errorTypeFromCode(code) : errorTypeFromStatus(resp.status, message),
@@ -392,7 +392,7 @@
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
-      setStatus("Done -- your download has started." + notesHtml, "success");
+      setStatus("Done — your download has started." + notesHtml, "success");
       // Google Ads conversion ("File conversion completed"), sent only here,
       // i.e. after the server returned a converted file and the download was
       // started -- never for failed conversions or plain page views. The

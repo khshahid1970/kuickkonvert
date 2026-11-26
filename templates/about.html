@@ -19,9 +19,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "@id": "{{ site_url }}/about#shahid-iqbal",
+  "@id": "{{ site_url }}/about/shahid-iqbal",
   "name": "Shahid Iqbal",
-  "url": "{{ site_url }}/about",
+  "url": "{{ site_url }}/about/shahid-iqbal",
   "worksFor": {"@id": "{{ site_url }}/#organization"}
 }
 </script>
@@ -35,22 +35,48 @@
       <span aria-current="page">About</span>
     </nav>
     <h1>About KuickKonvert</h1>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
-    <h2>What KuickKonvert is</h2>
-    <p><strong>KuickKonvert — spelled with two Ks: Kuick + Konvert, at kuickkonvert.com</strong></p>
-    <p>KuickKonvert is a free online file conversion service covering Word, Excel, PowerPoint, PDF, and image formats -- {{ tool_count }} tools in total, from everyday conversions like Word to PDF through to PDF utilities like merging, splitting, compressing, and password-protecting. Every tool works in your web browser, with your file converted on our server and then deleted, so there's nothing to install and no account to create.</p>
-    <p>Alongside the tools, our <a href="{{ url_for('guides_index') }}">guides</a> explain in plain English what actually changes when you convert a file -- fonts, page layout, file size, password protection and more -- based on our own tests.</p>
+    <h2>What is KuickKonvert?</h2>
+    {#- Release 10, F10-36: the brand line is a <div>, so the first paragraph is the description with its figure. -#}
+    <div class="about-brand"><strong>KuickKonvert — spelled with two Ks: Kuick + Konvert, at kuickkonvert.com</strong></div>
+    <p>KuickKonvert is a free online file conversion service covering Word, Excel, PowerPoint, PDF, and image formats — {{ tool_count }} tools in total, from everyday conversions like Word to PDF through to PDF utilities like merging, splitting, compressing, and password-protecting. Every tool works in your web browser, with your file converted on our server and then deleted, so there’s nothing to install and no account to create. In our live tests on {{ r10_test_date_text }}, one conversion with each tool took between 0.4 and 4.7 seconds, from upload to download.</p>
+    <p>Alongside the tools, our <a href="{{ url_for('guides_index') }}">guides</a> explain in plain English what actually changes when you convert a file — fonts, page layout, file size, password protection and more — based on our own tests.</p>
 
-    <h2>How it's built</h2>
+    <h2>How is it built?</h2>
     <p>Three principles shape every tool on this site:</p>
     <ul class="why-list">
-      <li><strong>No sign-up.</strong> Every tool is usable immediately -- there's no account, no email capture, and no login wall between you and your file.</li>
-      <li><strong>Files deleted automatically.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically once your converted file is returned to you (or immediately if the conversion fails). See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
-      <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50MB limit per upload (all files together).</li>
+      <li><strong>No sign-up.</strong> Every tool is usable immediately — there’s no account, no email capture, and no login wall between you and your file.</li>
+      <li><strong>Files deleted automatically.</strong> Each upload is processed in an isolated, temporary workspace and deleted automatically as soon as the conversion finishes (or fails), before the result is sent to you. See the <a href="{{ url_for('privacy') }}">Privacy notice</a> for the full details.</li>
+      <li><strong>Free to use.</strong> Every conversion tool on KuickKonvert is free, with a 50 MB upload limit; some tools also have page or image limits, shown on each tool page.</li>
     </ul>
 
     <h2>How we test</h2>
-    <p>Before a change goes live, we run it on a test copy of the site and convert sample files with every tool, then check the results. The test results in our guides come from our own conversions of test files, and those guides say what we tested and with which software. Your own files may behave differently, so always check a converted file before you rely on it.</p>
+    <p>Before a change goes live, we run it on a test copy of the site and convert sample files with every tool, then check the results. The test results in our guides come from our own conversions of test files, and those guides say what we tested and with which software. Your own files may behave differently, so always check a converted file before you rely on it. Full details: <a href="{{ url_for('how_we_test') }}">How we test</a>.</p>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <caption>Results from our own tests, by month of the test (<a href="{{ url_for('how_we_test') }}">how we test</a>)</caption>
+        <thead><tr><th scope="col">Tool</th><th scope="col">When</th><th scope="col">Test file</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          {% for tool_name, when, file, result, gslug in r10_published_tests %}<tr><th scope="row"><a href="{{ url_for('guide_page', slug=gslug) }}">{{ tool_name }}</a></th><td>{{ when }}</td><td>{{ file }}</td><td>{{ result }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {#- Release 10, F10-17: the software behind each tool (from requirements.txt and converters/*.py). -#}
+    <h2>Which software does KuickKonvert use?</h2>
+    <p>The tools are built on open-source programs that run on our server. Each one does a specific job:</p>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <thead><tr><th scope="col">Software</th><th scope="col">What it does on KuickKonvert</th></tr></thead>
+        <tbody>
+          {% for name, url, job in r10_software %}<tr><th scope="row"><a href="{{ url }}" rel="noopener">{{ name }}</a></th><td>{{ job }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p>The limits each tool applies — 50 MB per upload, up to 20 images at a time for the image converters, up to 200 pages for PDF to Word and PDF to Excel, and up to 50 pages for PDF to JPG, PDF to PNG and PDF to PPT — are set in our code and listed on our <a href="{{ url_for('tools_index') }}#limits-and-tests">All tools page</a>.</p>
 
     {#- Package 2 (24 Oct 2026): the two sections below were approved by
          counsel on 16 Oct 2026 (claude/legal-agpl-memo-16102026.md,
@@ -63,11 +89,12 @@
     <h2>Third-Party Software Components</h2>
     <p>This cloud application layer utilizes unmodified third-party open-source programs and utility packages (including LibreOffice, Ghostscript, Poppler, and PyMuPDF). Listing these components does not convey licensing permissions; their distinct license versions, explicit copyrights, and compliance obligations remain subject to verification under their respective license headers.</p>
 
-    <h2>Who operates KuickKonvert</h2>
-    <p id="shahid-iqbal">KuickKonvert is a production of Shahid Iqbal. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+    <h2>Who operates KuickKonvert?</h2>
+    <p id="shahid-iqbal">KuickKonvert is a production of <a href="{{ url_for('author_page') }}">Shahid Iqbal</a>. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
 
-    <h2>Where else to find KuickKonvert</h2>
-    <p>KuickKonvert is listed on <a href="https://www.producthunt.com/products/kuickkonvert" target="_blank" rel="noopener">Product Hunt</a>, <a href="https://peerpush.com/p/kuickkonvert" target="_blank" rel="noopener">PeerPush</a>, <a href="https://www.saashub.com/kuickkonvert" target="_blank" rel="noopener">SaaSHub</a> and <a href="https://peerlist.io/kuickkonvert/project/kuickkonvert" target="_blank" rel="noopener">Peerlist</a>. If KuickKonvert has helped you, an honest review on any of them helps other people find it. To mention us on your own site, our <a href="{{ url_for('link_to_us') }}">Link to KuickKonvert page</a> has ready-made text links and a badge.</p>
+    <h2>Where else can you find KuickKonvert?</h2>
+    {#- Release 10, F10-18: the same profiles as the Organization sameAs (base.html). -#}
+    <p>KuickKonvert is listed on <a href="https://www.producthunt.com/products/kuickkonvert" target="_blank" rel="noopener">Product Hunt</a>, <a href="https://peerpush.com/p/kuickkonvert" target="_blank" rel="noopener">PeerPush</a>, <a href="https://www.saashub.com/kuickkonvert" target="_blank" rel="noopener">SaaSHub</a>, <a href="https://peerlist.io/kuickkonvert/project/kuickkonvert" target="_blank" rel="noopener">Peerlist</a>, <a href="https://selfhosted.libhunt.com/kuickkonvert-alternatives" target="_blank" rel="noopener">LibHunt</a>, <a href="https://trylaunch.ai/launch/kuickkonvert" target="_blank" rel="noopener">TryLaunch</a> and <a href="https://www.trustpilot.com/review/kuickkonvert.com" target="_blank" rel="noopener">Trustpilot</a>, and we write about how the tools work on our <a href="https://blog.kuickkonvert.com" target="_blank" rel="noopener">engineering blog</a>, <a href="https://dev.to/kuickkonvert" target="_blank" rel="noopener">DEV Community</a> and <a href="https://medium.com/@kuickkonvert" target="_blank" rel="noopener">Medium</a>. If KuickKonvert has helped you, an honest review on any of them helps other people find it. To mention us on your own site, our <a href="{{ url_for('link_to_us') }}">Link to KuickKonvert page</a> has ready-made text links and a badge.</p>
   </div>
 </section>
 {% endblock %}

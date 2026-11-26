@@ -36,7 +36,7 @@ Files are converted on the server (Render, Singapore region, behind Cloudflare),
 ## Built with
 
 - Python 3.11 and Flask, served by Gunicorn
-- LibreOffice (Office ↔ PDF), Poppler and pypdfium2 (PDF → images), Ghostscript (PDF compression)
+- LibreOffice (Office ↔ PDF), Poppler (PDF → images), Ghostscript (PDF compression)
 - pypdf, pikepdf, pdf2docx (with PyMuPDF), pdfplumber, python-pptx, openpyxl, Pillow, pi-heif, img2pdf
 - Plain HTML, CSS and JavaScript on the front end
 - Deployed as a Docker container
@@ -56,6 +56,19 @@ pip install -r requirements-lock.txt   # the exact pinned versions the live site
 python3 app.py
 # open http://localhost:5000
 ```
+
+## Run with Docker
+
+```bash
+git clone https://github.com/khshahid1970/kuickkonvert.git
+cd kuickkonvert
+docker build -t kuickkonvert .
+docker run -d --name kuickkonvert -p 8080:8080 kuickkonvert
+```
+
+Then open http://localhost:8080 . Check it is running: http://localhost:8080/healthz should return "ok". The image includes LibreOffice, Poppler and Ghostscript, and runs as a non-root user. Stop it with: `docker stop kuickkonvert`
+
+Your copy does not include KuickKonvert's Google Analytics, Google Ads or AdSense code. That code is added only when the environment variable `KK_OFFICIAL_SITE` is set to `1`, which is done only on kuickkonvert.com.
 
 ## Privacy
 

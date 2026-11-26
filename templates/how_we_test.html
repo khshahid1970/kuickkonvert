@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{#- Release 10, NEW-1: how KuickKonvert tests its tools. Text approved by Shahid
+    on 25 Nov 2026 (review copy part 2). Every figure is copied from a published
+    guide or a published Zenodo record -- do not add a figure that is not
+    published there. The date shown is RELEASE10_DATE (config.py). -#}
+{% block title %}How We Test KuickKonvert’s Tools | KuickKonvert{% endblock %}
+{% block description %}How KuickKonvert tests its free file tools: our test files, method and dated results, plus downloadable test data on Zenodo. Results from our own conversions.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "How we test", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+{% endblock %}
+{% macro nice_date(iso) -%}
+{%- set parts = iso.split('-') -%}
+{%- set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] -%}
+{{ parts[2]|int }} {{ months[parts[1]|int - 1] }} {{ parts[0] }}
+{%- endmacro %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">How we test</span>
+    </nav>
+    <h1>How We Test KuickKonvert’s Tools</h1>
+    <div class="guide-meta">By <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; Published <time datetime="{{ published }}">{{ nice_date(published) }}</time></div>
+    <p class="tool-page-desc">Every result we quote on KuickKonvert comes from a test we ran ourselves. We make test files on a computer, convert them with the same code the live site runs, in a test copy of the site, and write down the date, the files and the numbers. For example, in September 2026 our Compress PDF code took a 3.2 MB PDF holding one photo down to 50 KB on its “Smallest file” setting.</p>
+
+    <section class="tool-info guide-body">
+      <h2>What do we test, and how?</h2>
+      <ol class="guide-steps">
+        <li>We make the test files ourselves: Word documents, spreadsheets, slides, photos, screenshots and PDFs, made on a computer for the test. We never use visitors’ files. Uploads are deleted automatically after conversion and are never reviewed.</li>
+        <li>We convert them in a test copy of the site that runs the same code and the same settings as the live tools, for example the same Ghostscript presets for Compress PDF and JPG quality 90 for the image converters. The software versions in the test copy can differ slightly from the live server’s, so where it matters a guide names the version it used (for example Ghostscript 10.02.1).</li>
+        <li>We measure what changed: file size in KB, number of pages, whether the text can still be selected and searched, which photo details are kept or removed, and whether a protected PDF really needs its password.</li>
+        <li>We write the result down with the month of the test and quote it on the page it belongs to.</li>
+        <li>Before any change goes live, we convert sample files with every tool on the test copy and check the results, and more than 180 automatic checks run on the site’s code.</li>
+      </ol>
+
+      <h2>Which tests have we published?</h2>
+      <div class="guide-table-wrap">
+        <table class="format-table guide-table">
+          <caption>Results from our own tests, by month of the test. Your own files may give different numbers.</caption>
+          <thead>
+            <tr><th scope="col">Test</th><th scope="col">When</th><th scope="col">Test files</th><th scope="col">Result</th><th scope="col">Page</th></tr>
+          </thead>
+          <tbody>
+            {%- for test, when, files, result, slug, label in [
+              ("PDF compression levels", "September 2026", "PDF with one 3000 x 2000 photo, 3.2 MB", "Smallest file: 50 KB; Balanced: 127 KB", "pdf-compression-levels-explained", "PDF compression levels explained"),
+              ("PDF to Word", "October 2026", "The same page as a text PDF and as a scan", "Text PDF: 801 selectable characters, editable in Word; scan: none", "pdf-to-word-text-vs-scanned", "PDF to Word: text vs scanned"),
+              ("DOC vs DOCX", "October 2026", "4-page text document", "37.3 KB as DOCX, 36.5 KB as DOC", "docx-vs-doc", "DOCX vs DOC"),
+              ("Word to PDF", "November 2026", "3-page document as .docx (36 KB) and .doc (31 KB)", "Two 3-page PDFs of 31.3 KB, all 892 words selectable", "word-to-pdf-what-carries-over", "Word to PDF: what carries over"),
+              ("Protect PDF", "November 2026", "3-page PDF, 34.0 KB", "35.8 KB, 256-bit AES; would not open without the password", "pdf-password-protection-explained", "PDF password protection explained"),
+              ("Compress for email", "November 2026", "3-page scan, 5,355 KB", "501 KB on Smallest file", "reduce-pdf-size-for-email", "Reduce PDF size for email"),
+              ("JPG to PDF", "November 2026", "Three 2000 x 1500 photos, 1,824.2 KB", "One 3-page PDF of 1,826.5 KB", "jpg-vs-pdf", "JPG vs PDF"),
+              ("WEBP to JPG", "November 2026", "Photo-like WEBP, 608 KB", "1,328 KB JPG at full size", "webp-vs-jpg-vs-png", "WEBP vs JPG vs PNG"),
+              ("HEIC to JPG", "November 2026", "5 test HEIC photos", "All kept 4032 x 3024, date and camera; none kept the GPS location", "heic-to-jpg-on-windows", "HEIC to JPG on Windows"),
+            ] %}
+            <tr><th scope="row">{{ test }}</th><td>{{ when }}</td><td>{{ files }}</td><td>{{ result }}</td><td><a href="{{ url_for('guide_page', slug=slug) }}">{{ label }}</a></td></tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Where can I download the test files?</h2>
+      <p>Two sets of test files and results are published on Zenodo, a research archive run by CERN, under the CC BY 4.0 licence, so anyone can check or repeat them:</p>
+      <ul>
+        <li>13 November 2026: five tests (PDF compression presets, DOC vs DOCX, PDF page to PNG and JPG, PNG to JPG, PowerPoint to PDF), with every test file and script. <a href="https://doi.org/10.5281/zenodo.24199944" rel="noopener">DOI 10.5281/zenodo.24199944</a>. This was a separate run with different files from the September and October tests quoted in some guides, so its numbers differ from theirs. One example: a 9,199.2 KB PNG photo became a 1,135.0 KB JPG at quality 90, and a logo’s transparent background turned white.</li>
+        <li>17 November 2026: how much bigger a file gets when it is attached to an email. The email was 36.8% bigger than the file itself, so an email limit of 25 MB leaves room for a file of only about 18 MB. <a href="https://doi.org/10.5281/zenodo.24324333" rel="noopener">DOI 10.5281/zenodo.24324333</a>.</li>
+      </ul>
+      <p>Suggested citations:</p>
+      <ul>
+        <li>Iqbal, S. (2026). File size and output tests for common document and image conversions: PDF compression presets, DOC vs DOCX, PDF page rasterisation, PNG to JPG and PowerPoint to PDF (2026). KuickKonvert. Zenodo. https://doi.org/10.5281/zenodo.24199944</li>
+        <li>Iqbal, S. (2026). Email attachment encoding test: how much bigger a file gets when attached to an email (2026). KuickKonvert. Zenodo. https://doi.org/10.5281/zenodo.24324333</li>
+      </ul>
+
+      <h2>Why might your result be different?</h2>
+      <p>Our numbers describe our test files, not yours. A PDF full of photos shrinks far more than a typed report, which can even come out slightly larger, so Compress PDF gives you the original back instead of a bigger file. Fonts matter too: a document in a font our server doesn’t have is set in another font and can gain a page. Scanned pages are pictures, so PDF to Word gives you pictures of the text, not editable text, because our tool doesn’t do OCR. Always open the converted file and check it before you send it.</p>
+
+      <h2>Who runs the tests?</h2>
+      <p>The tests are run and written up by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a>, who runs KuickKonvert. If one of your files gives a very different result from a test on this site, email {{ obfuscated_mailto('info@kuickkonvert.com') }} with the tool name and the file size, and we will look at it. The <a href="https://github.com/khshahid1970/kuickkonvert" rel="noopener">full source code of the site is public on GitHub</a>, so the settings described here can be checked. More about the site is on our <a href="{{ url_for('about') }}">About page</a>.</p>
+
+      <h2>Official sources</h2>
+      <ul class="related-tools-list guide-sources">
+        <li><a href="https://ghostscript.readthedocs.io/en/latest/VectorDevices.html" rel="noopener">Ghostscript documentation: High Level Devices (the PDF presets our compression uses)</a></li>
+        <li><a href="https://pikepdf.readthedocs.io/en/latest/topics/security.html" rel="noopener">pikepdf documentation on PDF encryption (the AES-256 setting Protect PDF uses)</a></li>
+      </ul>
+    </section>
+  </div>
+</section>
+{% endblock %}

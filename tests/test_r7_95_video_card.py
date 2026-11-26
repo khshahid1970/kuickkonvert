@@ -19,7 +19,14 @@ import config  # noqa: E402
 
 ROOT = Path(kk.__file__).resolve().parent
 TOOL_SLUGS = [k for k in config.VIDEOS if k not in ("home", "all-tools")]
-PAGES = [("/", "home"), ("/tools", "all-tools")] + [("/tools/" + s, s) for s in TOOL_SLUGS]
+# R10 F10-16: the home page shows the "all-tools" video.
+PAGES = [("/", "all-tools"), ("/tools", "all-tools")] + [("/tools/" + s, s) for s in TOOL_SLUGS]
+# R10 F10-52: six tool pages show a C2 how-to video; its card title is its own YouTube title.
+C2 = set(config._R10_C2)
+
+
+def _title(key):
+    return config.VIDEOS[key]["title"] if key in C2 else config.R7_95_VIDEO_TITLES[key]
 
 
 @pytest.fixture(scope="module")
@@ -46,13 +53,18 @@ def test_r7_95_every_video_has_a_title_for_all_23_pages():
     assert len(PAGES) == 23
     assert set(config.R7_95_VIDEO_TITLES) == set(config.VIDEOS)
     for key, video in config.VIDEOS.items():
-        assert video["title"] == config.R7_95_VIDEO_TITLES[key]
+        assert video["title"] == _title(key)
+    for key, (vid, sec, up, title) in config._R10_C2.items():
+        assert config.VIDEOS[key]["id"] == vid and config.VIDEOS[key]["title"] == title
+        assert config.VIDEOS[key]["wide"] and config.VIDEOS[key]["thumb"] == f"c2-{key}.jpg"
+        assert (ROOT / "static/img/video" / f"c2-{key}.jpg").exists()
 
 
 def test_r7_95_titles_follow_the_copy_rules():
     banned = ["secure", "100%", "unlimited", "no limits", "no waiting", "no ads", "fastest",
               "best", "no catch", "every time", "guaranteed", "instant", "quick", "one click"]
-    for key, title in config.R7_95_VIDEO_TITLES.items():
+    for key in config.VIDEOS:
+        title = _title(key)
         low = title.lower()
         assert not [w for w in banned if w in low], (key, title)
         assert len(title) <= 100 - len(" | KuickKonvert"), (key, title)
@@ -79,7 +91,7 @@ def test_r7_95_one_card_after_the_tool_and_last_in_main(client, path, key, count
     # the footer comes after </main>
     assert page.index("</main>") < page.index("<footer"), path
     # the video name is the heading of the card
-    title = config.R7_95_VIDEO_TITLES[key]
+    title = _title(key)
     h2 = re.search(r'<h2 id="kk-video-heading">(.*?)</h2>', main, re.S).group(1)
     assert _html.unescape(h2).strip() == title, path
     # consent regions get the link version; others get click-to-play
@@ -99,7 +111,7 @@ def test_r7_95_videoobject_name_equals_the_card_title(client, path, key):
             if item.get("@type") == "VideoObject":
                 names.append(item["name"])
                 assert config.VIDEOS[key]["id"] in json.dumps(item) or item.get("thumbnailUrl")
-    assert names == [config.R7_95_VIDEO_TITLES[key]], path
+    assert names == [_title(key)], path
 
 
 def test_r7_95_css_horizontal_16x9_box_and_player_size():
@@ -111,4 +123,4 @@ def test_r7_95_css_horizontal_16x9_box_and_player_size():
     # the R7-95 rules come after the base .kk-video rules so they win the cascade
     assert css.index(".kk-video-block .kk-video img") > css.index(".kk-video img, .kk-video-frame")
     js = (ROOT / "static/js/video.js").read_text()
-    assert 'f.width = "270";' in js and 'f.height = "480";' in js
+    assert 'f.width = wide ? "320" : "270";' in js and 'f.height = wide ? "180" : "480";' in js

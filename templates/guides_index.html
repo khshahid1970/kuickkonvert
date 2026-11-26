@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}PDF & File Conversion Guides | KuickKonvert{% endblock %}
-{% block description %}Plain-English guides to the file formats and conversion options behind KuickKonvert's tools — what actually changes, and why.{% endblock %}
+{% block description %}Plain-English guides to the file formats and conversion options behind KuickKonvert’s tools — what actually changes, and why.{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -22,13 +22,41 @@
       <span aria-current="page">Guides</span>
     </nav>
     <h1>Guides</h1>
-    <p class="tool-page-desc">Plain-English explanations of the file formats and conversion options behind KuickKonvert's tools -- what actually changes, and why.</p>
+    <p class="tool-page-desc">Plain-English explanations of the file formats and conversion options behind KuickKonvert’s tools — what actually changes, and why. All {{ guides|length }} guides are based on our own tests: for example, in September 2026 Compress PDF took a 3.2 MB PDF holding one photo down to 50 KB.</p>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+
+    {#- Release 10, F10-39: pick a guide by problem; F10-35: published results in a table. -#}
+    <h2>Which guide answers your question?</h2>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <thead><tr><th scope="col">Your problem</th><th scope="col">Read</th></tr></thead>
+        <tbody>
+          {% for problem, slugs in r10_guide_picker %}<tr><th scope="row">{{ problem }}</th><td>{% for s in slugs %}<a href="{{ url_for('guide_page', slug=s) }}">{{ guides_by_slug[s].title }}</a>{% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What have our tests found?</h2>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <caption>Results from our own tests, by month of the test (<a href="{{ url_for('how_we_test') }}">how we test</a>)</caption>
+        <thead><tr><th scope="col">Tool</th><th scope="col">When</th><th scope="col">Test file</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          {% for tool_name, when, file, result, gslug in r10_published_tests %}<tr><th scope="row"><a href="{{ url_for('guide_page', slug=gslug) }}">{{ tool_name }}</a></th><td>{{ when }}</td><td>{{ file }}</td><td>{{ result }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p>The file formats our guides explain are defined in official specifications, such as <a href="https://pdfa.org/resource/iso-32000-2/" rel="noopener">ISO 32000-2 (PDF 2.0)</a> and the <a href="https://www.w3.org/TR/png/" rel="noopener">W3C PNG specification</a>.</p>
+
+    <h2>All guides</h2>
 
     <ul class="guides-list">
       {% for guide in guides %}
       <li class="guides-list-item">
         <h2><a href="{{ url_for('guide_page', slug=guide.slug) }}">{{ guide.title }}</a></h2>
-        <p>{{ guide.dek }}</p>
+        <p>{{ guide.dek|tool_links }}</p>
       </li>
       {% endfor %}
     </ul>

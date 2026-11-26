@@ -2,7 +2,9 @@
 {% block title %}PDF Converter & PDF Maker Online Free | KuickKonvert{% endblock %}
 {% block description %}Free PDF converter and PDF maker: convert PDF, Word, Excel, PowerPoint and images to and from PDF online. No sign-up, no watermark; files deleted automatically.{% endblock %}
 {% block structured_data %}
-{% set video = videos.get('home') %}
+{#- Release 10, F10-16 (approved 26 Nov 2026): the home page shows the 2-minute
+    "All 21 tools" video; the old 29-second home video said "right in your browser". -#}
+{% set video = videos.get('all-tools') %}
 {% include "_video_jsonld.html" %}
 {% endblock %}
 {% block content %}
@@ -53,7 +55,8 @@
 <section class="hero">
   <div class="wrap">
     <h1>Free Online PDF Converter - Convert to PDF</h1>
-    <p class="hero-sub">KuickKonvert is a free online file converter that turns Word docs into PDF, converts Excel, PowerPoint and image files to PDF, or turns PDF back into Word, Excel, PowerPoint and images -- just upload from your browser, with nothing to install. No sign-up, and every file is deleted automatically after conversion.</p>
+    <p class="hero-sub">KuickKonvert is a free online file converter that turns Word docs into PDF, converts Excel, PowerPoint and image files to PDF, or turns PDF back into Word, Excel, PowerPoint and images — just upload from your browser, with nothing to install. No sign-up, and every file is deleted automatically after conversion. In our live tests on {{ r10_test_date_text }}, one conversion with each of the {{ tool_count }} tools took between 0.4 and 4.7 seconds, from upload to download.</p>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
     <ul class="trust-strip">
       <li>
@@ -110,7 +113,7 @@
 
 <section class="how-it-works" id="how-it-works">
   <div class="wrap">
-    <h2>How it works</h2>
+    <h2>How does it work?</h2>
     <ol class="steps">
       <li>
         <span class="step-num">1</span>
@@ -171,8 +174,8 @@
 
 <section class="why-section">
   <div class="wrap">
-    <h2>Why KuickKonvert</h2>
-    <p class="section-sub">A file converter built to be simple -- nothing to install, nothing to sign up for.</p>
+    <h2>Why use KuickKonvert?</h2>
+    <p class="section-sub">A file converter built to be simple — nothing to install, nothing to sign up for.</p>
     <div class="why-grid">
       <div class="why-card">
         <span class="why-card-icon">
@@ -193,16 +196,35 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3a14 14 0 010 18 14 14 0 010-18z" stroke="currentColor" stroke-width="1.7"/></svg>
         </span>
         <h3>Nothing to install</h3>
-        <p>No software, plugins or browser extensions -- it just works in any modern browser.</p>
+        <p>No software, plugins or browser extensions — it just works in any modern browser.</p>
       </div>
       <div class="why-card">
         <span class="why-card-icon">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </span>
         <h3>Completely free</h3>
-        <p>Every tool on KuickKonvert is free to use, with no subscriptions -- just a 50MB limit per upload.</p>
+        <p>Every tool on KuickKonvert is free to use, with no subscriptions — just a 50 MB upload limit; some tools also have page or image limits, shown on each tool page.</p>
       </div>
     </div>
+  </div>
+</section>
+
+{#- Release 10, F10-35: published test results in a table; F10-33: official sources. -#}
+<section class="guides-teaser home-tests">
+  <div class="wrap wrap-narrow">
+    <h2>What did our tests show?</h2>
+    <p class="section-sub">Every result on this site comes from a test we ran ourselves, with test files made on a computer.</p>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <caption>Results from our own tests, by month of the test (<a href="{{ url_for('how_we_test') }}">how we test</a>)</caption>
+        <thead><tr><th scope="col">Tool</th><th scope="col">When</th><th scope="col">Test file</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          {% for tool_name, when, file, result, gslug in r10_published_tests %}<tr><th scope="row"><a href="{{ url_for('guide_page', slug=gslug) }}">{{ tool_name }}</a></th><td>{{ when }}</td><td>{{ file }}</td><td>{{ result }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p>The documents are converted with <a href="https://www.libreoffice.org/" rel="noopener">LibreOffice</a> and PDFs are compressed with <a href="https://ghostscript.readthedocs.io/en/latest/VectorDevices.html" rel="noopener">Ghostscript</a>, on our server. <a href="{{ url_for('how_we_test') }}">How we test</a> has every published result.</p>
   </div>
 </section>
 
@@ -224,28 +246,28 @@
     <h2>Frequently asked questions</h2>
     <div class="faq-list">
       <details class="faq-item">
-        <summary>Is KuickKonvert's PDF converter free?</summary>
-        <p>Yes. Every tool on this site is free to use, with no sign-up, up to a 50MB file size limit per upload (all files together). There's no paid tier -- the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free. KuickKonvert adds no watermark or logo of its own to your files (the Watermark PDF tool adds only the text you type).</p>
+        <summary>Is KuickKonvert’s PDF converter free?</summary>
+        <p>Yes. Every tool on this site is free to use, with no sign-up, with a 50 MB upload limit; some tools also have page or image limits, shown on each tool page. There’s no paid tier — the site may show ads in the future to help cover hosting costs, but the conversion tools themselves stay free. KuickKonvert adds no watermark or logo of its own to your files (the Watermark PDF tool adds only the text you type).</p>
       </details>
       <details class="faq-item">
         <summary>Do you store my files?</summary>
-        <p>No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is automatically deleted as soon as the converted file is returned to you (or immediately if the conversion fails). See our <a href="{{ url_for('privacy') }}">Privacy notice</a> for details.</p>
+        <p>No. Your file is used only to perform the conversion you requested, in an isolated temporary workspace, and is deleted automatically as soon as the conversion finishes (or fails), before the result is sent to you. See our <a href="{{ url_for('privacy') }}">Privacy notice</a> for details.</p>
       </details>
       <details class="faq-item">
-        <summary>What's the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?</summary>
-        <p>DOC, XLS, and PPT are Microsoft's older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. KuickKonvert accepts both the old and new format for each tool, so you don't need to worry about which one you have.</p>
+        <summary>What’s the difference between DOC and DOCX, XLS and XLSX, or PPT and PPTX?</summary>
+        <p>DOC, XLS, and PPT are Microsoft’s older binary Office formats, used before Office 2007. DOCX, XLSX, and PPTX are the newer XML-based Office Open XML formats introduced with Office 2007 and used ever since. Every tool that takes Office files accepts both the old and the new format, so you don’t need to worry about which one you have.</p>
       </details>
       <details class="faq-item">
-        <summary>Why does my file's layout sometimes shift slightly after conversion?</summary>
-        <p>Two common reasons. First, fonts: if your file uses a font we don't have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts with the same letter widths, so line breaks stay the same; other fonts -- including Aptos, Word's newer default -- are replaced by fonts with different widths, so text can rewrap. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats -- converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes.</p>
+        <summary>Why does my file’s layout sometimes shift slightly after conversion?</summary>
+        <p>Two common reasons. First, fonts: if your file uses a font we don’t have installed, we substitute another one. Calibri, Cambria, Arial, Times New Roman and Courier New are replaced by metric-compatible fonts with the same letter widths, so line breaks stay the same; other fonts — including Aptos, Word’s newer default — are replaced by fonts with different widths, so text can rewrap. Second, PDF is a fixed-page format, while Word and PowerPoint are flowing formats — converting between them is a best-effort reconstruction, not a perfect one-to-one mapping, especially for complex layouts, bulleted lists, or unusual page sizes.</p>
       </details>
       <details class="faq-item">
         <summary>Is there a file size limit?</summary>
-        <p>Yes -- up to 50MB per upload (all files together), which comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. Bigger files can't be uploaded; for a very large PDF, save a smaller copy from the program that created it and convert that instead.</p>
+        <p>Yes — up to 50 MB per upload (for tools that take several files, that is all files together). Some tools also have page or image limits, shown on each tool page. 50 MB comfortably covers the vast majority of everyday documents, spreadsheets, and presentations. Bigger files can’t be uploaded; for a very large PDF, save a smaller copy from the program that created it and convert that instead.</p>
       </details>
       <details class="faq-item">
         <summary>Do I need to install anything or create an account?</summary>
-        <p>No. You use KuickKonvert from your web browser -- no software installation, plugins, browser extensions, or sign-up required. Your file is uploaded, converted on our server and deleted automatically after conversion. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
+        <p>No. You use KuickKonvert from your web browser — no software installation, plugins, browser extensions, or sign-up required. Your file is uploaded, converted on our server and deleted automatically after conversion. It works the same way on desktop, tablet, or mobile, in any modern browser.</p>
       </details>
     </div>
   </div>
@@ -253,7 +275,7 @@
 
 <section class="home-video">
   <div class="wrap wrap-narrow">
-    {% set video = videos.get('home') %}
+    {% set video = videos.get('all-tools') %}
     {% include "_video.html" %}
   </div>
 </section>

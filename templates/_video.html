@@ -7,17 +7,19 @@
     youtube-nocookie.com player only after the button is pressed.
     Nothing is requested from YouTube or Google before the visitor acts. -#}
 {% if video %}
+{#- Release 10, F10-52: "wide" = a normal 16:9 YouTube video (C2 how-to), not a Short. -#}
+{% set yt_url = ('https://www.youtube.com/watch?v=' if video.wide else 'https://www.youtube.com/shorts/') ~ video.id %}
 <section class="kk-video-block" aria-labelledby="kk-video-heading">
   <div class="kk-video-media">
   {% if consent_required %}
-  <a class="kk-video kk-video--link" href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">
-    <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="180" height="320" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
+  <a class="kk-video kk-video--link" href="{{ yt_url }}" target="_blank" rel="noopener">
+    <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="{{ 320 if video.wide else 180 }}" height="{{ 180 if video.wide else 320 }}" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
     <span class="kk-video-cta">Watch on YouTube</span>
   </a>
   {% else %}
-  <div class="kk-video" data-yt="{{ video.id }}" data-title="{{ video.title }}">
+  <div class="kk-video{{ ' kk-video--wide' if video.wide else '' }}" data-yt="{{ video.id }}" data-title="{{ video.title }}"{% if video.wide %} data-wide="1"{% endif %}>
     <button type="button" class="kk-video-play">
-      <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="180" height="320" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
+      <img src="{{ url_for('static', filename='img/video/' ~ video.thumb) }}" width="{{ 320 if video.wide else 180 }}" height="{{ 180 if video.wide else 320 }}" loading="lazy" alt="Still from the KuickKonvert video: {{ video.title }}">
       <span class="kk-video-label">{{ video_play_label }}</span>
     </button>
   </div>
@@ -27,7 +29,7 @@
   <div class="kk-video-text">
     <p class="kk-video-kicker">Video &middot; {{ video.seconds // 60 ~ ' min ' ~ video.seconds % 60 ~ ' s' if video.seconds >= 60 else video.seconds ~ ' seconds' }}</p>
     <h2 id="kk-video-heading">{{ video.title }}</h2>
-    <p class="kk-video-note"><a href="https://www.youtube.com/shorts/{{ video.id }}" target="_blank" rel="noopener">Watch this video on YouTube</a>{% if consent_required %} (opens YouTube, Google, in a new tab){% endif %}</p>
+    <p class="kk-video-note"><a href="{{ yt_url }}" target="_blank" rel="noopener">Watch this video on YouTube</a>{% if consent_required %} (opens YouTube, Google, in a new tab){% endif %}</p>
     {% if video.transcript %}
     <details class="kk-video-transcript">
       <summary>Read the transcript</summary>

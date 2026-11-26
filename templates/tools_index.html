@@ -40,14 +40,15 @@
       <span aria-current="page">All tools</span>
     </nav>
     <h1>All {{ tool_count }} free conversion tools</h1>
-    <p class="tool-page-desc">Every KuickKonvert tool on one page. All of them are free, need no sign-up and work from your browser on any device. Uploaded files are processed on our server and deleted automatically after conversion.</p>
+    <p class="tool-page-desc">Every KuickKonvert tool on one page. All of them are free, need no sign-up and work from your browser on any device. Uploaded files are processed on our server and deleted automatically after conversion. In our live tests on {{ r10_test_date_text }}, one conversion with each tool took between 0.4 seconds (Merge PDF and Split PDF) and 4.7 seconds (Word to PDF), from upload to download.</p>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
     {% set headings = {'Documents': 'Document converters', 'Images': 'Image converters', 'PDF Tools': 'PDF tools'} %}
     {% set out_map = {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'} %}
     {% for cat in categories %}
     <h2 id="{{ cat|lower|replace(' ', '-') }}">{{ headings.get(cat, cat) }}</h2>
     {#- R7-92 (L16): one line per table linking its pillar guide. -#}
-    {% if cat == 'Documents' %}<p>Not sure which Word format to use? Read our guide <a href="{{ url_for('guide_page', slug='docx-vs-doc') }}">DOC vs DOCX: what's actually different</a>.</p>
+    {% if cat == 'Documents' %}<p>Not sure which Word format to use? Read our guide <a href="{{ url_for('guide_page', slug='docx-vs-doc') }}">DOC vs DOCX: what’s actually different</a>.</p>
     {% elif cat == 'Images' %}<p>Choosing an image format? Read our guide <a href="{{ url_for('guide_page', slug='jpg-vs-png') }}">JPG vs PNG for documents</a>.</p>
     {% elif cat == 'PDF Tools' %}<p>Need a smaller PDF? Read our guide <a href="{{ url_for('guide_page', slug='pdf-compression-levels-explained') }}">PDF compression explained: Screen vs eBook vs Printer</a>.</p>
     {% endif %}
@@ -67,6 +68,23 @@
       </table>
     </div>
     {% endfor %}
+
+    {#- Release 10, F10-39: limits and a live test result for all 21 tools. -#}
+    <h2 id="limits-and-tests">What are each tool’s limits, and what did our tests show?</h2>
+    <p>Every upload can be up to 50 MB. The limits below are the ones each tool applies; the last column is one conversion we ran on the live site on {{ r10_test_date_text }}, with test files made on a computer.</p>
+    <div class="guide-table-wrap">
+      <table class="format-table guide-table">
+        <thead><tr><th scope="col">Tool</th><th scope="col">Limits</th><th scope="col">Our live test</th></tr></thead>
+        <tbody>
+          {% for cat in categories %}{% for t in by_category[cat] %}{% set row = t.r10_tests[0] %}
+          <tr><th scope="row"><a href="{{ url_for('tool_page', slug=t.slug) }}">{{ t.name }}</a></th><td>{{ t.limits }}</td><td>{{ row[0] }} &rarr; {{ row[1] }} ({{ row[2]|replace('Live site: ', '') }})</td></tr>
+          {% endfor %}{% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Which software do the tools use?</h2>
+    <p>Office documents are converted with <a href="https://www.libreoffice.org/" rel="noopener">LibreOffice</a>, PDFs are compressed with <a href="https://ghostscript.readthedocs.io/en/latest/VectorDevices.html" rel="noopener">Ghostscript</a>, and PDF pages are drawn as images with <a href="https://poppler.freedesktop.org/" rel="noopener">Poppler</a> — open-source programs running on our server. Our <a href="{{ url_for('about') }}">About page</a> lists every component, and <a href="{{ url_for('how_we_test') }}">How we test</a> explains our test method.</p>
 
     <p>Want to know more about the formats? Read our <a href="{{ url_for('guides_index') }}">plain-English guides</a>.</p>
 

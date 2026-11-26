@@ -43,7 +43,7 @@
        gtag('consent','update',...) with all four values, and only then
        gtag('js')/gtag('config') and the tag itself. It also runs the banner,
        "Cookie settings" and the LaunchNest badge. Settings: the "Consent"
-       block in config.py. #}{% if consent_required %}
+       block in config.py. #}{#- Release 10 (R-2): official site only, see official_site() in config.py. -#}{% if official_site %}{% if consent_required %}
 <script nonce="{{ csp_nonce }}">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -143,7 +143,7 @@
     // else (consent required, no stored choice): wait for the banner; load nothing.
   })();
 </script>
-{%- endif %}
+{%- endif %}{% endif %}
 
 <title>{% block title %}KuickKonvert | Free File Conversion Tools{% endblock %}</title>
 <meta name="description" content="{% block description %}Free online tools to convert Word, Excel, PowerPoint, images and PDFs. No sign-up; uploaded files are deleted automatically after conversion.{% endblock %}">
@@ -198,7 +198,7 @@
   "alternateName": "Kuick Konvert",
   "url": "{{ site_url }}/",
   "foundingDate": "2026-08",
-  "founder": {"@id": "{{ site_url }}/about#shahid-iqbal"},
+  "founder": {"@id": "{{ site_url }}/about/shahid-iqbal"},
   "logo": "{{ site_url }}{{ url_for('static', filename='img/logo-512.png') }}",
   "email": "info@kuickkonvert.com",
   "description": "Free online file-conversion tools for documents, images and PDFs. No sign-up, and every uploaded file is deleted automatically after conversion.",
@@ -218,7 +218,8 @@
     "https://github.com/khshahid1970/kuickkonvert",
     "https://www.producthunt.com/products/kuickkonvert",
     "https://peerlist.io/kuickkonvert/project/kuickkonvert",
-    "https://kuickkonvert.blogspot.com/"
+    "https://kuickkonvert.blogspot.com/"{% for label, url in r10_sameas_add %},
+    "{{ url }}"{% endfor %}
   ]
 }
 </script>
@@ -256,7 +257,7 @@
      before it goes live, and re-test PageSpeed again before treating that
      as done. A matching /ads.txt is served at the domain root via the
      /ads.txt route in app.py -- unaffected by this change. #}
-<meta name="google-adsense-account" content="ca-pub-2468332370767807">
+{% if official_site %}<meta name="google-adsense-account" content="ca-pub-2468332370767807">{% endif %}
 {# Release 7 (WP15): AdSense code in the head, as Google's site-approval
      guidance asks. Outside the EEA/UK/CH only: there Google requires a
      certified TCF CMP, which we do not have. Auto ads are OFF in the AdSense
@@ -264,12 +265,12 @@
 {#- Also not loaded when the browser sends Global Privacy Control (Sec-GPC: 1).
     12 Nov 2026: switched off until AdSense approval (ADSENSE_SCRIPT_ENABLED in
     config.py); the meta tag above keeps the site connected. -#}
-{% if adsense_script_enabled and not consent_required and not gpc %}
+{% if official_site and adsense_script_enabled and not consent_required and not gpc %}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2468332370767807" crossorigin="anonymous" nonce="{{ csp_nonce }}"></script>
 {% endif %}
 </head>
 <body>
-{% if consent_required %}
+{% if consent_required and official_site %}
 {# Consent banner v2 (11 Oct 2026): equal-prominence choices (three buttons,
      one identical style), categories off by default, non-modal dialog (no
      focus trap; the page stays usable). Hidden until static/js/consent.js
@@ -401,11 +402,11 @@
               is not loaded: Sec-GPC -> text link; outside consent regions the
               image uses data-src and the inline script sets src only without
               navigator.globalPrivacyControl. #}
-          {%- if (consent_required and consent_cfg.badge == 'text_link') or gpc %}
+          {%- if (consent_required and consent_cfg.badge == 'text_link') or gpc or not official_site %}
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">Listed on LaunchNest</a>
           {%- else %}
           <a href="https://launchnest.io/p/kuick-konvert" target="_blank">
-            <img id="launchnest-badge" data-src="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="Kuick Konvert on LaunchNest" width="220" height="56" loading="lazy" />
+            <img id="launchnest-badge" data-src="https://launchnest.io/badge/kuick-konvert.svg?variant=listed&theme=light" alt="KuickKonvert on LaunchNest" width="220" height="56" loading="lazy" />
           </a>
           {%- endif %}
         </p>
@@ -464,7 +465,7 @@
            with the settings panel showing the current choices.
            The "-" whitespace control keeps every other visitor's HTML
            byte-for-byte as before. -#}
-      {%- if consent_required %}
+      {%- if consent_required and official_site %}
       <button type="button" class="footer-link-btn" id="cookie-settings">Cookie settings</button>
       {%- endif %}
     </div>

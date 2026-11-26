@@ -207,12 +207,12 @@ def test_llms_txt_format():
 def test_author_person_entity(pages):
     about = [json.loads(b) for b in pages["/about"]["ld"]]
     person = next(d for d in about if d["@type"] == "Person")
-    assert person["@id"] == f"{SITE}/about#shahid-iqbal"
+    assert person["@id"] == f"{SITE}/about/shahid-iqbal"
     assert person["worksFor"]["@id"] == f"{SITE}/#organization"
     for k, p in pages.items():
         if k.startswith("/guides/"):
             art = next(json.loads(b) for b in p["ld"] if json.loads(b)["@type"] == "Article")
-            assert art["author"].get("@id") == f"{SITE}/about#shahid-iqbal", k
+            assert art["author"].get("@id") == f"{SITE}/about/shahid-iqbal", k
 
 
 def test_blog_in_same_as(pages):
@@ -235,6 +235,9 @@ def test_release7_updated_dates(pages):
     # Release 9 (21 Nov 2026): six guides got a step-by-step section and show
     # R9_DATE (checked in test_r9_release.py).
     redated |= set(config.R9_UPDATED_GUIDES)
+    # Release 10 (26 Nov 2026): every guide changed (figure, headings, sources, links)
+    # and shows RELEASE10_DATE (checked in test_r10_release.py).
+    redated |= set(config.R10_GUIDES)
     for k, p in pages.items():
         if k.startswith("/guides/") and k != "/guides":
             slug = k.split("/")[-1]
@@ -285,10 +288,14 @@ def test_no_forbidden_claims_in_visible_text(pages):
 def test_video_transcripts(pages):
     import config
     with_t = {k for k, v in config.VIDEOS.items() if v.get("transcript")}
-    # 12 Nov 2026: all 23 professional videos (8 re-uploaded after correction)
-    assert len(with_t) == 23
+    # 12 Nov 2026: all 23 professional videos (8 re-uploaded after correction).
+    # R10 F10-52: the 6 C2 how-to videos have no vetted transcript yet, so none is shown.
+    assert len(with_t) == 23 - len(config._R10_C2)
+    assert not with_t & set(config._R10_C2)
     for slug in with_t:
-        path = {"all-tools": "/tools", "home": "/"}.get(slug, f"/tools/{slug}")
+        if slug == "home":
+            continue  # R10 F10-16: the home page now shows the "all-tools" video
+        path = {"all-tools": "/tools"}.get(slug, f"/tools/{slug}")
         p = pages[path]
         assert "Read the transcript" in p["html"], path
         vo = next(json.loads(b) for b in p["ld"] if json.loads(b)["@type"] == "VideoObject")
@@ -312,6 +319,8 @@ def test_r7_83_new_voice_videos():
     assert set(ids) == set(config.VIDEOS)
     assert config.VIDEO_TRANSCRIPTS_AFTER_REUPLOAD == {}
     for slug, vid in ids.items():
+        if slug in config._R10_C2:
+            continue   # R10 F10-52: replaced by the C2 how-to video
         v = config.VIDEOS[slug]
         assert v["id"] == vid and v["uploaded"].startswith("2026-11-13T"), slug
         m, sec = divmod(v["seconds"], 60)
@@ -527,7 +536,8 @@ def test_r7_78_official_sources_and_r7_79_links(pages):
     # R8-01 (20 Nov 2026): the five new comparison guides all cite official sources: 11 + 5 = 16.
     # Release 9 (21 Nov 2026): Microsoft/Google/Apple help pages added to the
     # Word-to-PDF and photos-to-one-PDF guides: 16 + 2 = 18.
-    assert len(with_sources) == 18, with_sources
+    # Release 10 (F10-33, 26 Nov 2026): every guide now cites at least 2 official sources.
+    assert len(with_sources) == 30, with_sources
     for slug in with_sources:
         p = pages[f"/guides/{slug}"]
         assert "<h2>Official sources</h2>" in p["main"], slug
@@ -669,11 +679,11 @@ def test_r7_86_pdf_to_word_guide_sections(pages):
     g = config.GUIDES_BY_SLUG["pdf-to-word-text-vs-scanned"]
     assert [s["heading"] for s in g["sections"]] == [
         "Two kinds of PDF that look the same",
-        "How to tell which one you have",
+        "How can you tell which one you have?",   # R10 F10-37
         "How to open a PDF in Word, step by step",   # Release 9, C3 (21 Nov 2026)
         "What we measured",
         "Which method to use",
-        "What to do with a scanned PDF",
+        "What can you do with a scanned PDF?",   # R10 F10-37
         "Before you convert: prepare the PDF",
         "Keeping the formatting: what carries over to Word",
     ]
@@ -686,9 +696,9 @@ def test_r7_86_pdf_to_word_guide_sections(pages):
     for href in ('href="/tools/pdf-to-word"', 'href="/tools/split-pdf"', 'href="/tools/compress-pdf"'):
         assert href in main, href
     low = _unescape(main).lower()
-    assert "our tool doesn't do ocr" in low
+    assert "our tool doesn’t do ocr" in low
     for bad in ("smallpdf", "ilovepdf", "adobe acrobat", "pdfgear", "wps", "kimi",
                 "guaranteed", "100%", "unlimited", "secure", " fast "):
         assert bad not in low, bad
     # Release 9 (21 Nov 2026) added a how-to section, so the guide now shows R9_DATE.
-    assert f'Updated <time datetime="{config.R9_DATE}"' in p["html"]
+    assert f'Updated <time datetime="{config.RELEASE10_DATE}"' in p["html"]

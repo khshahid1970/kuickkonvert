@@ -59,7 +59,7 @@ def test_r8_dek_answers_and_dates():
     for slug, lead in config._R8_DEK_ANSWERS.items():
         html = _get(f"/guides/{slug}")
         assert lead.strip().split(":")[0] in html, slug
-        assert f'Updated <time datetime="{config.R8_DATE}"' in html, slug
+        assert f'Updated <time datetime="{config.RELEASE10_DATE}"' in html, slug   # R10 part 5
     # The six guides Microsoft Copilot cites keep their text and dates.
     for slug in ("docx-vs-doc", "jpg-vs-png", "why-pdf-layout-shifts",
                  "pdf-to-excel-table-conversion-results", "ppt-vs-pptx", "pdf-compression-levels-explained"):

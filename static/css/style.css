@@ -1276,3 +1276,69 @@ body {
 @media (max-width: 560px) {
   .kk-video-block { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Release 10, F10-41 (option D, approved by Shahid 25 Nov 2026): on phones
+   the ad slot stays ABOVE the converter, and the upload box gets shorter so
+   "Choose file" is on the first screen: the arrow icon is hidden, the
+   "Drag & drop ... or" line (centred in its own space) and the Choose file
+   button share one row with the button on the right, and the limits/notes
+   stay centred underneath. The ad slot keeps its reserved height (a real ad
+   cannot push the upload down); only its outer margins shrink. Phones only
+   (narrow screen AND a touch pointer); desktop and tablets are unchanged. */
+@media (max-width: 600px) and (pointer: coarse) {
+  .ad-slot--tool { margin: 12px 0 14px; }
+  .dropzone {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 16px;
+    text-align: left;
+  }
+  .dropzone .dropzone-icon { display: none; }
+  .dropzone .dropzone-hint { margin: 0; grid-column: 1; text-align: center; }
+  .dropzone #file-input-label { grid-column: 2; margin: 0; }
+  .dropzone .upload-limits,
+  .dropzone .upload-note { grid-column: 1 / -1; text-align: center; }
+}
+
+/* Release 10, D1 (approved by Shahid 25 Nov 2026): on phones, tool pages
+   only (.tool-page--tool), smaller gaps above the converter so "Choose file"
+   is on the first screen on 20 of 21 tools at 390 x 664. Text, ad slot height
+   and desktop are unchanged. */
+@media (max-width: 600px) and (pointer: coarse) {
+  .tool-page--tool { padding-top: 16px; }
+  .tool-page--tool .breadcrumb { margin-bottom: 10px; }
+  .tool-page--tool .tool-page-desc { margin-bottom: 16px; }
+  .tool-page--tool .tool-trust-line { margin-bottom: 8px; }
+  .tool-page--tool .dropzone { padding: 10px 16px; }
+}
+
+/* Release 10, F10-52: a 16:9 player stays 16:9 once it has loaded (C2 how-to videos). */
+.kk-video-block .kk-video.kk-video--wide:has(iframe) { width: 320px; max-width: 100%; aspect-ratio: 16 / 9; }
+.kk-video-block .kk-video.kk-video--wide .kk-video-frame { width: 100%; height: 100%; aspect-ratio: 16 / 9; border-radius: 12px; }
+/* Release 10, F10-07: byline under the H1 on tool pages. */
+.tool-byline { margin: 0 0 8px; }
+.tool-byline a, .guide-meta a, .tool-page-desc a, .guide-table caption a { color: var(--color-primary); }
+
+/* Release 10, part 4: the first paragraph now carries a dated test figure and a byline sits
+   under the H1. So that "Choose file" stays on the first phone screen (D1, approved 25 Nov),
+   on phones only the byline and first paragraph are SHOWN just below the converter. The page
+   order in the HTML is unchanged (H1, byline, first paragraph, converter), and desktop is
+   unchanged. Delete this block to go back to the old phone layout. */
+@media (max-width: 600px) and (pointer: coarse) {
+  .tool-page--tool > .wrap { display: flex; flex-direction: column; }
+  .tool-page--tool > .wrap > * { order: 2; }
+  .tool-page--tool > .wrap > .breadcrumb,
+  .tool-page--tool > .wrap > h1,
+  .tool-page--tool > .wrap > .tool-trust-line,
+  .tool-page--tool > .wrap > .ad-slot,
+  .tool-page--tool > .wrap > form { order: 0; }
+  .tool-page--tool > .wrap > .tool-byline { order: 1; margin: 20px 0 6px; }
+  .tool-page--tool > .wrap > .tool-page-desc { order: 1; margin: 0 0 8px; }
+  .tool-page--tool > .wrap > h1 { margin-bottom: 8px; }
+}
+.about-brand { margin: 0 0 1em; }
+.home-tests .guide-table-wrap { text-align: left; }
+.guide-table th a, .guide-table td a { color: var(--color-primary); }
+.legal .guide-table th a { overflow-wrap: normal; white-space: nowrap; }

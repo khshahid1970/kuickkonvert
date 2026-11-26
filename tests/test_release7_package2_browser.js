@@ -93,7 +93,7 @@ function check(name, ok, detail) { results.push({ name, ok: !!ok, detail }); }
     const blockedMsg = await status(page);
     // choosing the file again (a different selection object) still matches
     await page.setInputFiles('#file-input', FIX('p2-small.jpg')).catch(() => {});
-    check('repeat refusal: button disabled, no second request', hits === 1 && disabled && /wasn't sent again/.test(blockedMsg), { hits, disabled, blockedMsg });
+    check('repeat refusal: button disabled, no second request', hits === 1 && disabled && /wasn[’']t sent again/.test(blockedMsg), { hits, disabled, blockedMsg });
     await ctx.close();
   }
 

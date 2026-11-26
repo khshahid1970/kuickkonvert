@@ -59,6 +59,19 @@ class ConversionError(Exception):
 # leave everything else byte-for-byte, so document content (text, tables,
 # shapes, charts, embedded images) is untouched.
 _EXTERNAL_REL_RE = re.compile(rb'<Relationship\b[^>]*\bTargetMode="External"[^>]*/>')
+# Release 10 (decision L1, Shahid 26 Nov 2026): web links (relationship type
+# ".../relationships/hyperlink") are KEPT. A web link is only a destination
+# written into the PDF; LibreOffice does not open it during conversion, so it
+# is not an SSRF route. Before this change every external relationship was
+# removed, so web links in .docx/.pptx/.xlsx files were lost from the PDF.
+# Linked images, attached templates, linked workbooks and every other external
+# relationship type are still removed.
+_HYPERLINK_TYPE_RE = re.compile(rb'\bType="[^"]*/relationships/hyperlink"')
+
+
+def _drop_external_unless_hyperlink(match):
+    rel = match.group(0)
+    return rel if _HYPERLINK_TYPE_RE.search(rel) else b""
 
 
 def strip_external_links(path: str) -> None:
@@ -80,7 +93,7 @@ def strip_external_links(path: str) -> None:
     changed = False
     for name in list(blobs):
         if name.endswith(".rels") and b'TargetMode="External"' in blobs[name]:
-            new = _EXTERNAL_REL_RE.sub(b"", blobs[name])
+            new = _EXTERNAL_REL_RE.sub(_drop_external_unless_hyperlink, blobs[name])
             if new != blobs[name]:
                 blobs[name] = new
                 changed = True

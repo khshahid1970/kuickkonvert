@@ -23,7 +23,7 @@
     not publish ratings (no invented ratings). BreadcrumbList above stays. #}
 {% endblock %}
 {% block content %}
-<section class="tool-page">
+<section class="tool-page tool-page--tool">
   <div class="wrap wrap-narrow">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="{{ url_for('index') }}">Home</a>
@@ -33,7 +33,10 @@
       <span aria-current="page">{{ tool.name }}</span>
     </nav>
     <h1>{{ tool.get('h1') or tool.name }}</h1>
-    <p class="tool-page-desc">{{ tool.intro }}</p>
+    {#- Release 10, F10-07/F10-34: visible byline; the date = sitemap lastmod (RELEASE10_DATE). -#}
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ tool.lastmod }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+    {#- Release 10, F10-29/F10-36: a measured, dated figure in the first paragraph. -#}
+    <p class="tool-page-desc">{{ tool.intro }}{% if tool.get('r10_figure') %} {{ tool.r10_figure }}{% endif %}</p>
     <p class="tool-trust-line">{{ 'Free · No sign-up' if tool.slug == 'watermark-pdf' else 'Free · No sign-up · No watermark' }}</p>
 
     <div class="ad-slot ad-slot--tool">
@@ -91,7 +94,8 @@
           {% elif f.type == 'password' %}
           <input type="password" id="field-{{ f.name }}" name="{{ f.name }}" placeholder="Enter a password" autocomplete="new-password">
           {% else %}
-          <input type="text" id="field-{{ f.name }}" name="{{ f.name }}" value="{{ f.default }}">
+          <input type="text" id="field-{{ f.name }}" name="{{ f.name }}" value="{{ f.default }}"{% if f.maxlength %} maxlength="{{ f.maxlength }}"{% endif %}{% if f.note %} aria-describedby="field-{{ f.name }}-note"{% endif %}>
+          {% if f.note %}<p class="upload-note" id="field-{{ f.name }}-note">{{ f.note }}</p>{% endif %}
           {% endif %}
         </div>
         {% endfor %}
@@ -122,7 +126,8 @@
       {% set out_fmt = tool.get('out_label') or {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'}.get(tool.to_fmt, tool.to_fmt) %}
       <ol class="how-to-steps">
         <li>Select your {{ (fmts[:-1]|join(', ') ~ ' or ' ~ fmts[-1]) if fmts|length > 1 else fmts[0] }} file{{ 's' if tool.multi else '' }} from your device, or drag {{ 'them' if tool.multi else 'it' }} into the box above.</li>
-        <li>Press Convert{{ ' (after changing the options above, if you want to)' if tool.get('fields') else '' }}. The conversion runs on our server and usually takes a few seconds.</li>
+        {#- Release 10 (point 5, approved 26 Nov): a tool-specific step 2 with a measured time (R4). -#}
+        <li>{% if tool.get('r10_step2') %}{{ tool.r10_step2 }}{% else %}Press Convert{{ ' (after changing the options above, if you want to)' if tool.get('fields') else '' }}. The conversion runs on our server.{% endif %}</li>
         <li>Your {{ out_fmt }} file{{ ' (or one ZIP file holding several)' if tool.get('zip_output') else '' }} downloads straight away. The original is deleted from our servers as soon as the conversion finishes.</li>
       </ol>
 
@@ -139,12 +144,28 @@
       {% if tool.device_steps.note %}<p>{{ tool.device_steps.note }}</p>{% endif %}
       {% endif %}
 
+      {#- Release 10, F10-30/F10-35: at least 3 dated test results in a table. -#}
+      {% if tool.get('r10_tests') %}
+      <h2>What did our {{ tool.name }} tests show?</h2>
+      <div class="guide-table-wrap">
+        <table class="format-table guide-table">
+          <caption>Our tests on {{ r10_test_date_text }} (<a href="{{ url_for('how_we_test') }}">how we test</a>)</caption>
+          <thead><tr><th scope="col">Test file</th><th scope="col">Result</th><th scope="col">Run on</th></tr></thead>
+          <tbody>
+            {% for file, result, where in tool.r10_tests %}<tr><td>{{ file }}</td><td>{{ result }}</td><td>{{ where }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if tool.get('r10_test_note') %}<p class="upload-note">{{ tool.r10_test_note }}</p>{% endif %}
+      {% endif %}
+
       <h2>{{ tool.name }} at a glance</h2>
       <table class="format-table">
         <tbody>
           <tr><th scope="row">You upload</th><td>{{ fmts|join(', ') }}{{ ' (several files at once)' if tool.multi else '' }}</td></tr>
           <tr><th scope="row">You get</th><td>{{ out_fmt }}{{ ' (several files come as one ZIP)' if tool.get('zip_output') else '' }}</td></tr>
-          <tr><th scope="row">Upload size</th><td>Up to {{ upload_rules.max_mb }} MB per upload (all files together)</td></tr>
+          <tr><th scope="row">Upload size</th><td>Up to {{ upload_rules.max_mb }} MB per upload{{ ' (all files together)' if tool.multi else '' }}</td></tr>
           {#- Release 9, R9-09: the limits this tool applies (config TOOLS[...]["limits"]). -#}
           {% if tool.get('limits') %}<tr><th scope="row">Limits</th><td>{{ tool.limits }}</td></tr>{% endif %}
           <tr><th scope="row">Price and sign-up</th><td>Free, no sign-up</td></tr>
@@ -165,7 +186,7 @@
       <h2>{{ tool.name }}: good to know</h2>
       <p>{{ tool.good_to_know }}</p>
 
-      <h2>When to use {{ tool.name }}</h2>
+      <h2>When should you use {{ tool.name }}?</h2>
       <ul class="use-case-list">
         {% for use_case in tool.use_cases %}
         <li>{{ use_case }}</li>
@@ -196,6 +217,15 @@
         </details>
         {% endfor %}
       </div>
+
+      {#- Release 10, F10-33: two official sources on every tool page. -#}
+      {% if tool.get('sources') %}
+      <h2>Official sources</h2>
+      <ul class="related-tools-list guide-sources">
+        {% for label, url in tool.sources %}<li><a href="{{ url }}" rel="noopener">{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
       {% if related_tools %}
       <h2>Related tools</h2>

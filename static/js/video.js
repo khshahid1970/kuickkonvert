@@ -16,8 +16,10 @@
       f.title = box.getAttribute("data-title") || "KuickKonvert video";
       f.allow = "autoplay; encrypted-media; picture-in-picture";
       f.setAttribute("allowfullscreen", "");
-      f.width = "270";
-      f.height = "480";
+      // Release 10, F10-52: 16:9 player for the C2 how-to videos (data-wide).
+      var wide = box.getAttribute("data-wide") === "1";
+      f.width = wide ? "320" : "270";
+      f.height = wide ? "180" : "480";
       f.className = "kk-video-frame";
       btn.replaceWith(f);
     });

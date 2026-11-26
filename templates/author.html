@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{#- Release 10, NEW-2 (decision 23 Nov 2026): author page. Name, role and work
+    email only -- Shahid's decision. Every guide's Article "author" and the
+    Organization "founder" point to the Person @id below (F10-54).
+    REVIEW COPY: wording to be approved by Shahid before deploy. -#}
+{% block title %}Shahid Iqbal, Founder of KuickKonvert | KuickKonvert{% endblock %}
+{% block description %}Shahid Iqbal founded and runs KuickKonvert and writes its guides. How to contact him about the site, one of the free tools or a guide.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "About", "item": "{{ site_url }}/about"},
+    {"@type": "ListItem", "position": 3, "name": "Shahid Iqbal", "item": "{{ canonical_url }}"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "{{ site_url }}/about/shahid-iqbal",
+  "name": "Shahid Iqbal",
+  "url": "{{ site_url }}/about/shahid-iqbal",
+  "jobTitle": "Founder",
+  "email": "info@kuickkonvert.com",
+  "worksFor": {"@id": "{{ site_url }}/#organization"}
+}
+</script>
+{% endblock %}
+{% block content %}
+<section class="tool-page">
+  <div class="wrap wrap-narrow legal">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ url_for('about') }}">About</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Shahid Iqbal</span>
+    </nav>
+    <h1>Shahid Iqbal</h1>
+    <p><strong>Founder of KuickKonvert.</strong> Shahid Iqbal runs KuickKonvert and writes its <a href="{{ url_for('guides_index') }}">guides</a>.</p>
+
+    <h2>How to contact him</h2>
+    <p>Email: {{ obfuscated_mailto('info@kuickkonvert.com') }}</p>
+    <p>Questions about a tool, a guide or your file go to the same address. See <a href="{{ url_for('how_we_test') }}">how we test</a> for how the tools and the test results in the guides are checked.</p>
+  </div>
+</section>
+{% endblock %}
