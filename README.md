@@ -17,9 +17,9 @@
 | PDF tools (6) | [Merge](https://kuickkonvert.com/tools/merge-pdf), [Split](https://kuickkonvert.com/tools/split-pdf), [Compress](https://kuickkonvert.com/tools/compress-pdf), [Rotate](https://kuickkonvert.com/tools/rotate-pdf), [Watermark](https://kuickkonvert.com/tools/watermark-pdf), [Password-protect](https://kuickkonvert.com/tools/protect-pdf) |
 
 - **No account, no credit card** — open a tool and convert.
-- **Files deleted after conversion** — each file is uploaded, converted on our server in a temporary workspace and deleted as soon as the converted file is returned (or immediately if a conversion fails).
+- **Files deleted after conversion** — each file is uploaded, converted on our server in a temporary workspace and deleted automatically as soon as the conversion finishes (or fails), before the result is sent to you.
 - **Works in any modern browser** — desktop or mobile, nothing to install.
-- **Free** — up to 50 MB per upload (all files together), and up to 20 images at a time in the image converters.
+- **Free** — up to 50 MB per upload (all files together where a tool takes several files), and up to 20 images at a time in HEIC to JPG, WEBP to JPG, PNG to JPG and JPG to PNG.
 
 **Limits, stated plainly:** PDF → JPG, PDF → PNG and PDF → PowerPoint convert up to 50 pages at a time; images up to 65 megapixels in the image converters; no OCR (a scanned PDF converts as a picture, not editable text); password-protected PDFs must be unlocked first; fair-use limits apply to how many conversions can run per minute, hour and day.
 
