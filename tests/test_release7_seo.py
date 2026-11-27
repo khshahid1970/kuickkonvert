@@ -207,12 +207,12 @@ def test_llms_txt_format():
 def test_author_person_entity(pages):
     about = [json.loads(b) for b in pages["/about"]["ld"]]
     person = next(d for d in about if d["@type"] == "Person")
-    assert person["@id"] == f"{SITE}/about/shahid-iqbal"
+    assert person["@id"] == f"{SITE}/about#shahid-iqbal"   # R10.4
     assert person["worksFor"]["@id"] == f"{SITE}/#organization"
     for k, p in pages.items():
         if k.startswith("/guides/"):
             art = next(json.loads(b) for b in p["ld"] if json.loads(b)["@type"] == "Article")
-            assert art["author"].get("@id") == f"{SITE}/about/shahid-iqbal", k
+            assert art["author"].get("@id") == f"{SITE}/about#shahid-iqbal", k
 
 
 def test_blog_in_same_as(pages):

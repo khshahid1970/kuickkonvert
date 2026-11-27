@@ -77,31 +77,37 @@ def test_security_txt(monkeypatch):
     assert kk.app.test_client().get("/.well-known/security.txt").status_code == 404
 
 
-# ---- F10-53: sitemap entries for the 2 new pages -----------------------------------------
-def test_sitemap_has_61_urls_with_new_pages():
+# ---- F10-53: sitemap entry for the new page (R10.4: the author page is dropped) ----------
+def test_sitemap_has_60_urls_with_new_pages():
     import config
     client = kk.app.test_client()
     sm = client.get("/sitemap.xml").data.decode()
     locs = re.findall(r"<loc>(.*?)</loc>", sm)
-    assert len(locs) == len(set(locs)) == 61
-    for path in ("/how-we-test", "/about/shahid-iqbal"):
-        assert f"<loc>https://kuickkonvert.com{path}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm
-        html = client.get(path).data.decode()
-        assert f'<link rel="canonical" href="https://kuickkonvert.com{path}">' in html
+    assert len(locs) == len(set(locs)) == 60
+    path = "/how-we-test"
+    assert f"<loc>https://kuickkonvert.com{path}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm
+    html = client.get(path).data.decode()
+    assert f'<link rel="canonical" href="https://kuickkonvert.com{path}">' in html
+    assert "/about/shahid-iqbal" not in sm
 
 
-# ---- F10-54: one Person @id site-wide; byline links to the author page -------------------
+# ---- F10-54 / R10.4: one Person @id site-wide (/about#shahid-iqbal); bylines link to it;
+# the dropped author page URL redirects permanently to /about --------------------------------
 def test_one_person_id_and_author_links():
     client = kk.app.test_client()
-    pid = "https://kuickkonvert.com/about/shahid-iqbal"
-    for path in ("/", "/about", "/about/shahid-iqbal", "/guides/docx-vs-doc", "/tools/merge-pdf"):
+    pid = "https://kuickkonvert.com/about#shahid-iqbal"
+    for path in ("/", "/about", "/guides/docx-vs-doc", "/tools/merge-pdf", "/how-we-test",
+                 "/tools", "/guides", "/contact", "/link-to-us", "/llms.txt", "/sitemap.xml"):
         html = client.get(path).data.decode()
-        assert "about#shahid-iqbal" not in html, path
+        assert "/about/shahid-iqbal" not in html, path
     guide = client.get("/guides/docx-vs-doc").data.decode()
     assert f'"author": {{"@type": "Person", "@id": "{pid}"' in guide
-    assert re.search(r'<div class="guide-meta">\s*By <a href="/about/shahid-iqbal">Shahid Iqbal</a>', guide)
-    author = client.get("/about/shahid-iqbal").data.decode()
-    assert f'"@id": "{pid}"' in author and '"jobTitle": "Founder"' in author
+    assert re.search(r'<div class="guide-meta">\s*By <a href="/about#shahid-iqbal">Shahid Iqbal</a>', guide)
+    about = client.get("/about").data.decode()
+    assert f'"@id": "{pid}"' in about and '"url": "https://kuickkonvert.com/about"' in about
+    assert '<p id="shahid-iqbal">KuickKonvert is a production of Shahid Iqbal.' in about
+    r = client.get("/about/shahid-iqbal")
+    assert r.status_code == 301 and r.headers["Location"].endswith("/about")
 
 
 # ---- F10-20: no raw [[slug|text]] codes on /guides ---------------------------------------
@@ -430,7 +436,7 @@ def test_tool_pages_byline_figure_tests_step2_sources():
         html = c.get(f"/tools/{slug}").data.decode()
         # F10-07/F10-34: byline, date = sitemap lastmod = release day
         assert (f'Last checked <time datetime="{config.RELEASE10_DATE}">{config.R10_DATE_TEXT}</time> by '
-                f'<a href="/about/shahid-iqbal">Shahid Iqbal</a>') in html, slug
+                f'<a href="/about#shahid-iqbal">Shahid Iqbal</a>') in html, slug
         assert '<a href="/how-we-test">How we test</a>' in html, slug
         assert f"/tools/{slug}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm, slug
         # F10-29/F10-36: a dated, measured figure in the first paragraph
@@ -550,7 +556,7 @@ def test_part6_hub_pages():
                             ("/contact", "contact", "Last updated"), ("/link-to-us", "link-to-us", "Last updated")):
         html = c.get(path).data.decode()
         main = re.search(r"<main\b.*?</main>", html, re.S).group(0)
-        assert f'{kind} <time datetime="{config.RELEASE10_DATE}">{config.R10_DATE_TEXT}</time> by <a href="/about/shahid-iqbal">Shahid Iqbal</a>' in main, path
+        assert f'{kind} <time datetime="{config.RELEASE10_DATE}">{config.R10_DATE_TEXT}</time> by <a href="/about#shahid-iqbal">Shahid Iqbal</a>' in main, path
         assert f"<loc>{config.SITE_URL}{path if path != '/' else '/'}</loc><lastmod>{config.RELEASE10_DATE}</lastmod>" in sm, path
         heads = re.findall(r"<h2[^>]*>(.*?)</h2>", main, re.S)
         assert sum(re.sub(r"<[^>]+>", "", h).strip().endswith("?") for h in heads) >= 2, (path, heads)   # F10-37
@@ -578,8 +584,9 @@ def test_part6_hub_pages():
     assert "KuickKonvert's underlying application source code is published under the GNU Affero General Public License v3 (AGPL-3.0)." in about
     # F10-26: llms.txt
     llms = c.get("/llms.txt").data.decode()
-    for part in ("/how-we-test)", "/about/shahid-iqbal)", "/guides)", "/link-to-us)", "https://blog.kuickkonvert.com"):
+    for part in ("/how-we-test)", "/guides)", "/link-to-us)", "https://blog.kuickkonvert.com"):
         assert part in llms, part
+    assert "/about/shahid-iqbal" not in llms   # R10.4: author page dropped
 
 
 # ---- Score gate (F10-40) fixes, 26 Nov 2026 -------------------------------------------------

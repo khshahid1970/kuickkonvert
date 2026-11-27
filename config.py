@@ -136,7 +136,6 @@ STATIC_LASTMOD = {
     "link-to-us": GUIDES_LINKS_LASTMOD,   # new page, 15 Oct 2026 package
     "tools": RELEASE5_DATE,   # Release 5: new /tools hub page
     "how-we-test": RELEASE10_DATE,   # Release 10: new page (NEW-1)
-    "about/shahid-iqbal": RELEASE10_DATE,   # Release 10: new author page (NEW-2)
 }
 
 # ---- Consent (EEA / UK / Switzerland visitors only) ------------------------
@@ -5148,3 +5147,126 @@ _r10_insert_before_how_we_tested(_g45, [_tests_section(
     [("HEIC photo with GPS, 4032 x 3024, 2,774.9 KB (HEIC to JPG)", "1,848.1 KB JPG; GPS location removed; date and camera kept", "Test copy"),
      ("JPG photo with GPS, 2000 x 1500, 475.0 KB (JPG to PDF)", "1-page PDF of 476.2 KB with no photo details or location in it", "Test copy"),
      ("5 HEIC photos, 14,007.0 KB in total (HEIC to JPG)", "ZIP of 5 JPGs, 9,284.5 KB", "Test copy")])])
+
+
+# =============================================================================
+# Release 10.4 (Shahid, 26 Nov 2026: "add strong and pillar links"): topic
+# clusters with pillar and sub-pillar guides. Template link blocks only
+# ("Related guides" on guides, "Guides for {Tool}" on tool pages); no guide text
+# is rewritten.
+#
+# Rules (each one has a test in tests/test_r10_4_release.py):
+#  1. A pillar links to every guide in its cluster: in its text or in its
+#     "Related guides" list (sub-pillars listed first).
+#  2. Every cluster guide links up to its pillar: the pillar is first in its
+#     "Related guides", followed by its sub-pillar when it has one.
+#  3. A sub-pillar lists every guide in its group in "Related guides".
+#  4. Every tool page lists its pillar or sub-pillar FIRST under "Guides for
+#     {Tool}" (Excel tools: XLS vs XLSX; PowerPoint tools: PPT vs PPTX; Rotate:
+#     merge-order guide; Watermark and Protect: password guide). Those
+#     sub-pillars link up to the pillar (rule 2), so every tool is at most two
+#     clicks from its pillar. The DOC vs DOCX pillar is not added to the Excel
+#     and PowerPoint tools, nor the compression pillar to Rotate, Watermark or
+#     Protect: each tool shows the guide on its own format or task first
+#     (topical fit, as decided in R7-82).
+#  5. Existing sibling and cross-cluster links stay; no duplicates; no
+#     self-links.
+# =============================================================================
+R104_CLUSTERS = {
+    "documents": {
+        "pillar": "docx-vs-doc",
+        "subpillars": {
+            "xls-vs-xlsx": ["excel-to-pdf-fit-on-one-page", "pdf-to-excel-table-conversion-results", "excel-vs-pdf"],
+            "ppt-vs-pptx": ["powerpoint-to-pdf-and-back"],
+        },
+        "guides": ["word-to-pdf-what-carries-over", "why-pdf-layout-shifts", "pdf-to-word-text-vs-scanned",
+                   "pdf-or-word-which-to-send"],
+        "tools": {"word-to-pdf": "docx-vs-doc", "pdf-to-word": "docx-vs-doc", "doc-to-docx": "docx-vs-doc",
+                  "excel-to-pdf": "xls-vs-xlsx", "pdf-to-excel": "xls-vs-xlsx",
+                  "ppt-to-pdf": "ppt-vs-pptx", "pdf-to-ppt": "ppt-vs-pptx"},
+    },
+    "images": {
+        "pillar": "jpg-vs-png",
+        "subpillars": {},
+        "guides": ["what-is-a-heic-file", "what-is-a-webp-image", "location-data-in-photos",
+                   "photos-to-one-pdf-jpg-to-pdf-tips", "heic-to-jpg-on-windows", "jpg-vs-jpeg", "jpg-vs-pdf",
+                   "png-vs-pdf", "webp-vs-jpg-vs-png"],
+        "tools": {s: "jpg-vs-png" for s in ("png-to-jpg", "jpg-to-png", "heic-to-jpg", "webp-to-jpg", "jpg-to-pdf",
+                                            "png-to-pdf", "pdf-to-jpg", "pdf-to-png")},
+    },
+    "pdf-tools": {
+        "pillar": "pdf-compression-levels-explained",
+        "subpillars": {
+            "merge-pdf-in-the-right-order": ["split-and-rotate-pdf-pages", "how-to-split-pdf-files"],
+            "pdf-password-protection-explained": ["watermark-pdf-what-it-protects"],
+        },
+        "guides": ["reduce-pdf-size-for-email", "submitting-coursework-as-a-pdf"],
+        "tools": {"merge-pdf": "pdf-compression-levels-explained", "split-pdf": "pdf-compression-levels-explained",
+                  "compress-pdf": "pdf-compression-levels-explained",
+                  "rotate-pdf": "merge-pdf-in-the-right-order",
+                  "watermark-pdf": "pdf-password-protection-explained",
+                  "protect-pdf": "pdf-password-protection-explained"},
+    },
+}
+
+
+def _r104_body_guide_links(g):
+    """Guide slugs linked from the guide's own text ([[guide:slug|...]])."""
+    texts = [g.get("dek", "")]
+    for s in g["sections"]:
+        texts += list(s.get("paragraphs", [])) + list(s.get("steps", []) or [])
+    return set(_re.findall(r"\[\[guide:([^|\]]+)\|", " ".join(texts)))
+
+
+def _r104_put_first(lst, firsts):
+    out = [x for x in firsts if x]
+    return out + [x for x in lst if x not in out]
+
+
+R104_MEMBER_OF = {}      # guide slug -> (pillar, sub-pillar or None)
+for _cname, _cl in R104_CLUSTERS.items():
+    _p = _cl["pillar"]
+    for _sp, _members in _cl["subpillars"].items():
+        R104_MEMBER_OF[_sp] = (_p, None)
+        for _m in _members:
+            R104_MEMBER_OF[_m] = (_p, _sp)
+    for _m in _cl["guides"]:
+        R104_MEMBER_OF[_m] = (_p, None)
+
+for _cname, _cl in R104_CLUSTERS.items():
+    _p = _cl["pillar"]
+    _all = list(_cl["subpillars"]) + [m for ms in _cl["subpillars"].values() for m in ms] + _cl["guides"]
+    assert len(_all) == len(set(_all)) and _p not in _all, _cname
+    for _s in [_p] + _all:
+        assert _s in GUIDES_BY_SLUG, (_cname, _s)
+    # Rule 1: the pillar links every cluster guide (text or Related guides).
+    _body = _r104_body_guide_links(GUIDES_BY_SLUG[_p])
+    _rel = _r104_put_first(RELATED_GUIDES.get(_p, []), list(_cl["subpillars"]))
+    _rel = _rel + [m for m in _all if m not in _rel and m not in _body]
+    RELATED_GUIDES[_p] = _rel
+    # Rule 3: each sub-pillar lists its whole group.
+    for _sp, _members in _cl["subpillars"].items():
+        RELATED_GUIDES[_sp] = _r104_put_first(RELATED_GUIDES.get(_sp, []), [_p] + _members)
+    # Rule 2: every member links up to the pillar (and its sub-pillar) first.
+    for _m in _all:
+        if _m in _cl["subpillars"]:
+            continue
+        _sp = R104_MEMBER_OF[_m][1]
+        RELATED_GUIDES[_m] = _r104_put_first(RELATED_GUIDES.get(_m, []), [_p, _sp])
+    # Rule 4: tool pages list their pillar or sub-pillar first.
+    for _tool, _hub in _cl["tools"].items():
+        _hubg = GUIDES_BY_SLUG[_hub]
+        if _tool not in _hubg["related_tools"]:
+            _hubg["related_tools"] = _hubg["related_tools"] + [_tool]
+        _lst = GUIDES_BY_TOOL[_tool]
+        GUIDES_BY_TOOL[_tool] = [_hubg] + [g for g in _lst if g["slug"] != _hub]
+
+# Rule 5 checks: no self-links, no duplicates, every slug real.
+for _src, _targets in RELATED_GUIDES.items():
+    assert _src in GUIDES_BY_SLUG, _src
+    assert len(_targets) == len(set(_targets)), _src
+    for _t in _targets:
+        assert _t in GUIDES_BY_SLUG and _t != _src, (_src, _t)
+for _tool, _lst in GUIDES_BY_TOOL.items():
+    _sl = [g["slug"] for g in _lst]
+    assert len(_sl) == len(set(_sl)), _tool

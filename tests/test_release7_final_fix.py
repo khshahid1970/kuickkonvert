@@ -153,7 +153,7 @@ def test_r7_90_brand_entity(client):
     assert 'class="footer-tagline">KuickKonvert: free online tools' in home
     org = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', home, re.S)]
     org = [o for o in org if o.get("@type") == "Organization"][0]
-    assert org["founder"] == {"@id": kk.SITE_URL + "/about/shahid-iqbal"}  # R10 F10-54
+    assert org["founder"] == {"@id": kk.SITE_URL + "/about#shahid-iqbal"}  # R10.4 (author page dropped)
     assert org["foundingDate"] == "2026-08"
     assert "https://www.facebook.com/kuickkonvert/" in org["sameAs"]
     assert "https://peerlist.io/kuickkonvert/project/kuickkonvert" in org["sameAs"]

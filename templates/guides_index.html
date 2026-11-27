@@ -23,7 +23,7 @@
     </nav>
     <h1>Guides</h1>
     <p class="tool-page-desc">Plain-English explanations of the file formats and conversion options behind KuickKonvert’s tools — what actually changes, and why. All {{ guides|length }} guides are based on our own tests: for example, in September 2026 Compress PDF took a 3.2 MB PDF holding one photo down to 50 KB.</p>
-    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
     {#- Release 10, F10-39: pick a guide by problem; F10-35: published results in a table. -#}
     <h2>Which guide answers your question?</h2>

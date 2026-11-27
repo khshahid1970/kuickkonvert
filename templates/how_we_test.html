@@ -31,7 +31,7 @@
       <span aria-current="page">How we test</span>
     </nav>
     <h1>How We Test KuickKonvert’s Tools</h1>
-    <div class="guide-meta">By <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; Published <time datetime="{{ published }}">{{ nice_date(published) }}</time></div>
+    <div class="guide-meta">By <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a> &middot; Published <time datetime="{{ published }}">{{ nice_date(published) }}</time></div>
     <p class="tool-page-desc">Every result we quote on KuickKonvert comes from a test we ran ourselves. We make test files on a computer, convert them with the same code the live site runs, in a test copy of the site, and write down the date, the files and the numbers. For example, in September 2026 our Compress PDF code took a 3.2 MB PDF holding one photo down to 50 KB on its “Smallest file” setting.</p>
 
     <section class="tool-info guide-body">
@@ -85,7 +85,7 @@
       <p>Our numbers describe our test files, not yours. A PDF full of photos shrinks far more than a typed report, which can even come out slightly larger, so Compress PDF gives you the original back instead of a bigger file. Fonts matter too: a document in a font our server doesn’t have is set in another font and can gain a page. Scanned pages are pictures, so PDF to Word gives you pictures of the text, not editable text, because our tool doesn’t do OCR. Always open the converted file and check it before you send it.</p>
 
       <h2>Who runs the tests?</h2>
-      <p>The tests are run and written up by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a>, who runs KuickKonvert. If one of your files gives a very different result from a test on this site, email {{ obfuscated_mailto('info@kuickkonvert.com') }} with the tool name and the file size, and we will look at it. The <a href="https://github.com/khshahid1970/kuickkonvert" rel="noopener">full source code of the site is public on GitHub</a>, so the settings described here can be checked. More about the site is on our <a href="{{ url_for('about') }}">About page</a>.</p>
+      <p>The tests are run and written up by <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a>, who runs KuickKonvert. If one of your files gives a very different result from a test on this site, email {{ obfuscated_mailto('info@kuickkonvert.com') }} with the tool name and the file size, and we will look at it. The <a href="https://github.com/khshahid1970/kuickkonvert" rel="noopener">full source code of the site is public on GitHub</a>, so the settings described here can be checked. More about the site is on our <a href="{{ url_for('about') }}">About page</a>.</p>
 
       <h2>Official sources</h2>
       <ul class="related-tools-list guide-sources">

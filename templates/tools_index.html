@@ -41,7 +41,7 @@
     </nav>
     <h1>All {{ tool_count }} free conversion tools</h1>
     <p class="tool-page-desc">Every KuickKonvert tool on one page. All of them are free, need no sign-up and work from your browser on any device. Uploaded files are processed on our server and deleted automatically after conversion. In our live tests on {{ r10_test_date_text }}, one conversion with each tool took between 0.4 seconds (Merge PDF and Split PDF) and 4.7 seconds (Word to PDF), from upload to download.</p>
-    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
     {% set headings = {'Documents': 'Document converters', 'Images': 'Image converters', 'PDF Tools': 'PDF tools'} %}
     {% set out_map = {'DOC': 'DOCX', 'XLS': 'XLSX', 'PPT': 'PPTX'} %}

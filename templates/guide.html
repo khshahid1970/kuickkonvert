@@ -29,7 +29,7 @@
   "datePublished": {{ guide.published|tojson }},
   "dateModified": {{ (guide.updated or guide.published)|tojson }},
   "image": ["{{ site_url }}{{ url_for('static', filename='img/og-image.png') }}"],
-  "author": {"@type": "Person", "@id": "{{ site_url }}/about/shahid-iqbal", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}, "url": "{{ site_url }}/about/shahid-iqbal"},
+  "author": {"@type": "Person", "@id": "{{ site_url }}/about#shahid-iqbal", "name": {{ guide.get('author', 'Shahid Iqbal')|tojson }}, "url": "{{ site_url }}/about"},
   "publisher": {"@type": "Organization", "@id": "{{ site_url }}/#organization", "name": "KuickKonvert"},
   "mainEntityOfPage": {"@type": "WebPage", "@id": "{{ canonical_url }}"}{% if guide.sources %},
   "citation": [{% for label, url in guide.sources %}{"@type": "CreativeWork", "name": {{ label|tojson }}, "url": {{ url|tojson }}}{% if not loop.last %}, {% endif %}{% endfor %}]{% endif %}
@@ -58,7 +58,7 @@
     <h1>{{ guide.title }}</h1>
     {#- Release 10, F10-50: a <div>, so the answer-first summary below is the page's first paragraph. -#}
     <div class="guide-meta">
-      By <a href="{{ url_for('author_page') }}">{{ guide.get('author', 'Shahid Iqbal') }}</a>
+      By <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">{{ guide.get('author', 'Shahid Iqbal') }}</a>
       &middot; Published <time datetime="{{ guide.published }}">{{ nice_date(guide.published) }}</time>
       {% if guide.updated and guide.updated != guide.published %}
       &middot; Updated <time datetime="{{ guide.updated }}">{{ nice_date(guide.updated) }}</time>

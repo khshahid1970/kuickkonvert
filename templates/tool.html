@@ -34,7 +34,7 @@
     </nav>
     <h1>{{ tool.get('h1') or tool.name }}</h1>
     {#- Release 10, F10-07/F10-34: visible byline; the date = sitemap lastmod (RELEASE10_DATE). -#}
-    <div class="guide-meta tool-byline">Last checked <time datetime="{{ tool.lastmod }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ tool.lastmod }}">{{ r10_date_text }}</time> by <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
     {#- Release 10, F10-29/F10-36: a measured, dated figure in the first paragraph. -#}
     <p class="tool-page-desc">{{ tool.intro }}{% if tool.get('r10_figure') %} {{ tool.r10_figure }}{% endif %}</p>
     <p class="tool-trust-line">{{ 'Free · No sign-up' if tool.slug == 'watermark-pdf' else 'Free · No sign-up · No watermark' }}</p>

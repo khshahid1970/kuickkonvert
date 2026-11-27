@@ -28,7 +28,7 @@ def test_new_guides_registered_and_linked():
         assert f'/guides/{slug}"' in index, slug
         assert "[[" in g["dek"], slug                      # direct answer ends with a tool link
         assert g["sources"] and all(u.startswith("https://") for _, u in g["sources"])
-        assert len(config.RELATED_GUIDES[slug]) == 3
+        assert 3 <= len(config.RELATED_GUIDES[slug]) <= 5   # R10.4: pillar (and sub-pillar) added first
         assert any(slug in v for k, v in config.RELATED_GUIDES.items() if k != slug), slug  # inbound link
         for t in g["related_tools"]:
             assert g in config.GUIDES_BY_TOOL[t], (slug, t)

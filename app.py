@@ -1278,19 +1278,21 @@ def link_to_us():
     return render_template("link_to_us.html", canonical_url=f"{SITE_URL}/link-to-us")
 
 
-# Release 10: two new trust pages. NEW-1 /how-we-test (test method and dated
-# results) and NEW-2 /about/shahid-iqbal (author page: name, role and work
-# email only -- Shahid's decision). The Person @id site-wide is the author
-# page URL (F10-54).
+# Release 10: new trust page NEW-1 /how-we-test (test method and dated results).
+# (NEW-2, the /about/shahid-iqbal author page, was dropped in Release 10.4; the
+# Person @id site-wide is /about#shahid-iqbal.)
 @app.route("/how-we-test")
 def how_we_test():
     return render_template("how_we_test.html", canonical_url=f"{SITE_URL}/how-we-test",
                            published=RELEASE10_DATE)
 
 
+# Release 10.4 (Shahid, 26 Nov 2026): the author page is dropped. The old URL
+# sends a permanent redirect to /about, where "Who operates KuickKonvert?"
+# names Shahid Iqbal (Person @id /about#shahid-iqbal).
 @app.route("/about/shahid-iqbal")
 def author_page():
-    return render_template("author.html", canonical_url=f"{SITE_URL}/about/shahid-iqbal")
+    return redirect(url_for("about"), code=301)
 
 
 # Added 2026-10-08: some browsers and crawlers ask for /favicon.ico directly
@@ -1416,7 +1418,6 @@ def llms_txt():
     lines.append(f"- [Contact]({SITE_URL}/contact): how to reach us")
     # Release 10, F10-26: the two new pages, the guides list, the link page and the blog.
     lines.append(f"- [How we test]({SITE_URL}/how-we-test): our test method and dated results, with Zenodo test data")
-    lines.append(f"- [Shahid Iqbal]({SITE_URL}/about/shahid-iqbal): who runs KuickKonvert and writes the guides")
     lines.append(f"- [All guides]({SITE_URL}/guides): every guide on one page, with a pick-a-guide table")
     lines.append(f"- [Link to KuickKonvert]({SITE_URL}/link-to-us): ready-made text links and a badge")
     lines.append("- [KuickKonvert Engineering blog](https://blog.kuickkonvert.com): technical notes and test write-ups")
@@ -1506,7 +1507,6 @@ def sitemap_xml():
         (f"{SITE_URL}/tools", STATIC_LASTMOD.get("tools")),
         # Release 10 (F10-53): the 2 new pages.
         (f"{SITE_URL}/how-we-test", STATIC_LASTMOD.get("how-we-test")),
-        (f"{SITE_URL}/about/shahid-iqbal", STATIC_LASTMOD.get("about/shahid-iqbal")),
     ]
     entries += [
         # Release 5 (26 Oct 2026) changed every tool page (privacy line), so

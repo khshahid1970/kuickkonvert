@@ -19,9 +19,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "@id": "{{ site_url }}/about/shahid-iqbal",
+  "@id": "{{ site_url }}/about#shahid-iqbal",
   "name": "Shahid Iqbal",
-  "url": "{{ site_url }}/about/shahid-iqbal",
+  "url": "{{ site_url }}/about",
   "worksFor": {"@id": "{{ site_url }}/#organization"}
 }
 </script>
@@ -35,7 +35,7 @@
       <span aria-current="page">About</span>
     </nav>
     <h1>About KuickKonvert</h1>
-    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('author_page') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
+    <div class="guide-meta tool-byline">Last checked <time datetime="{{ release10_date }}">{{ r10_date_text }}</time> by <a href="{{ url_for('about', _anchor='shahid-iqbal') }}">Shahid Iqbal</a> &middot; <a href="{{ url_for('how_we_test') }}">How we test</a></div>
 
     <h2>What is KuickKonvert?</h2>
     {#- Release 10, F10-36: the brand line is a <div>, so the first paragraph is the description with its figure. -#}
@@ -90,7 +90,7 @@
     <p>This cloud application layer utilizes unmodified third-party open-source programs and utility packages (including LibreOffice, Ghostscript, Poppler, and PyMuPDF). Listing these components does not convey licensing permissions; their distinct license versions, explicit copyrights, and compliance obligations remain subject to verification under their respective license headers.</p>
 
     <h2>Who operates KuickKonvert?</h2>
-    <p id="shahid-iqbal">KuickKonvert is a production of <a href="{{ url_for('author_page') }}">Shahid Iqbal</a>. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+    <p id="shahid-iqbal">KuickKonvert is a production of Shahid Iqbal. For questions, feedback, or support, see the <a href="{{ url_for('contact') }}">Contact page</a>.</p>
 
     <h2>Where else can you find KuickKonvert?</h2>
     {#- Release 10, F10-18: the same profiles as the Organization sameAs (base.html). -#}
